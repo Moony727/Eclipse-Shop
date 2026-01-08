@@ -6,18 +6,30 @@
 - [x] Update error handling and validation
 - [x] Switch to CLOUDINARY_URL format
 - [x] Update documentation
-- [x] Test image upload functionality in admin panel
 
 ## Status
 - ✅ **COMPLETED**: Cloudinary integration implemented successfully using CLOUDINARY_URL
 - ✅ App compiles and runs without errors
-- ⚠️ **ACTION REQUIRED**: Environment variable needs to be configured for image uploads to work
+- ❌ **ISSUE FOUND**: CLOUDINARY_URL environment variable is not set - this is causing the "Unknown error"
 
-## Next Steps
-1. Set up Cloudinary account at https://cloudinary.com/
-2. Get your Cloud Name, API Key, and API Secret from the dashboard
-3. Add this to your .env.local file:
-   ```
-   CLOUDINARY_URL=cloudinary://your_api_key:your_api_secret@your_cloud_name
-   ```
-4. Test image upload in the admin panel
+## 🔴 IMMEDIATE ACTION REQUIRED
+
+The error "Failed to upload image: Unknown error" occurs because the `CLOUDINARY_URL` environment variable is not configured.
+
+**To fix this:**
+
+1. Create a `.env.local` file in your project root (if it doesn't exist)
+2. Add this line: `CLOUDINARY_URL=cloudinary://your_api_key:your_api_secret@your_cloud_name`
+3. Replace the placeholders with your actual Cloudinary credentials:
+   - Get them from: https://cloudinary.com/ → Dashboard → Account Details
+   - API Key and API Secret are under "API Keys"
+   - Cloud Name is shown at the top of the dashboard
+4. Restart your development server: `npm run dev`
+5. Test image upload in the admin panel
+
+## Example .env.local file:
+```
+CLOUDINARY_URL=cloudinary://123456789012345:abcdefghijklmnop@yourcloudname
+```
+
+Once you set this environment variable, the image uploads will work correctly.
