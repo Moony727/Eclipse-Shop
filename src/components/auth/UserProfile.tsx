@@ -1,0 +1,223 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import {
+  ScrollArea
+} from "@/components/ui/scroll-area";
+import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
+import { User, Order } from "@/types";
+import { LogOut, Settings, User as UserIcon, Package, Phone, Send } from "lucide-react";
+import { getUserOrders } from "@/app/actions/orders";
+import NextImage from "next/image";
+
+interface UserProfileProps {
+  isOpen: boolean;
+  onClose: () => void;
+  user: User | null;
+  initialTab?: "info" | "history";
+}
+
+export function UserProfile({ isOpen, onClose, user, initialTab = "info" }: UserProfileProps) {
+  const { signOut, firebaseUser } = useAuth();
+  const { t, language } = useLanguage();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [isLoadingOrders, setIsLoadingOrders] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>(initialTab);
+
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab(initialTab);
+    }
+  }, [isOpen, initialTab]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      if (isOpen && firebaseUser) {
+        setIsLoadingOrders(true);
+        try {
+          const token = await firebaseUser.getIdToken();
+          const result = await getUserOrders(token);
+          if (result.success && result.data) {
+            setOrders(result.data);
+          }
+        } catch (error) {
+          console.error("Error fetching orders:", error);
+        } finally {
+          setIsLoadingOrders(false);
+        }
+      }
+    };
+
+    fetchOrders();
+  }, [isOpen, firebaseUser]);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      onClose();
+    } catch {
+      // Error is handled in the auth context
+    }
+  };
+
+  if (!user) return null;
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'requested': return <Badge variant="outline" className="text-yellow-500 border-yellow-500">Requested</Badge>;
+      case 'process': return <Badge variant="outline" className="text-blue-500 border-blue-500">Processing</Badge>;
+      case 'completed': return <Badge variant="outline" className="text-green-500 border-green-500">Completed</Badge>;
+      case 'cancelled': return <Badge variant="outline" className="text-red-500 border-red-500">Cancelled</Badge>;
+      default: return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[600px] h-[80vh] flex flex-col p-0 overflow-hidden">
+        <DialogHeader className="p-6 pb-0">
+          <DialogTitle className="text-2xl font-bold flex items-center gap-2">
+            <UserIcon className="w-6 h-6" />
+            {t("profile.title")}
+          </DialogTitle>
+          <DialogDescription>
+            {t("profile.subtitle", "Manage your account and view your order history")}
+          </DialogDescription>
+        </DialogHeader>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col mt-4">
+          <div className="px-6">
+            <TabsList className="w-full grid grid-cols-2">
+              <TabsTrigger value="info">{t("profile.tabs.info", "Account Info")}</TabsTrigger>
+              <TabsTrigger value="history">{t("profile.tabs.history", "Order History")}</TabsTrigger>
+            </TabsList>
+          </div>
+
+          <div className="flex-1 overflow-hidden">
+            <TabsContent value="info" className="h-full p-6 m-0">
+              <div className="space-y-6">
+                <div className="flex flex-col items-center space-y-4">
+                  <Avatar className="w-24 h-24 ring-2 ring-primary/20">
+                    <AvatarFallback className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 text-white">
+                      {user.name.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold">{user.name}</h3>
+                    <p className="text-muted-foreground">{user.email}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-lg border bg-card text-card-foreground">
+                    <p className="text-sm text-muted-foreground font-medium">{t("profile.memberSince", "Member Since")}</p>
+                    <p className="text-lg font-semibold">{user.createdAt.toLocaleDateString()}</p>
+                  </div>
+                  <div className="p-4 rounded-lg border bg-card text-card-foreground">
+                    <p className="text-sm text-muted-foreground font-medium">{t("profile.accountId", "Account ID")}</p>
+                    <p className="text-lg font-semibold font-mono">{user.uid.slice(0, 12)}...</p>
+                  </div>
+                </div>
+
+                <div className="space-y-3 pt-4 border-t">
+                  <Button variant="outline" className="w-full justify-start" disabled>
+                    <Settings className="w-4 h-4 mr-2" />
+                    {t("profile.editProfile")}
+                    <Badge variant="secondary" className="ml-auto text-xs">Coming Soon</Badge>
+                  </Button>
+                  <Button 
+                    variant="destructive" 
+                    className="w-full justify-start"
+                    onClick={handleSignOut}
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    {t("nav.logout")}
+                  </Button>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="history" className="h-full m-0">
+              <ScrollArea className="h-full p-6">
+                {isLoadingOrders ? (
+                  <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    <p className="text-muted-foreground">{t("common.loading", "Loading history...")}</p>
+                  </div>
+                ) : orders.length > 0 ? (
+                  <div className="space-y-4">
+                    {orders.map((order) => (
+                      <div key={order.id} className="p-4 rounded-lg border bg-card hover:border-primary/50 transition-colors">
+                        <div className="flex justify-between items-start mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 relative rounded overflow-hidden border">
+                              {order.product?.imageUrl ? (
+                                <NextImage
+                                  src={order.product.imageUrl}
+                                  alt={order.productName.en}
+                                  fill
+                                  className="object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-muted flex items-center justify-center">
+                                  <Package className="w-6 h-6 text-muted-foreground" />
+                                </div>
+                              )}
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-sm line-clamp-1">{order.productName[language as keyof typeof order.productName] || order.productName.en}</h4>
+                              <p className="text-xs text-muted-foreground">{new Date(order.createdAt).toLocaleDateString()}</p>
+                            </div>
+                          </div>
+                          {getStatusBadge(order.status)}
+                        </div>
+                        <div className="flex justify-between items-center text-sm pt-2 border-t">
+                          <span className="text-muted-foreground">{t("orders.orderId", "Order ID")}: #{order.id.slice(-6).toUpperCase()}</span>
+                          <span className="font-bold text-primary">{order.totalAmount} AZN</span>
+                        </div>
+                        <div className="mt-2 text-xs flex items-center gap-2 text-muted-foreground">
+                          {order.contactType === 'whatsapp' ? <Phone className="w-3 h-3" /> : <Send className="w-3 h-3" />}
+                          {order.contactId}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
+                    <Package className="w-12 h-12 text-muted-foreground/50" />
+                    <div>
+                      <h4 className="font-semibold text-lg">{t("orders.noOrders", "No orders yet")}</h4>
+                      <p className="text-muted-foreground max-w-[250px] mx-auto">
+                        {t("orders.noOrdersDesc", "When you purchase something, it will appear here.")}
+                      </p>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={onClose}>
+                      {t("common.browseProducts", "Browse Products")}
+                    </Button>
+                  </div>
+                )}
+              </ScrollArea>
+            </TabsContent>
+          </div>
+        </Tabs>
+      </DialogContent>
+    </Dialog>
+  );
+}

@@ -1,0 +1,8 @@
+# robots.txt
+# Instructs search engines and points to the sitemap.
+# Be explicit: allow all well-behaved bots, disallow any private paths if you add them.
+
+User-agent: *
+Disallow:
+
+Sitemap: https://eclipse-shop.vercel.app/sitemap.xml

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <!-- Favicon for Eclipse Shop — a simple geometric design -->
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="180" height="180" fill="url(#grad1)" />
+  <!-- Eclipse symbol: circle with partial shadow -->
+  <circle cx="90" cy="90" r="60" fill="#e94560" opacity="0.9" />
+  <circle cx="90" cy="90" r="55" fill="#1a1a2e" />
+  <circle cx="105" cy="85" r="50" fill="#e94560" opacity="0.7" />
+</svg>

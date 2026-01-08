@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <!-- Apple touch icon for Eclipse Shop -->
+  <defs>
+    <linearGradient id="applgrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="45" fill="url(#applgrad)" />
+  <circle cx="96" cy="96" r="70" fill="#e94560" opacity="0.9" />
+  <circle cx="96" cy="96" r="65" fill="#1a1a2e" />
+  <circle cx="115" cy="89" r="58" fill="#e94560" opacity="0.7" />
+</svg>

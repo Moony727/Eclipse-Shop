@@ -1,0 +1,65 @@
+"use client";
+
+import { ProductCard } from "./ProductCard";
+import { ProductCardSkeleton } from "./ProductCardSkeleton";
+import { useLanguage } from "@/hooks/useLanguage";
+import { Product } from "@/types";
+import { PackageSearch } from "lucide-react";
+
+interface ProductGridProps {
+  products: Product[];
+  onPurchase: (product: Product) => void;
+  isLoading: boolean;
+}
+
+export function ProductGrid({ products, onPurchase, isLoading }: ProductGridProps) {
+  const { t } = useLanguage();
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
+        {Array.from({ length: 8 }).map((_, index) => (
+          <ProductCardSkeleton key={index} />
+        ))}
+      </div>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 md:py-20 px-4 text-center bg-muted/30 rounded-2xl md:rounded-3xl border-2 border-dashed mx-4 md:mx-0">
+        <div className="w-16 h-16 md:w-20 md:h-20 bg-background rounded-full flex items-center justify-center shadow-lg mb-4 md:mb-6">
+          <PackageSearch className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground" />
+        </div>
+        <h3 className="text-xl md:text-2xl font-bold mb-2">
+          {t("products.noProducts", "No Products Found")}
+        </h3>
+        <p className="text-sm md:text-base text-muted-foreground max-w-xs md:max-w-sm mx-auto mb-6 md:mb-8">
+          {t("products.noProductsDesc", "Try adjusting your filters or search terms to find what you're looking for.")}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-black tracking-tight flex items-center gap-2">
+          <span className="w-8 h-1 bg-primary rounded-full"></span>
+          {t("products.title", "Our Collection")}
+          <span className="text-sm font-normal text-muted-foreground ml-2">({products.length})</span>
+        </h2>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            onPurchase={onPurchase}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
