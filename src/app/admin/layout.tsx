@@ -35,6 +35,21 @@ export default function AdminLayout({
   const { user, signOut } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Check if user is admin
+  if (!user || !user.isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/30">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
+          <p className="text-muted-foreground mb-4">You need admin privileges to access this area.</p>
+          <Button onClick={() => window.location.href = '/'}>
+            Go to Home
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen bg-muted/30">
       {/* Mobile Sidebar Overlay */}
