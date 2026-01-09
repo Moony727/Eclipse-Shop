@@ -1,35 +1,32 @@
-import React from 'react'
+"use client";
 
-export const metadata = {
-  title: 'Terms of Service — Eclipse Shop',
-  description: 'Terms and conditions for using Eclipse Shop.',
-}
+import React from 'react'
+import { useLanguage } from '@/hooks/useLanguage';
 
 export default function TermsPage() {
+  const { t } = useLanguage();
+
   return (
     <main className="container mx-auto py-16 px-4">
-      <h1 className="text-3xl font-bold mb-4">Terms of Service</h1>
+      <h1 className="text-3xl font-bold mb-4">{t("pages.terms.title")}</h1>
 
       <p className="mb-4">
-        By using Eclipse Shop you agree to these terms. This document outlines permitted
-        use, intellectual property, and liabilities. It is a short summary — consult the
-        full legal document where required.
+        {t("pages.terms.intro")}
       </p>
 
-      <h2 className="text-2xl font-semibold mt-6 mb-2">Permitted Use</h2>
+      <h2 className="text-2xl font-semibold mt-6 mb-2">{t("pages.terms.permitted")}</h2>
       <p className="mb-4">
-        You may use content for personal or commercial projects as described on each product page.
+        {t("pages.terms.permittedText")}
       </p>
 
-      <h2 className="text-2xl font-semibold mt-6 mb-2">Refunds and Purchases</h2>
+      <h2 className="text-2xl font-semibold mt-6 mb-2">{t("pages.terms.refunds")}</h2>
       <p className="mb-4">
-        Purchases are handled by third-party processors. Refunds are managed according to
-        the vendor policy listed on product pages.
+        {t("pages.terms.refundsText")}
       </p>
 
-      <h2 className="text-2xl font-semibold mt-6 mb-2">Contact</h2>
+      <h2 className="text-2xl font-semibold mt-6 mb-2">{t("pages.terms.contact")}</h2>
       <p>
-        For questions about terms contact <a href="mailto:legal@eclipse-shop.example">legal@eclipse-shop.example</a>.
+        {t("pages.terms.contactText")} <a href="mailto:legal@eclipse-shop.example">legal@eclipse-shop.example</a>.
       </p>
     </main>
   )

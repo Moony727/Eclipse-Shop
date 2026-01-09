@@ -69,14 +69,14 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
         ? 'bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 shadow-lg'
         : 'bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
     }`}>
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+      <div className="container mx-auto px-2 sm:px-4">
+        <div className="flex h-14 sm:h-16 items-center justify-between gap-2">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 group">
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-primary to-purple-600 group-hover:scale-110 transition-transform duration-300">
-              <span className="text-white font-bold text-lg">E</span>
+          <Link href="/" className="flex items-center space-x-1 sm:space-x-2 group flex-shrink-0">
+            <div className="flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 rounded-lg bg-gradient-to-r from-primary to-purple-600 group-hover:scale-110 transition-transform duration-300">
+              <span className="text-white font-bold text-sm sm:text-lg">E</span>
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-primary transition-all duration-300">
+            <span className="hidden sm:inline text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-primary transition-all duration-300">
               Eclipse
             </span>
           </Link>

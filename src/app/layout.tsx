@@ -14,7 +14,7 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://eclipse-shop.vercel.app';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://eclipseshop.xyz';
 
 export const metadata: Metadata = {
   title: {

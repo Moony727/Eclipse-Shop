@@ -70,7 +70,7 @@ export function CartDrawer({ children }: CartDrawerProps) {
       <SheetTrigger asChild>
         {children}
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-lg">
+      <SheetContent className="w-full sm:w-96 md:w-[450px]" side="right">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
             <ShoppingCart className="w-5 h-5" />

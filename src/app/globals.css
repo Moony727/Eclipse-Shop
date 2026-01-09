@@ -3,6 +3,52 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ============================================ */
+/* STABLE LAYOUT - PREVENT LAYOUT SHIFTS */
+/* ============================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  /* Always show scrollbar to prevent layout shift */
+  overflow-y: scroll;
+  /* Prevent scrollbar jumping on page transitions */
+  position: relative;
+}
+
+/* Ensure consistent spacing */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Prevent images from causing layout shifts */
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Stable container widths */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--padding-x, 1rem);
+  padding-right: var(--padding-x, 1rem);
+}
+
+/* Prevent text size adjustments on orientation change */
+@media (max-width: 480px) {
+  body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -254,4 +300,229 @@
   font-size: clamp(11px, 2.5vw, 13px);
   opacity: 0.95;
 }
+
+/* ============================================ */
+/* SMART ANIMATIONS - OPTIMIZED */
+/* ============================================ */
+
+/* Fade in animation for entrance */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Fade out animation for exit */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Slide up fade in - for cards and products */
+@keyframes slideUpFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide down fade in - for modals and dropdowns */
+@keyframes slideDownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scale fade in - for buttons and icons */
+@keyframes scaleInFade {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Pulse animation - for active states */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Animation utility classes */
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.animate-fade-out {
+  animation: fadeOut 0.3s ease-in-out forwards;
+}
+
+.animate-slide-up-fade {
+  animation: slideUpFadeIn 0.5s ease-out;
+}
+
+.animate-slide-down-fade {
+  animation: slideDownFadeIn 0.3s ease-out;
+}
+
+.animate-scale-in-fade {
+  animation: scaleInFade 0.3s ease-out;
+}
+
+/* Stagger animations for lists */
+.animate-stagger > * {
+  animation: slideUpFadeIn 0.5s ease-out both;
+}
+
+.animate-stagger > *:nth-child(1) { animation-delay: 0.1s; }
+.animate-stagger > *:nth-child(2) { animation-delay: 0.2s; }
+.animate-stagger > *:nth-child(3) { animation-delay: 0.3s; }
+.animate-stagger > *:nth-child(4) { animation-delay: 0.4s; }
+.animate-stagger > *:nth-child(5) { animation-delay: 0.5s; }
+.animate-stagger > *:nth-child(n+6) { animation-delay: 0.6s; }
+
+/* Smooth transitions for all interactive elements */
+button, a, input, select, textarea {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Optimize animations with GPU acceleration */
+.animate-fade-in,
+.animate-fade-out,
+.animate-slide-up-fade,
+.animate-slide-down-fade,
+.animate-scale-in-fade {
+  will-change: opacity, transform;
+}
+
+/* Remove animations on reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================ */
+/* STABLE LAYOUT - DIALOGS & MODALS */
+/* ============================================ */
+
+/* Prevent layout shift when modal opens */
+[role="dialog"],
+.dialog,
+.modal {
+  /* Ensure consistent positioning */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 50;
+}
+
+/* Drawer stable positioning */
+[data-state="open"] {
+  /* Smooth transition without shift */
+  transition: all 0.3s ease-in-out;
+}
+
+/* Prevent body scroll jump */
+body.overflow-hidden {
+  overflow: hidden;
+  padding-right: var(--scrollbar-width, 0px);
+}
+
+/* Stable form inputs */
+input,
+textarea,
+select {
+  /* Prevent zoom on mobile */
+  font-size: 16px;
+  /* Prevent text selection on long press */
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Stable aspect ratios for images */
+img,
+video,
+iframe {
+  aspect-ratio: auto;
+}
+
+/* Prevent flash of unstyled content */
+@supports (display: contents) {
+  html {
+    /* Ensures fonts load smoothly */
+    font-display: swap;
+  }
+}
+
+/* Stable link and button states */
+a,
+button {
+  /* Prevent jitter on tap */
+  -webkit-tap-highlight-color: transparent;
+  /* Smooth state transitions */
+  transition: all 0.15s ease-in-out;
+}
+
+/* Stable scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground);
+}
+
+/* Stable table layout */
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Prevent horizontal scrollbar on tables */
+table-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 

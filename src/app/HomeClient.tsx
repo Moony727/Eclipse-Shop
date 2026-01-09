@@ -135,8 +135,8 @@ export default function HomePage() {
           <div className="flex justify-center px-4">
             <div className="relative rounded-lg shadow-2xl max-w-full w-full h-48 md:h-64 lg:h-96">
               <NextImage
-                src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e41ede49-48db-4084-b71d-39297b6eda42.png"
-                alt="Eclipse Shop - Premium Digital Marketplace"
+                src={process.env.NEXT_PUBLIC_HERO_IMAGE_URL!}
+                alt="Eclipse Shop - Digital Products"
                 fill
                 className="object-cover rounded-lg"
               />
