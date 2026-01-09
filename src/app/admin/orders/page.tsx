@@ -126,144 +126,146 @@ export default function OrdersPage() {
         />
       </div>
 
-      <div className="rounded-md border bg-card overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow>
-                  <TableHead>Order</TableHead>
-                  <TableHead>Items</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Contact</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading && orders.length === 0 ? (
+      <div className="rounded-md border bg-card overflow-hidden flex flex-col h-[600px]">
+        <div className="overflow-y-auto flex-1">
+          <Table>
+            <TableHeader className="sticky top-0 bg-muted/50 z-10">
               <TableRow>
-                <TableCell colSpan={5} className="h-32 text-center">
-                  <div className="flex flex-col items-center justify-center space-y-2">
-                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                    <p className="text-sm text-muted-foreground">Loading orders...</p>
-                  </div>
-                </TableCell>
+                    <TableHead>Order</TableHead>
+                    <TableHead>Items</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Contact</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
               </TableRow>
-            ) : filteredOrders.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
-                  No orders found
-                </TableCell>
-              </TableRow>
-            ) : (
-              filteredOrders.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell>
-                    <div className="space-y-1">
-                      <div className="font-bold flex items-center gap-2">
-                        <span className="text-[10px] font-mono text-muted-foreground">#{order.id.slice(-6).toUpperCase()}</span>
-                      </div>
-                      <div className="text-[10px] text-muted-foreground">
-                        {new Date(order.createdAt).toLocaleString()}
-                      </div>
-                      <div className="font-bold text-primary text-sm">
-                        {order.totalAmount} AZN
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="space-y-1">
-                      {order.items && order.items.length > 0 ? (
-                        <div className="text-xs">
-                          {order.items.length} item{order.items.length > 1 ? 's' : ''}:
-                          {order.items.slice(0, 2).map((item, idx) => (
-                            <div key={idx} className="truncate max-w-32">
-                              {item.quantity}x {item.productName[language] || item.productName.en}
-                              {item.price < item.originalPrice && (
-                                <span className="ml-1 text-xs">
-                                  <span className="line-through text-muted-foreground">{item.originalPrice} AZN</span>
-                                  <span className="text-primary font-semibold ml-1">{item.price} AZN</span>
-                                </span>
-                              )}
-                              {item.price === item.originalPrice && (
-                                <span className="ml-1 text-xs text-muted-foreground">{item.price} AZN</span>
-                              )}
-                            </div>
-                          ))}
-                          {order.items.length > 2 && (
-                            <div className="text-muted-foreground">+{order.items.length - 2} more</div>
-                          )}
-                        </div>
-                      ) : (
-                        // Legacy single item
-                        <div className="text-xs truncate max-w-32">
-                          1x {order.productName?.[language] || order.productName?.en || 'Unknown'}
-                        </div>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm">
-                      <div className="font-medium">{order.customerName || order.userName}</div>
-                      <div className="text-[10px] text-muted-foreground">{order.userEmail}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2 text-xs">
-                      {order.contactType === 'whatsapp' ? (
-                        <Phone className="w-3 h-3 text-green-500" />
-                      ) : (
-                        <Send className="w-3 h-3 text-blue-500" />
-                      )}
-                      <span className="font-mono">{order.contactId}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {getStatusBadge(order.status)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      {order.status === 'requested' && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-7 text-xs"
-                          disabled={isUpdating === order.id}
-                          onClick={() => handleUpdateStatus(order.id, 'process')}
-                        >
-                          Process
-                        </Button>
-                      )}
-                      {order.status === 'process' && (
-                        <Button
-                          size="sm"
-                          className="h-7 text-xs bg-green-600 hover:bg-green-700"
-                          disabled={isUpdating === order.id}
-                          onClick={() => handleUpdateStatus(order.id, 'completed')}
-                        >
-                          Complete
-                        </Button>
-                      )}
-                      {(order.status === 'requested' || order.status === 'process') && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-7 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
-                          disabled={isUpdating === order.id}
-                          onClick={() => handleUpdateStatus(order.id, 'cancelled')}
-                        >
-                          Cancel
-                        </Button>
-                      )}
-                      {order.status === 'completed' && (
-                        <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
-                      )}
+            </TableHeader>
+            <TableBody>
+              {isLoading && orders.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-32 text-center">
+                    <div className="flex flex-col items-center justify-center space-y-2">
+                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                      <p className="text-sm text-muted-foreground">Loading orders...</p>
                     </div>
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : filteredOrders.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+                    No orders found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredOrders.map((order) => (
+                  <TableRow key={order.id}>
+                    <TableCell>
+                      <div className="space-y-1">
+                        <div className="font-bold flex items-center gap-2">
+                          <span className="text-[10px] font-mono text-muted-foreground">#{order.id.slice(-6).toUpperCase()}</span>
+                        </div>
+                        <div className="text-[10px] text-muted-foreground">
+                          {new Date(order.createdAt).toLocaleString()}
+                        </div>
+                        <div className="font-bold text-primary text-sm">
+                          {order.totalAmount} AZN
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="space-y-1">
+                        {order.items && order.items.length > 0 ? (
+                          <div className="text-xs">
+                            {order.items.length} item{order.items.length > 1 ? 's' : ''}:
+                            {order.items.slice(0, 2).map((item, idx) => (
+                              <div key={idx} className="truncate max-w-32">
+                                {item.quantity}x {item.productName[language] || item.productName.en}
+                                {item.price < item.originalPrice && (
+                                  <span className="ml-1 text-xs">
+                                    <span className="line-through text-muted-foreground">{item.originalPrice} AZN</span>
+                                    <span className="text-primary font-semibold ml-1">{item.price} AZN</span>
+                                  </span>
+                                )}
+                                {item.price === item.originalPrice && (
+                                  <span className="ml-1 text-xs text-muted-foreground">{item.price} AZN</span>
+                                )}
+                              </div>
+                            ))}
+                            {order.items.length > 2 && (
+                              <div className="text-muted-foreground">+{order.items.length - 2} more</div>
+                            )}
+                          </div>
+                        ) : (
+                          // Legacy single item
+                          <div className="text-xs truncate max-w-32">
+                            1x {order.productName?.[language] || order.productName?.en || 'Unknown'}
+                          </div>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-sm">
+                        <div className="font-medium">{order.customerName || order.userName}</div>
+                        <div className="text-[10px] text-muted-foreground">{order.userEmail}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2 text-xs">
+                        {order.contactType === 'whatsapp' ? (
+                          <Phone className="w-3 h-3 text-green-500" />
+                        ) : (
+                          <Send className="w-3 h-3 text-blue-500" />
+                        )}
+                        <span className="font-mono">{order.contactId}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {getStatusBadge(order.status)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        {order.status === 'requested' && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-7 text-xs"
+                            disabled={isUpdating === order.id}
+                            onClick={() => handleUpdateStatus(order.id, 'process')}
+                          >
+                            Process
+                          </Button>
+                        )}
+                        {order.status === 'process' && (
+                          <Button
+                            size="sm"
+                            className="h-7 text-xs bg-green-600 hover:bg-green-700"
+                            disabled={isUpdating === order.id}
+                            onClick={() => handleUpdateStatus(order.id, 'completed')}
+                          >
+                            Complete
+                          </Button>
+                        )}
+                        {(order.status === 'requested' || order.status === 'process') && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-7 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+                            disabled={isUpdating === order.id}
+                            onClick={() => handleUpdateStatus(order.id, 'cancelled')}
+                          >
+                            Cancel
+                          </Button>
+                        )}
+                        {order.status === 'completed' && (
+                          <CheckCircle2 className="w-4 h-4 text-green-500 mr-2" />
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );

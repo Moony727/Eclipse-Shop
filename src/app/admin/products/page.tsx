@@ -159,104 +159,109 @@ export default function ProductsPage() {
         />
       </div>
 
-      <div className="rounded-md border bg-card overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[80px]">Image</TableHead>
-              <TableHead>Product Name</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading && products.length === 0 ? (
+      <div className="rounded-md border bg-card overflow-hidden flex flex-col h-[600px]">
+        <div className="overflow-y-auto flex-1">
+          <Table>
+            <TableHeader className="sticky top-0 bg-muted/50 z-10">
               <TableRow>
-                <TableCell colSpan={6} className="h-32 text-center">
-                  <div className="flex flex-col items-center justify-center space-y-2">
-                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                    <p className="text-sm text-muted-foreground">Loading products...</p>
-                  </div>
-                </TableCell>
+                <TableHead className="w-[80px]">Image</TableHead>
+                <TableHead>Product Name</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
-            ) : filteredProducts.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
-                  No products found
-                </TableCell>
-              </TableRow>
-            ) : (
-              filteredProducts.map((product) => (
-                <TableRow key={product.id}>
-                  <TableCell>
-                    <div className="relative w-10 h-10 rounded border overflow-hidden bg-muted">
-                      {product.imageUrl ? (
-                        <NextImage 
-                          src={product.imageUrl} 
-                          alt={product.name.en}
-                          fill
-                          className="object-cover"
-                        />
-                      ) : (
-                        <Package className="w-6 h-6 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-muted-foreground" />
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="font-medium text-sm">{product.name.en}</div>
-                    <div className="text-[10px] text-muted-foreground font-mono">ID: {product.id.slice(0, 8)}</div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className="text-[10px]">
-                      {product.category}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm font-bold">
-                      {product.price} AZN
-                      {product.discountPrice && (
-                        <span className="ml-1 text-[10px] text-muted-foreground line-through">
-                          {product.discountPrice}
-                        </span>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={product.isActive ? "secondary" : "destructive"} className="text-[10px]">
-                      {product.isActive ? "Active" : "Inactive"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      <Button 
-                        size="icon" 
-                        variant="ghost" 
-                        className="h-8 w-8"
-                        onClick={() => handleToggleStatus(product.id, product.isActive)}
-                        title={product.isActive ? "Deactivate" : "Activate"}
-                      >
-                        {product.isActive ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-8 w-8 text-blue-500"
-                        onClick={() => handleEditProduct(product)}
-                      >
-                        <Edit2 className="h-4 w-4" />
-                      </Button>
-                      <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+            </TableHeader>
+            <TableBody>
+              {isLoading && products.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-32 text-center">
+                    <div className="flex flex-col items-center justify-center space-y-2">
+                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                      <p className="text-sm text-muted-foreground">Loading products...</p>
                     </div>
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : filteredProducts.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+                    No products found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredProducts.map((product) => (
+                  <TableRow key={product.id}>
+                    <TableCell>
+                      <div className="relative w-10 h-10 rounded border overflow-hidden bg-muted">
+                        {product.imageUrl ? (
+                          <NextImage 
+                            src={product.imageUrl} 
+                            alt={product.name.en}
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <Package className="w-6 h-6 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-muted-foreground" />
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="font-medium text-sm">{product.name.en}</div>
+                      <div className="text-[10px] text-muted-foreground font-mono">ID: {product.id.slice(0, 8)}</div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="text-[10px]">
+                        {product.category}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="space-y-1">
+                        <div className="text-sm font-bold text-green-600">
+                          {product.discountPrice ? product.discountPrice : product.price} AZN
+                        </div>
+                        {product.discountPrice && (
+                          <div className="text-[10px] text-muted-foreground relative inline-block">
+                            {product.price} AZN
+                            <span className="absolute inset-0 bg-gradient-to-br from-transparent via-muted-foreground to-transparent" style={{ transform: 'rotate(-45deg)', height: '1px', top: '50%' }}></span>
+                          </div>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={product.isActive ? "secondary" : "destructive"} className="text-[10px]">
+                        {product.isActive ? "Active" : "Inactive"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        <Button 
+                          size="icon" 
+                          variant="ghost" 
+                          className="h-8 w-8"
+                          onClick={() => handleToggleStatus(product.id, product.isActive)}
+                          title={product.isActive ? "Deactivate" : "Activate"}
+                        >
+                          {product.isActive ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-8 w-8 text-blue-500"
+                          onClick={() => handleEditProduct(product)}
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       <ProductForm
