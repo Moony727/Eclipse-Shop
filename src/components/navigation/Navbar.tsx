@@ -10,7 +10,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeSwitcher } from "./ThemeSwitcher";
-import { SizeSwitcher } from "./SizeSwitcher";
 import { useLanguage } from "@/hooks/useLanguage";
 import { NavbarProps } from "@/types";
 import { Menu, X, User as UserIcon, LogOut, Clock, ShieldCheck, ShoppingCart } from "lucide-react";
@@ -71,13 +70,13 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
         : 'bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
     }`}>
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-14 md:h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-primary to-purple-600 group-hover:scale-110 transition-transform duration-300">
-              <span className="text-white font-bold text-lg">E</span>
+            <div className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-lg bg-gradient-to-r from-primary to-purple-600 group-hover:scale-110 transition-transform duration-300">
+              <span className="text-white font-bold text-base md:text-lg">E</span>
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-primary transition-all duration-300">
+            <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-primary transition-all duration-300">
               Eclipse
             </span>
           </Link>
@@ -151,11 +150,6 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
             {/* Theme Switcher */}
             <div className="transition-transform duration-200 hover:scale-105">
               <ThemeSwitcher />
-            </div>
-
-            {/* Size Switcher */}
-            <div className="transition-transform duration-200 hover:scale-105">
-              <SizeSwitcher />
             </div>
 
             {/* User Authentication */}

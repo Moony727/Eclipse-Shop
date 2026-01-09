@@ -68,24 +68,26 @@ export function ShopSection({
   // Removed handlePurchase as products now use cart
 
   return (
-    <section className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="space-y-2">
-          <h2 className="text-3xl font-black tracking-tight">{title}</h2>
-          <p className="text-muted-foreground">
+    <section className="space-y-[var(--space-8)]">
+      <div className="flex flex-col gap-6">
+        <div className="space-y-2 text-center md:text-left">
+          <h2 className="text-[var(--text-3xl)] md:text-[var(--text-4xl)] font-black tracking-tight">{title}</h2>
+          <p className="text-sm md:text-base text-muted-foreground max-w-2xl">
             Explore our curated selection of high-quality digital products.
           </p>
         </div>
         
-        <ProductFilters 
-          categories={categories}
-          selectedCategory={filters.category}
-          selectedSubcategory={filters.subcategory}
-          searchQuery={filters.search}
-          onCategoryChange={(c) => handleFilterChange({...filters, category: c})}
-          onSubcategoryChange={(s) => handleFilterChange({...filters, subcategory: s})}
-          onSearchChange={(q) => handleFilterChange({...filters, search: q})}
-        />
+        <div className="w-full">
+          <ProductFilters 
+            categories={categories}
+            selectedCategory={filters.category}
+            selectedSubcategory={filters.subcategory}
+            searchQuery={filters.search}
+            onCategoryChange={(c) => handleFilterChange({...filters, category: c})}
+            onSubcategoryChange={(s) => handleFilterChange({...filters, subcategory: s})}
+            onSearchChange={(q) => handleFilterChange({...filters, search: q})}
+          />
+        </div>
       </div>
 
       <ProductGrid

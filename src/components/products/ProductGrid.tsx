@@ -48,16 +48,19 @@ export function ProductGrid({ products, isLoading }: ProductGridProps) {
   }
 
   return (
-    <div className="space-y-[var(--space-8)]">
+    <div className="space-y-[var(--space-8)] animate-in fade-in duration-700">
       <div className="flex items-center justify-between">
-        <h2 className="text-[var(--text-2xl)] font-black tracking-tight flex items-center gap-2">
-          <span className="w-8 h-1 bg-primary rounded-full"></span>
+        <h2 className="text-[var(--text-3xl)] md:text-[var(--text-4xl)] font-black tracking-tight flex items-center gap-3">
+          <span className="w-10 h-1.5 bg-primary rounded-full"></span>
           {t("products.title", "Our Collection")}
-          <span className="text-sm font-normal text-muted-foreground ml-2">({products.length})</span>
+          <span className="text-base font-normal text-muted-foreground ml-2">({products.length})</span>
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[var(--space-4)] md:gap-[var(--space-6)] lg:gap-[var(--space-8)]">
+      <div 
+        key={products.map(p => p.id).join(',')} 
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[var(--space-4)] md:gap-[var(--space-6)] lg:gap-[var(--space-8)] animate-in fade-in zoom-in-95 duration-500"
+      >
         {sortedProducts.map((product) => (
           <ProductCard
             key={product.id}
