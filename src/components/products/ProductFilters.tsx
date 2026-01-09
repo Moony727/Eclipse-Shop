@@ -60,7 +60,7 @@ export function ProductFilters({
   };
 
   return (
-    <div className="space-y-6 mb-8">
+    <div className="space-y-6 mb-8" style={{ gap: 'var(--space-fluid-xl)' }}>
       {/* Search Bar */}
       <div className="relative max-w-md mx-auto">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -97,7 +97,8 @@ export function ProductFilters({
                 <TabsTrigger
                   key={category.id}
                   value={category.id}
-                  className="text-xs sm:text-sm flex-shrink-0"
+                  className="flex-shrink-0"
+                  style={{ fontSize: 'var(--text-fluid-sm)' }}
                 >
                   {category.name}
                 </TabsTrigger>
@@ -114,11 +115,12 @@ export function ProductFilters({
               <div className="overflow-x-auto pb-2">
                 <TabsList className="inline-flex w-max min-w-full gap-1">
                   {subcategories.map((subcategory) => (
-                    <TabsTrigger
-                      key={subcategory.id}
-                      value={subcategory.id}
-                      className="text-xs sm:text-sm flex-shrink-0"
-                    >
+                  <TabsTrigger
+                    key={subcategory.id}
+                    value={subcategory.id}
+                    className="flex-shrink-0"
+                    style={{ fontSize: 'var(--text-fluid-sm)' }}
+                  >
                       {subcategory.name}
                     </TabsTrigger>
                   ))}

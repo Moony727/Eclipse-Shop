@@ -24,7 +24,10 @@ export function ProductGrid({ products, onPurchase, isLoading }: ProductGridProp
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
+      <div className="grid gap-4" style={{
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: 'var(--gap-fluid-md)'
+      }}>
         {Array.from({ length: 8 }).map((_, index) => (
           <ProductCardSkeleton key={index} />
         ))}
@@ -58,7 +61,10 @@ export function ProductGrid({ products, onPurchase, isLoading }: ProductGridProp
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8 animate-stagger">
+      <div className="grid animate-stagger" style={{
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: 'var(--gap-fluid-md)'
+      }}>
         {sortedProducts.map((product) => (
           <ProductCard
             key={product.id}

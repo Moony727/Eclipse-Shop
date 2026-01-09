@@ -123,17 +123,17 @@ export default function HomePage() {
         onLoginClick={handleLoginClick}
       />
 
-      <main id="home" className="container mx-auto px-4 py-8">
+      <main id="home" className="container mx-auto py-8" style={{ paddingLeft: 'var(--space-fluid-lg)', paddingRight: 'var(--space-fluid-lg)' }}>
         {/* Hero Section */}
-        <section className="text-center py-12 md:py-16 mb-8 md:mb-12 px-4">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+        <section className="text-center mb-8 md:mb-12" style={{ paddingTop: 'var(--space-fluid-2xl)', paddingBottom: 'var(--space-fluid-2xl)', paddingLeft: 'var(--space-fluid-lg)', paddingRight: 'var(--space-fluid-lg)' }}>
+          <h1 className="font-bold mb-4 md:mb-6 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent" style={{ fontSize: 'var(--text-fluid-4xl)' }}>
             {t("hero.title", "Welcome to Eclipse Shop")}
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6 md:mb-8 px-4">
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-6 md:mb-8" style={{ fontSize: 'var(--text-fluid-lg)', paddingLeft: 'var(--space-fluid-lg)', paddingRight: 'var(--space-fluid-lg)' }}>
             {t("hero.subtitle", "Discover premium digital products, software, and services designed to elevate your business and creativity.")}
           </p>
-          <div className="flex justify-center px-4">
-            <div className="relative rounded-lg shadow-2xl max-w-full w-full h-48 md:h-64 lg:h-96">
+          <div className="flex justify-center" style={{ paddingLeft: 'var(--space-fluid-lg)', paddingRight: 'var(--space-fluid-lg)' }}>
+            <div className="relative rounded-lg shadow-2xl max-w-full w-full" style={{ height: 'clamp(12rem, 25vw, 24rem)' }}>
               <NextImage
                 src={process.env.NEXT_PUBLIC_HERO_IMAGE_URL!}
                 alt="Eclipse Shop - Digital Products"
