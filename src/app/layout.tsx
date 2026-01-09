@@ -123,8 +123,8 @@ export default function RootLayout({
             </SizeProvider>
           </ThemeProvider>
         </ErrorBoundary>
-        {/* reCAPTCHA container for Firebase Auth and App Check */}
-        <div id="recaptcha-container" style={{ display: 'none' }} />
+        {/* reCAPTCHA container removed since App Check is disabled */}
+        {/* <div id="recaptcha-container" style={{ display: 'none' }} /> */}
       </body>
     </html>
   );

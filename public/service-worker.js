@@ -2,7 +2,7 @@
 // Handles offline functionality and caching strategies
 // Safe: no inline scripts, CSP-compliant
 
-const CACHE_NAME = 'eclipse-shop-v1';
+const CACHE_NAME = 'eclipse-shop-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
