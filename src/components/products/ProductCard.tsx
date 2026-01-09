@@ -50,7 +50,7 @@ export function ProductCard({ product, onPurchase }: ProductCardProps) {
             </Badge>
           )}
           <Badge variant="secondary" className="backdrop-blur-md bg-white/20 text-white border-0 shadow-lg">
-            {t(`categories.${product.category}`)}
+            {t(`categories.${product.category}`, product.category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))}
           </Badge>
         </div>
       </div>

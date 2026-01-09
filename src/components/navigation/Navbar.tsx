@@ -181,7 +181,7 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                       className="cursor-pointer"
                     >
                       <Clock className="w-4 h-4 mr-2" />
-                      {t("profile.orders") || "Order History"}
+                      {t("profile.tabs.history")}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600 focus:text-red-600">
@@ -269,7 +269,7 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                       setIsMobileMenuOpen(false);
                     }}
                   >
-                    {t("profile.orders") || "Order History"}
+                    {t("profile.tabs.history")}
                   </button>
                 </>
               )}

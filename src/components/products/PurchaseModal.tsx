@@ -147,10 +147,10 @@ export function PurchaseModal({ isOpen, onClose, product, user }: PurchaseModalP
                 
                 <div className="flex items-center space-x-2">
                   <Badge variant="secondary" className="text-xs">
-                    {t(`categories.${product.category}`)}
+                    {t(`categories.${product.category}`, product.category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))}
                   </Badge>
                   <Badge variant="outline" className="text-xs">
-                    {t(`subcategories.${product.subcategory}`)}
+                    {t(`subcategories.${product.subcategory}`, product.subcategory.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))}
                   </Badge>
                 </div>
               </div>

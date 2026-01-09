@@ -40,7 +40,12 @@ export const translations = {
       templates: "Templates",
       education: "Education",
       design: "Design",
-      media: "Media"
+      media: "Media",
+      games: "Games",
+      entertainment: "Entertainment",
+      utilities: "Utilities",
+      development: "Development",
+      business: "Business"
     },
     
     // Subcategories
@@ -50,7 +55,13 @@ export const translations = {
       courses: "Courses",
       "ui-kits": "UI Kits",
       photos: "Photos",
-      wordpress: "WordPress"
+      wordpress: "WordPress",
+      freefire: "Free Fire",
+      pubg: "PUBG",
+      mobile: "Mobile Games",
+      action: "Action Games",
+      strategy: "Strategy Games",
+      puzzle: "Puzzle Games"
     },
     
     // Authentication
@@ -191,7 +202,12 @@ export const translations = {
       templates: "Шаблоны",
       education: "Образование",
       design: "Дизайн",
-      media: "Медиа"
+      media: "Медиа",
+      games: "Игры",
+      entertainment: "Развлечения",
+      utilities: "Утилиты",
+      development: "Разработка",
+      business: "Бизнес"
     },
     
     // Subcategories
@@ -200,8 +216,14 @@ export const translations = {
       marketing: "Маркетинг",
       courses: "Курсы",
       "ui-kits": "UI Наборы",
-      photos: "Фотографии",
-      wordpress: "WordPress"
+      photos: "Фото",
+      wordpress: "WordPress",
+      freefire: "Free Fire",
+      pubg: "PUBG",
+      mobile: "Мобильные игры",
+      action: "Экшн игры",
+      strategy: "Стратегические игры",
+      puzzle: "Головоломки"
     },
     
     // Authentication
@@ -342,7 +364,12 @@ export const translations = {
       templates: "Şablonlar",
       education: "Təhsil",
       design: "Dizayn",
-      media: "Media"
+      media: "Media",
+      games: "Oyunlar",
+      entertainment: "Əyləncə",
+      utilities: "Yardımcı Proqramlar",
+      development: "Tərtibatçılıq",
+      business: "Biznes"
     },
     
     // Subcategories
@@ -350,9 +377,15 @@ export const translations = {
       productivity: "Məhsuldarlıq",
       marketing: "Marketinq",
       courses: "Kurslar",
-      "ui-kits": "UI Dəstləri",
-      photos: "Fotoşəkillər",
-      wordpress: "WordPress"
+      "ui-kits": "UI Kits",
+      photos: "Fotoğraflar",
+      wordpress: "WordPress",
+      freefire: "Free Fire",
+      pubg: "PUBG",
+      mobile: "Mobil Oyunlar",
+      action: "Əks Oyunlar",
+      strategy: "Strategiya Oyunları",
+      puzzle: "Bulmaca Oyunları"
     },
     
     // Authentication
