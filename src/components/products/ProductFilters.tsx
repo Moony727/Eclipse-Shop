@@ -2,10 +2,11 @@
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Search, Filter } from "lucide-react";
+
 import { Category } from "@/types";
-import { CategoryFilter } from "./CategoryFilter";
 
 interface ProductFiltersProps {
   categories?: Category[];
@@ -26,9 +27,31 @@ export function ProductFilters({
   onSubcategoryChange,
   onSearchChange,
 }: ProductFiltersProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
-  const categories = customCategories || [];
+  const categories = [
+    { id: 'all', name: t('products.all') },
+    ...(customCategories?.map(c => ({ id: c.id, name: c.name[language] })) || [
+      { id: 'software', name: t('categories.software') },
+      { id: 'templates', name: t('categories.templates') },
+      { id: 'education', name: t('categories.education') },
+      { id: 'design', name: t('categories.design') },
+      { id: 'media', name: t('categories.media') },
+    ])
+  ];
+
+  const currentCategory = customCategories?.find(c => c.id === selectedCategory);
+  const subcategories = [
+    { id: 'all', name: t('products.all') },
+    ...(currentCategory?.subcategories.map(s => ({ id: s.id, name: s.name[language] })) || [
+      { id: 'productivity', name: t('subcategories.productivity') },
+      { id: 'marketing', name: t('subcategories.marketing') },
+      { id: 'courses', name: t('subcategories.courses') },
+      { id: 'ui-kits', name: t('subcategories.ui-kits') },
+      { id: 'photos', name: t('subcategories.photos') },
+      { id: 'wordpress', name: t('subcategories.wordpress') },
+    ])
+  ];
 
   const clearFilters = () => {
     onCategoryChange('all');
@@ -43,42 +66,90 @@ export function ProductFilters({
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
           type="text"
-          placeholder={t('products.search', 'Search products...')}
+          placeholder={t('products.search')}
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="pl-10 pr-4"
         />
       </div>
 
-      {/* Category Filter Component */}
-      <div className="flex flex-col lg:flex-row gap-6 items-start">
-        <div className="w-full lg:w-80">
-          <CategoryFilter
-            categories={categories}
-            selectedCategory={selectedCategory}
-            selectedSubcategory={selectedSubcategory}
-            onCategoryChange={onCategoryChange}
-            onSubcategoryChange={onSubcategoryChange}
-            onClear={clearFilters}
-          />
+      {/* Category Filters */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold flex items-center">
+            <Filter className="w-5 h-5 mr-2" />
+            {t('products.category')}
+          </h3>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={clearFilters}
+            className="text-sm"
+          >
+            {t('common.clear')}
+          </Button>
         </div>
 
-        {/* Info Section */}
-        {categories.length > 0 && (
-          <div className="flex-1 p-4 bg-muted rounded-lg border text-sm text-muted-foreground">
-            <p className="flex items-center gap-2 mb-2">
-              <Filter className="w-4 h-4" />
-              <strong>Filter Guide:</strong>
-            </p>
-            <ul className="space-y-1 text-xs list-disc list-inside">
-              <li>Select a category to see its subcategories</li>
-              <li>Categories are organized hierarchically</li>
-              <li>Subcategories help narrow down your search</li>
-              <li>Click the category button to expand/collapse</li>
-            </ul>
+        <Tabs value={selectedCategory} onValueChange={onCategoryChange}>
+          <div className="overflow-x-auto pb-2">
+            <TabsList className="inline-flex w-max min-w-full gap-1">
+              {categories.map((category) => (
+                <TabsTrigger
+                  key={category.id}
+                  value={category.id}
+                  className="text-xs sm:text-sm flex-shrink-0"
+                >
+                  {category.name}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
+        </Tabs>
+
+        {/* Subcategory Filters */}
+        {selectedCategory !== 'all' && (
+          <div className="space-y-2">
+            <h4 className="text-md font-medium">{t('products.subcategory')}</h4>
+            <Tabs value={selectedSubcategory} onValueChange={onSubcategoryChange}>
+              <div className="overflow-x-auto pb-2">
+                <TabsList className="inline-flex w-max min-w-full gap-1">
+                  {subcategories.map((subcategory) => (
+                    <TabsTrigger
+                      key={subcategory.id}
+                      value={subcategory.id}
+                      className="text-xs sm:text-sm flex-shrink-0"
+                    >
+                      {subcategory.name}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
+            </Tabs>
           </div>
         )}
       </div>
+
+      {/* Active Filters Display */}
+      {(selectedCategory !== 'all' || selectedSubcategory !== 'all' || searchQuery) && (
+        <div className="flex flex-wrap gap-2 p-4 bg-muted/50 rounded-lg">
+          <span className="text-sm font-medium">Active filters:</span>
+          {selectedCategory !== 'all' && (
+            <span className="px-2 py-1 bg-primary/10 text-primary rounded text-sm">
+              {categories.find(c => c.id === selectedCategory)?.name}
+            </span>
+          )}
+          {selectedSubcategory !== 'all' && (
+            <span className="px-2 py-1 bg-primary/10 text-primary rounded text-sm">
+              {subcategories.find(s => s.id === selectedSubcategory)?.name}
+            </span>
+          )}
+          {searchQuery && (
+            <span className="px-2 py-1 bg-primary/10 text-primary rounded text-sm">
+              &quot;{searchQuery}&quot;
+            </span>
+          )}
+        </div>
+      )}
     </div>
   );
 }
