@@ -6,7 +6,7 @@
 export async function typeError(error: unknown, cause?: string): Promise<void> {
   const timestamp = new Date().toISOString();
   const message = typeof error === 'string' ? error : error instanceof Error ? error.message : String(error);
-  const stack = error instanceof Error   const stack = typeof error === 'object' && error.stack ? error.stack : '';  const stack = typeof error === 'object' && error.stack ? error.stack : ''; error.stack ? error.stack : '';
+  const stack = error instanceof Error && error.stack ? error.stack : '';
 
   let fullMessage = `[${timestamp}] ERROR: ${message}`;
   if (cause) {
