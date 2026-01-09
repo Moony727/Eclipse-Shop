@@ -156,7 +156,7 @@ export default function AdminClient() {
                     <div className="space-y-1">
                       <div className="font-bold flex items-center gap-2">
                         <span className="text-xs font-mono text-muted-foreground">#{order.id.slice(-6).toUpperCase()}</span>
-                        {order.productName[language] || order.productName.en}
+                        {order.productName ? (order.productName[language] || order.productName.en) : (order.items?.[0]?.productName?.[language] || order.items?.[0]?.productName?.en || 'Unknown Product')}
                       </div>
                       <div className="text-xs text-muted-foreground">
                         {new Date(order.createdAt).toLocaleString()}

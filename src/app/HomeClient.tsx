@@ -7,7 +7,7 @@ import { ProductGrid } from "@/components/products/ProductGrid";
 import { ProductFilters } from "@/components/products/ProductFilters";
 import { LoginModal } from "@/components/auth/LoginModal";
 import { UserProfile } from "@/components/auth/UserProfile";
-import { PurchaseModal } from "@/components/products/PurchaseModal";
+
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Product, Category } from "@/types";
@@ -25,8 +25,7 @@ export default function HomePage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profileTab, setProfileTab] = useState<"info" | "history">("info");
-  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
   const [isLoading, setIsLoading] = useState(true);
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -97,14 +96,7 @@ export default function HomePage() {
     setFilteredProducts(filtered);
   }, [products, selectedCategory, selectedSubcategory, searchQuery]);
 
-  const handlePurchase = (product: Product) => {
-    if (!user) {
-      setShowLoginModal(true);
-      return;
-    }
-    setSelectedProduct(product);
-    setShowPurchaseModal(true);
-  };
+
 
   const handleProfileClick = (tab: "info" | "history" = "info") => {
     setProfileTab(tab);
@@ -167,7 +159,6 @@ export default function HomePage() {
         <section id="products">
           <ProductGrid
           products={filteredProducts}
-          onPurchase={handlePurchase}
           isLoading={isLoading}
           />
         </section>
@@ -186,12 +177,7 @@ export default function HomePage() {
         initialTab={profileTab}
       />
 
-      <PurchaseModal
-        isOpen={showPurchaseModal}
-        onClose={() => setShowPurchaseModal(false)}
-        product={selectedProduct}
-        user={user}
-      />
+
     </div>
   );
 }

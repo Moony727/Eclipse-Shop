@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { CartProvider } from "@/contexts/CartContext";
 import { Toaster } from "@/components/ui/sonner";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
@@ -109,10 +110,12 @@ export default function RootLayout({
           >
             <LanguageProvider>
               <AuthProvider>
-                <div id="root">
-                  {children}
-                </div>
-                <Toaster key="main-toaster" position="bottom-right" expand={true} richColors />
+                <CartProvider>
+                  <div id="root">
+                    {children}
+                  </div>
+                  <Toaster key="main-toaster" position="bottom-right" expand={true} richColors />
+                </CartProvider>
               </AuthProvider>
             </LanguageProvider>
           </ThemeProvider>

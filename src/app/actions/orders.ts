@@ -29,7 +29,7 @@ export async function createOrder(
     const ordersRef = adminDb.collection("orders");
     const orderData = {
       userId: validation.data.userId,
-      productId: validation.data.productId,
+      items: validation.data.items,
       contactId: validation.data.contactId,
       contactType: validation.data.contactType,
       customerName: validation.data.customerName || "",
@@ -38,18 +38,23 @@ export async function createOrder(
       createdAt: Timestamp.now(),
       userEmail: validation.data.userEmail,
       userName: validation.data.userName,
-      productName: validation.data.productName,
+      // Legacy fields for backward compatibility
+      productId: validation.data.productId || validation.data.items[0]?.productId,
+      productName: validation.data.productName || validation.data.items[0]?.productName,
     };
 
     const docRef = await ordersRef.add(orderData);
 
     // Send Telegram notification (non-blocking)
+    const firstItem = validation.data.items[0];
     sendTelegramNotification({
       orderId: docRef.id,
       customerName: validation.data.customerName || validation.data.userName,
       contactId: validation.data.contactId,
       contactType: validation.data.contactType,
-      productName: validation.data.productName.en,
+      productName: validation.data.items.length === 1
+        ? `${firstItem.productName.en} (x${firstItem.quantity})`
+        : `${firstItem.productName.en} and ${validation.data.items.length - 1} other item(s)`,
       totalAmount: validation.data.totalAmount,
       orderDate: new Date().toLocaleString(),
     }).catch(() => {
@@ -101,15 +106,33 @@ export async function getOrderById(
 
     // Fetch product details for the order
     try {
-      const productDoc = await adminDb.collection("products").doc(order.productId).get();
-      if (productDoc.exists) {
-        const productData = productDoc.data();
-        if (productData) {
-          order.product = {
-            id: productDoc.id,
-            ...productData,
-            createdAt: productData.createdAt?.toDate() || new Date(),
-          } as Product;
+      if (order.items && order.items.length > 0) {
+        // New structure: fetch products for each item
+        await Promise.all(order.items.map(async (item) => {
+          const productDoc = await adminDb.collection("products").doc(item.productId).get();
+          if (productDoc.exists) {
+            const productData = productDoc.data();
+            if (productData) {
+              item.product = {
+                id: productDoc.id,
+                ...productData,
+                createdAt: productData.createdAt?.toDate() || new Date(),
+              } as Product;
+            }
+          }
+        }));
+      } else if (order.productId) {
+        // Legacy structure: single product
+        const productDoc = await adminDb.collection("products").doc(order.productId).get();
+        if (productDoc.exists) {
+          const productData = productDoc.data();
+          if (productData) {
+            order.product = {
+              id: productDoc.id,
+              ...productData,
+              createdAt: productData.createdAt?.toDate() || new Date(),
+            } as Product;
+          }
         }
       }
     } catch {
@@ -151,15 +174,33 @@ export async function getUserOrders(
 
       // Fetch product details for the order
       try {
-        const productDoc = await adminDb.collection("products").doc(order.productId).get();
-        if (productDoc.exists) {
-          const productData = productDoc.data();
-          if (productData) {
-            order.product = {
-              id: productDoc.id,
-              ...productData,
-              createdAt: productData.createdAt?.toDate() || new Date(),
-            } as Product;
+        if (order.items && order.items.length > 0) {
+          // New structure: fetch products for each item
+          await Promise.all(order.items.map(async (item) => {
+            const productDoc = await adminDb.collection("products").doc(item.productId).get();
+            if (productDoc.exists) {
+              const productData = productDoc.data();
+              if (productData) {
+                item.product = {
+                  id: productDoc.id,
+                  ...productData,
+                  createdAt: productData.createdAt?.toDate() || new Date(),
+                } as Product;
+              }
+            }
+          }));
+        } else if (order.productId) {
+          // Legacy structure: single product
+          const productDoc = await adminDb.collection("products").doc(order.productId).get();
+          if (productDoc.exists) {
+            const productData = productDoc.data();
+            if (productData) {
+              order.product = {
+                id: productDoc.id,
+                ...productData,
+                createdAt: productData.createdAt?.toDate() || new Date(),
+              } as Product;
+            }
           }
         }
       } catch {

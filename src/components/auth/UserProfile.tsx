@@ -166,31 +166,79 @@ export function UserProfile({ isOpen, onClose, user, initialTab = "info" }: User
                     {orders.map((order) => (
                       <div key={order.id} className="p-4 rounded-lg border bg-card hover:border-primary/50 transition-colors">
                         <div className="flex justify-between items-start mb-3">
-                          <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 relative rounded overflow-hidden border">
-                              {order.product?.imageUrl ? (
-                                <NextImage
-                                  src={order.product.imageUrl}
-                                  alt={order.productName.en}
-                                  fill
-                                  className="object-cover"
-                                />
-                              ) : (
-                                <div className="w-full h-full bg-muted flex items-center justify-center">
-                                  <Package className="w-6 h-6 text-muted-foreground" />
-                                </div>
-                              )}
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-sm line-clamp-1">{order.productName[language as keyof typeof order.productName] || order.productName.en}</h4>
-                              <p className="text-xs text-muted-foreground">{new Date(order.createdAt).toLocaleDateString()}</p>
-                            </div>
+                          <div>
+                            <h4 className="font-bold text-sm">{t("orders.orderId", "Order ID")}: #{order.id.slice(-6).toUpperCase()}</h4>
+                            <p className="text-xs text-muted-foreground">{new Date(order.createdAt).toLocaleDateString()}</p>
                           </div>
                           {getStatusBadge(order.status)}
                         </div>
+
+                        {/* Order Items */}
+                        <div className="space-y-2 mb-3">
+                          {order.items && order.items.length > 0 ? (
+                            order.items.map((item, index) => (
+                              <div key={index} className="flex items-center gap-3 p-2 bg-muted/30 rounded">
+                                <div className="w-8 h-8 relative rounded overflow-hidden border flex-shrink-0">
+                                  {item.product?.imageUrl ? (
+                                    <NextImage
+                                      src={item.product.imageUrl}
+                                      alt={item.productName.en}
+                                      fill
+                                      className="object-cover"
+                                    />
+                                  ) : (
+                                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                                      <Package className="w-4 h-4 text-muted-foreground" />
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium line-clamp-1">
+                                    {item.productName[language as keyof typeof item.productName] || item.productName.en}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {item.quantity}x × ${item.price.toFixed(2)} = ${(item.quantity * item.price).toFixed(2)}
+                                  </p>
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            // Legacy single item display
+                            <div className="flex items-center gap-3 p-2 bg-muted/30 rounded">
+                              <div className="w-8 h-8 relative rounded overflow-hidden border flex-shrink-0">
+                                {order.product?.imageUrl ? (
+                                  <NextImage
+                                    src={order.product.imageUrl}
+                                    alt={order.productName?.en || ''}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full bg-muted flex items-center justify-center">
+                                    <Package className="w-4 h-4 text-muted-foreground" />
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-sm font-medium line-clamp-1">
+                                  {order.productName?.[language as keyof typeof order.productName] || order.productName?.en}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  1x × ${order.totalAmount.toFixed(2)} = ${order.totalAmount.toFixed(2)}
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
                         <div className="flex justify-between items-center text-sm pt-2 border-t">
-                          <span className="text-muted-foreground">{t("orders.orderId", "Order ID")}: #{order.id.slice(-6).toUpperCase()}</span>
-                          <span className="font-bold text-primary">{order.totalAmount} AZN</span>
+                          <span className="text-muted-foreground">
+                            {order.items && order.items.length > 1
+                              ? `${order.items.length} ${t("orders.items", "items")}`
+                              : `1 ${t("orders.item", "item")}`
+                            }
+                          </span>
+                          <span className="font-bold text-primary">${order.totalAmount.toFixed(2)}</span>
                         </div>
                         <div className="mt-2 text-xs flex items-center gap-2 text-muted-foreground">
                           {order.contactType === 'whatsapp' ? <Phone className="w-3 h-3" /> : <Send className="w-3 h-3" />}

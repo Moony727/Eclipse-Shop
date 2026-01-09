@@ -130,11 +130,12 @@ export default function OrdersPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Order</TableHead>
-              <TableHead>Customer</TableHead>
-              <TableHead>Contact</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>Order</TableHead>
+                  <TableHead>Items</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead>Contact</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -160,14 +161,35 @@ export default function OrdersPage() {
                     <div className="space-y-1">
                       <div className="font-bold flex items-center gap-2">
                         <span className="text-[10px] font-mono text-muted-foreground">#{order.id.slice(-6).toUpperCase()}</span>
-                        {order.productName[language] || order.productName.en}
                       </div>
                       <div className="text-[10px] text-muted-foreground">
                         {new Date(order.createdAt).toLocaleString()}
                       </div>
                       <div className="font-bold text-primary text-sm">
-                        {order.totalAmount} AZN
+                        ${order.totalAmount.toFixed(2)}
                       </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="space-y-1">
+                      {order.items && order.items.length > 0 ? (
+                        <div className="text-xs">
+                          {order.items.length} item{order.items.length > 1 ? 's' : ''}:
+                          {order.items.slice(0, 2).map((item, idx) => (
+                            <div key={idx} className="truncate max-w-32">
+                              {item.quantity}x {item.productName[language] || item.productName.en}
+                            </div>
+                          ))}
+                          {order.items.length > 2 && (
+                            <div className="text-muted-foreground">+{order.items.length - 2} more</div>
+                          )}
+                        </div>
+                      ) : (
+                        // Legacy single item
+                        <div className="text-xs truncate max-w-32">
+                          1x {order.productName?.[language] || order.productName?.en || 'Unknown'}
+                        </div>
+                      )}
                     </div>
                   </TableCell>
                   <TableCell>
@@ -192,9 +214,9 @@ export default function OrdersPage() {
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       {order.status === 'requested' && (
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
+                        <Button
+                          size="sm"
+                          variant="outline"
                           className="h-7 text-xs"
                           disabled={isUpdating === order.id}
                           onClick={() => handleUpdateStatus(order.id, 'process')}
@@ -203,8 +225,8 @@ export default function OrdersPage() {
                         </Button>
                       )}
                       {order.status === 'process' && (
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           className="h-7 text-xs bg-green-600 hover:bg-green-700"
                           disabled={isUpdating === order.id}
                           onClick={() => handleUpdateStatus(order.id, 'completed')}
@@ -213,9 +235,9 @@ export default function OrdersPage() {
                         </Button>
                       )}
                       {(order.status === 'requested' || order.status === 'process') && (
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
+                        <Button
+                          size="sm"
+                          variant="ghost"
                           className="h-7 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
                           disabled={isUpdating === order.id}
                           onClick={() => handleUpdateStatus(order.id, 'cancelled')}

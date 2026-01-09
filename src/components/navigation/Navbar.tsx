@@ -2,15 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { useLanguage } from "@/hooks/useLanguage";
 import { NavbarProps } from "@/types";
-import { Menu, X, User as UserIcon, LogOut, Clock, ShieldCheck } from "lucide-react";
+import { Menu, X, User as UserIcon, LogOut, Clock, ShieldCheck, ShoppingCart } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -21,10 +23,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AboutModal } from "@/components/modals/AboutModal";
 import { ContactModal } from "@/components/modals/ContactModal";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 
 export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
   const { t } = useLanguage();
   const { signOut } = useAuth();
+  const { getTotalItems } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
@@ -119,6 +123,25 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
 
           {/* Right Side Controls */}
           <div className="flex items-center space-x-4">
+            {/* Cart Icon */}
+            <CartDrawer>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="relative hover:scale-105 transition-transform duration-200"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {getTotalItems() > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                  >
+                    {getTotalItems()}
+                  </Badge>
+                )}
+              </Button>
+            </CartDrawer>
+
             {/* Language Switcher */}
             <div className="transition-transform duration-200 hover:scale-105">
               <LanguageSwitcher />

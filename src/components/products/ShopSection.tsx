@@ -65,11 +65,7 @@ export function ShopSection({
     setIsLoading(false);
   };
 
-  const handlePurchase = (product: Product) => {
-    // This would typically trigger a global purchase modal or state
-    // For now, we'll just log it
-    console.log("Purchase clicked for:", product);
-  };
+  // Removed handlePurchase as products now use cart
 
   return (
     <section className="space-y-8">
@@ -92,10 +88,9 @@ export function ShopSection({
         />
       </div>
 
-      <ProductGrid 
+      <ProductGrid
         products={products}
         isLoading={isLoading}
-        onPurchase={handlePurchase}
       />
     </section>
   );

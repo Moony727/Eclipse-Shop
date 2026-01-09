@@ -31,10 +31,22 @@ export interface Product {
 }
 
 // Order types
+export interface OrderItem {
+  productId: string;
+  quantity: number;
+  price: number; // Price at time of order
+  productName: {
+    en: string;
+    ru: string;
+    az: string;
+  };
+  product?: Product;
+}
+
 export interface Order {
   id: string;
   userId: string;
-  productId: string;
+  items: OrderItem[]; // Support multiple items
   contactId: string; // WhatsApp or Telegram ID/Number
   contactType: 'whatsapp' | 'telegram';
   customerName?: string;
@@ -43,7 +55,9 @@ export interface Order {
   userEmail: string;
   userName: string;
   createdAt: Date;
-  productName: {
+  // Legacy fields for backward compatibility (single item orders)
+  productId?: string;
+  productName?: {
     en: string;
     ru: string;
     az: string;
@@ -92,6 +106,22 @@ export interface LanguageContextType {
   language: Language;
   setLanguage: (language: Language) => void;
   t: (key: string, fallback?: string) => string;
+}
+
+// Cart context types
+export interface CartItem {
+  product: Product;
+  quantity: number;
+}
+
+export interface CartContextType {
+  items: CartItem[];
+  addItem: (product: Product, quantity?: number) => void;
+  removeItem: (productId: string) => void;
+  updateQuantity: (productId: string, quantity: number) => void;
+  clearCart: () => void;
+  getTotalItems: () => number;
+  getTotalPrice: () => number;
 }
 
 // API response types
@@ -180,7 +210,7 @@ export interface ModalProps {
 
 export interface ProductCardProps {
   product: Product;
-  onPurchase: (product: Product) => void;
+  onPurchase?: (product: Product) => void; // Optional for backward compatibility
 }
 
 export interface NavbarProps {

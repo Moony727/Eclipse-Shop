@@ -120,7 +120,7 @@ export default function AdminDashboard() {
                         {order.customerName || order.userName}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {order.productName.en}
+                        {order.productName?.en || order.items?.[0]?.productName?.en || 'Unknown Product'}
                       </p>
                     </div>
                     <div className="ml-auto font-medium">

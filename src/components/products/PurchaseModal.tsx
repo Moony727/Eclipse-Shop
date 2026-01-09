@@ -13,7 +13,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useLanguage } from "@/hooks/useLanguage";
-import { Product, User } from "@/types";
+import { useCart } from "@/contexts/CartContext";
+import { Product, User, CartItem } from "@/types";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ShoppingCart, Phone, CreditCard, Send, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
@@ -22,12 +23,13 @@ import Image from "next/image";
 interface PurchaseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  product: Product | null;
+  items?: CartItem[];
   user: User | null;
 }
 
-export function PurchaseModal({ isOpen, onClose, product, user }: PurchaseModalProps) {
+export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseModalProps) {
   const { language, t } = useLanguage();
+  const { clearCart } = useCart();
   const [contactId, setContactId] = useState("");
   const [contactType, setContactType] = useState<'whatsapp' | 'telegram'>('whatsapp');
   const [customerName, setCustomerName] = useState("");
@@ -36,33 +38,44 @@ export function PurchaseModal({ isOpen, onClose, product, user }: PurchaseModalP
 
   const handlePurchase = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!product || !user) return;
-    
+
+    if (items.length === 0 || !user) return;
+
     if (!contactId.trim()) {
       toast.error("Please enter your WhatsApp number or Telegram ID");
       return;
     }
 
     setIsProcessing(true);
-    
+
     try {
       const { createOrder } = await import("@/app/actions/orders");
-      
+
+      const orderItems = items.map(item => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+        price: item.product.discountPrice || item.product.price,
+        productName: item.product.name,
+      }));
+
+      const totalAmount = items.reduce((sum, item) =>
+        sum + (item.product.discountPrice || item.product.price) * item.quantity, 0
+      );
+
       const result = await createOrder({
-        productId: product.id,
+        items: orderItems,
         contactId: contactId.trim(),
         contactType,
         customerName: customerName.trim(),
         userId: user.uid,
         userEmail: user.email,
         userName: user.name,
-        totalAmount: product.discountPrice || product.price,
-        productName: product.name,
+        totalAmount,
       });
 
       if (result.success && result.data) {
         setOrderId(result.data.orderId);
+        clearCart(); // Clear cart after successful order
         toast.success(t("purchase.success"));
       } else {
         toast.error(result.error || "Failed to process order. Please try again.");
@@ -82,7 +95,7 @@ export function PurchaseModal({ isOpen, onClose, product, user }: PurchaseModalP
     onClose();
   };
 
-  if (!product) return null;
+
 
   if (orderId) {
     return (
@@ -110,8 +123,7 @@ export function PurchaseModal({ isOpen, onClose, product, user }: PurchaseModalP
     );
   }
 
-  const finalPrice = product.discountPrice || product.price;
-  const hasDiscount = product.discountPrice && product.discountPrice < product.price;
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -127,64 +139,47 @@ export function PurchaseModal({ isOpen, onClose, product, user }: PurchaseModalP
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Product Summary */}
+          {/* Order Summary */}
           <div className="border rounded-lg p-4 space-y-4">
-            <div className="flex space-x-4">
-              <div className="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
-                <Image
-                  src={product.imageUrl}
-                  alt={product.name[language]}
-                  fill
-                  unoptimized
-                  className="object-cover"
-                />
-              </div>
-              
-              <div className="flex-1 space-y-2">
-                <h3 className="font-semibold text-lg line-clamp-2">
-                  {product.name[language]}
-                </h3>
-                
-                <div className="flex items-center space-x-2">
-                  <Badge variant="secondary" className="text-xs">
-                    {t(`categories.${product.category}`, product.category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))}
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    {t(`subcategories.${product.subcategory}`, product.subcategory.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))}
-                  </Badge>
+            <h3 className="font-semibold text-lg">{t("purchase.orderSummary", "Order Summary")}</h3>
+
+            <div className="space-y-3 max-h-60 overflow-y-auto">
+              {items.map((item, index) => (
+                <div key={item.product.id} className="flex gap-3 pb-3 border-b border-border/50 last:border-0 last:pb-0">
+                  <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                    <Image
+                      src={item.product.imageUrl}
+                      alt={item.product.name[language]}
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
+                  </div>
+
+                  <div className="flex-1 space-y-1">
+                    <h4 className="font-medium text-sm line-clamp-1">
+                      {item.product.name[language]}
+                    </h4>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        ${(item.product.discountPrice || item.product.price).toFixed(2)} × {item.quantity}
+                      </span>
+                      <span className="font-semibold">
+                        ${((item.product.discountPrice || item.product.price) * item.quantity).toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
 
-            {/* Price Summary */}
-            <div className="border-t pt-4 space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">{t("purchase.price")}:</span>
-                <div className="flex items-center space-x-2">
-                  {hasDiscount ? (
-                    <>
-                      <span className="text-lg font-bold text-primary">
-                        ${finalPrice.toFixed(2)}
-                      </span>
-                      <span className="text-sm text-muted-foreground line-through">
-                        ${product.price.toFixed(2)}
-                      </span>
-                      <Badge className="bg-red-500 hover:bg-red-600 text-xs">
-                        Save ${(product.price - finalPrice).toFixed(2)}
-                      </Badge>
-                    </>
-                  ) : (
-                    <span className="text-lg font-bold text-primary">
-                      ${finalPrice.toFixed(2)}
-                    </span>
-                  )}
-                </div>
-              </div>
-              
-              <div className="flex justify-between items-center text-lg font-bold border-t pt-2">
-                <span>{t("purchase.total")}:</span>
-                <span className="text-primary">${finalPrice.toFixed(2)}</span>
-              </div>
+            <div className="flex items-center justify-between pt-3 border-t text-lg font-bold">
+              <span>{t("purchase.total", "Total")}:</span>
+              <span className="text-primary">
+                ${items.reduce((sum, item) =>
+                  sum + (item.product.discountPrice || item.product.price) * item.quantity, 0
+                ).toFixed(2)}
+              </span>
             </div>
           </div>
 

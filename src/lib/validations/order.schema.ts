@@ -1,8 +1,20 @@
 import { z } from "zod";
 
-// Order creation schema
-export const createOrderSchema = z.object({
+// Order item schema
+export const orderItemSchema = z.object({
   productId: z.string().min(1, "Product ID is required"),
+  quantity: z.number().int().positive("Quantity must be positive"),
+  price: z.number().positive("Price must be positive"),
+  productName: z.object({
+    en: z.string(),
+    ru: z.string(),
+    az: z.string(),
+  }),
+});
+
+// Order creation schema (supports multiple items)
+export const createOrderSchema = z.object({
+  items: z.array(orderItemSchema).min(1, "At least one item is required"),
   contactId: z.string().min(1, "WhatsApp or Telegram ID is required"),
   contactType: z.enum(["whatsapp", "telegram"]),
   customerName: z.string().optional(),
@@ -10,11 +22,13 @@ export const createOrderSchema = z.object({
   userEmail: z.string().email("Invalid email address"),
   userName: z.string().min(1, "User name is required"),
   totalAmount: z.number().positive("Total amount must be positive"),
+  // Legacy fields for backward compatibility
+  productId: z.string().optional(),
   productName: z.object({
     en: z.string(),
     ru: z.string(),
     az: z.string(),
-  }),
+  }).optional(),
 });
 
 // Order update schema

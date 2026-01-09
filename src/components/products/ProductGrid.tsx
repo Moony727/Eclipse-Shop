@@ -8,12 +8,19 @@ import { PackageSearch } from "lucide-react";
 
 interface ProductGridProps {
   products: Product[];
-  onPurchase: (product: Product) => void;
+  onPurchase?: (product: Product) => void; // Optional for backward compatibility
   isLoading: boolean;
 }
 
 export function ProductGrid({ products, onPurchase, isLoading }: ProductGridProps) {
   const { t } = useLanguage();
+
+  // Sort products by category then subcategory
+  const sortedProducts = [...products].sort((a, b) => {
+    const categoryCompare = a.category.localeCompare(b.category);
+    if (categoryCompare !== 0) return categoryCompare;
+    return a.subcategory.localeCompare(b.subcategory);
+  });
 
   if (isLoading) {
     return (
@@ -52,11 +59,10 @@ export function ProductGrid({ products, onPurchase, isLoading }: ProductGridProp
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
-        {products.map((product) => (
+        {sortedProducts.map((product) => (
           <ProductCard
             key={product.id}
             product={product}
-            onPurchase={onPurchase}
           />
         ))}
       </div>

@@ -5,11 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useCart } from "@/contexts/CartContext";
 import { ProductCardProps } from "@/types";
-import { ShoppingCart, ExternalLink, ArrowRight } from "lucide-react";
+import { ShoppingCart, ExternalLink, ArrowRight, Plus } from "lucide-react";
+import { toast } from "sonner";
 
-export function ProductCard({ product, onPurchase }: ProductCardProps) {
+export function ProductCard({ product }: Omit<ProductCardProps, 'onPurchase'>) {
   const { language, t } = useLanguage();
+  const { addItem } = useCart();
 
   const hasDiscount = product.discountPrice && product.discountPrice < product.price;
   const discountPercentage = hasDiscount 
@@ -31,14 +34,17 @@ export function ProductCard({ product, onPurchase }: ProductCardProps) {
         
         {/* Overlays */}
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <Button 
-            variant="secondary" 
-            size="sm" 
+          <Button
+            variant="secondary"
+            size="sm"
             className="rounded-full font-semibold shadow-lg scale-90 group-hover:scale-100 transition-transform duration-300"
-            onClick={() => onPurchase(product)}
+            onClick={() => {
+              addItem(product);
+              toast.success(t("cart.added", "Added to cart"));
+            }}
           >
-            <ExternalLink className="w-4 h-4 mr-2" />
-            {t("products.quickView", "Quick View")}
+            <Plus className="w-4 h-4 mr-2" />
+            {t("cart.add", "Add to Cart")}
           </Button>
         </div>
 
@@ -61,6 +67,11 @@ export function ProductCard({ product, onPurchase }: ProductCardProps) {
           <h3 className="text-xl font-bold tracking-tight line-clamp-1 group-hover:text-primary transition-colors">
             {product.name[language]}
           </h3>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span>{t(`categories.${product.category}`, product.category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))}</span>
+            <span>→</span>
+            <span>{t(`subcategories.${product.subcategory}`, product.subcategory.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))}</span>
+          </div>
           <p className="text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">
             {product.description[language]}
           </p>
@@ -87,11 +98,14 @@ export function ProductCard({ product, onPurchase }: ProductCardProps) {
       {/* Footer */}
       <CardFooter className="p-5 pt-0">
         <Button
-          onClick={() => onPurchase(product)}
+          onClick={() => {
+            addItem(product);
+            toast.success(t("cart.added", "Added to cart"));
+          }}
           className="w-full h-11 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-[0_4px_14px_0_rgba(0,118,255,0.39)] hover:shadow-[0_6px_20px_rgba(0,118,255,0.23)] transition-all duration-300 active:scale-95"
         >
-          <ShoppingCart className="w-4 h-4 mr-2" />
-          {t("products.buy")}
+          <Plus className="w-4 h-4 mr-2" />
+          {t("cart.add", "Add to Cart")}
           <ArrowRight className="w-4 h-4 ml-auto opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
         </Button>
       </CardFooter>
