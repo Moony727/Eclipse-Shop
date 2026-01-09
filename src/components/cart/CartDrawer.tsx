@@ -71,17 +71,17 @@ export function CartDrawer({ children }: CartDrawerProps) {
 
   const CartContent = () => (
     <div className="flex flex-col flex-1 overflow-hidden h-full">
-      <div className={`${isMobile ? 'p-4 border-b' : 'p-6 border-b'} shrink-0`}>
-        <div className="flex items-center gap-2 text-[var(--text-xl)] font-black">
-          <div className="p-2 rounded-lg bg-primary/10 text-primary">
-            <ShoppingCart className="w-5 h-5" />
+      <div className={`${isMobile ? 'p-[calc(1rem*var(--ui-scale))] border-b' : 'p-[calc(1.5rem*var(--ui-scale))] border-b'} shrink-0`}>
+        <div className="flex items-center gap-[calc(0.5rem*var(--ui-scale))] text-[var(--text-xl)] font-black">
+          <div className="p-[calc(0.5rem*var(--ui-scale))] rounded-lg bg-primary/10 text-primary">
+            <ShoppingCart className="w-[calc(1.25rem*var(--ui-scale))] h-[calc(1.25rem*var(--ui-scale))]" />
           </div>
           {t("cart.title", "Shopping Cart")}
           {totalItems > 0 && (
-            <Badge variant="secondary" className="ml-auto rounded-full px-2 py-0.5">{totalItems}</Badge>
+            <Badge variant="secondary" className="ml-auto rounded-full px-[calc(0.5rem*var(--ui-scale))] py-[calc(0.125rem*var(--ui-scale))] text-[calc(0.75rem*var(--ui-scale))]">{totalItems}</Badge>
           )}
         </div>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-[calc(0.875rem*var(--ui-scale))] text-muted-foreground mt-[calc(0.25rem*var(--ui-scale))]">
           {totalItems === 0
             ? t("cart.empty", "Your cart is empty")
             : t("cart.description", "Review your items and proceed to checkout")
@@ -91,7 +91,7 @@ export function CartDrawer({ children }: CartDrawerProps) {
 
       <div className="flex flex-col flex-1 overflow-hidden">
         {/* Cart Items */}
-        <div className={`flex-1 overflow-y-auto ${isMobile ? 'p-4' : 'p-6'} scrollbar-none`}>
+        <div className={`flex-1 overflow-y-auto ${isMobile ? 'p-[calc(1rem*var(--ui-scale))]' : 'p-[calc(1.5rem*var(--ui-scale))]'} scrollbar-none`}>
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
               <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
@@ -181,37 +181,37 @@ export function CartDrawer({ children }: CartDrawerProps) {
 
         {/* Cart Summary */}
         {items.length > 0 && (
-          <div className={`${isMobile ? 'p-4' : 'p-6'} border-t bg-background shrink-0 space-y-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]`}>
-            <div className="space-y-1">
+          <div className={`${isMobile ? 'p-[calc(1rem*var(--ui-scale))]' : 'p-[calc(1.5rem*var(--ui-scale))]'} border-t bg-background shrink-0 space-y-[calc(1rem*var(--ui-scale))] shadow-[0_-4px_20px_rgba(0,0,0,0.05)]`}>
+            <div className="space-y-[calc(0.25rem*var(--ui-scale))]">
               <div className="flex items-center justify-between text-[var(--text-xl)] font-black">
                 <span>{t("cart.total", "Total")}:</span>
                 <span className="text-primary">{totalPrice.toFixed(2)} AZN</span>
               </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-[calc(0.75rem*var(--ui-scale))]">
               <Button
                 onClick={handleCheckout}
                 disabled={isProcessing || !user}
-                className="w-full h-11 sm:h-12 rounded-xl text-sm sm:text-base font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300"
+                className="w-full h-[calc(2.75rem*var(--ui-scale))] sm:h-[calc(3rem*var(--ui-scale))] rounded-xl text-[calc(0.875rem*var(--ui-scale))] sm:text-[calc(1rem*var(--ui-scale))] font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300"
                 size="lg"
               >
                 {isProcessing ? (
-                  <div className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="flex items-center gap-[calc(0.5rem*var(--ui-scale))]">
+                    <div className="animate-spin rounded-full h-[calc(1rem*var(--ui-scale))] w-[calc(1rem*var(--ui-scale))] border-b-2 border-white"></div>
                     {t("cart.processing", "Processing...")}
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <div className="flex items-center gap-[calc(0.5rem*var(--ui-scale))]">
+                    <CreditCard className="w-[calc(1rem*var(--ui-scale))] h-[calc(1rem*var(--ui-scale))] sm:w-[calc(1.25rem*var(--ui-scale))] h-[calc(1.25rem*var(--ui-scale))]" />
                     {t("cart.checkout", "Checkout Now")}
                   </div>
                 )}
               </Button>
 
               {!user && (
-                <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30">
-                  <p className="text-[10px] sm:text-xs text-amber-700 dark:text-amber-400 text-center font-medium">
+                <div className="p-[calc(0.5rem*var(--ui-scale))] rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30">
+                  <p className="text-[calc(0.625rem*var(--ui-scale))] sm:text-[calc(0.75rem*var(--ui-scale))] text-amber-700 dark:text-amber-400 text-center font-medium">
                     {t("cart.loginRequired", "Please log in to checkout")}
                   </p>
                 </div>
@@ -230,7 +230,7 @@ export function CartDrawer({ children }: CartDrawerProps) {
           <DialogTrigger asChild>
             {children}
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden h-[80vh] flex flex-col rounded-t-[2rem] sm:rounded-2xl bottom-0 sm:bottom-[unset] translate-y-0 sm:-translate-y-1/2">
+          <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden h-[92vh] flex flex-col rounded-t-[2rem] sm:rounded-2xl bottom-0 sm:bottom-[unset] translate-y-0 sm:-translate-y-1/2">
             <CartContent />
           </DialogContent>
         </Dialog>

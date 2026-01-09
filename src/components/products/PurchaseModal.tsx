@@ -15,9 +15,11 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useCart } from "@/contexts/CartContext";
 import { User, CartItem } from "@/types";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ShoppingCart, Phone, CreditCard, Send, CheckCircle2 } from "lucide-react";
+import { ShoppingCart, Phone, CreditCard, Send, CheckCircle2, Copy } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Badge } from "@/components/ui/badge";
 
 interface PurchaseModalProps {
   isOpen: boolean;
@@ -95,28 +97,68 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
     onClose();
   };
 
+  const copyOrderId = () => {
+    if (orderId) {
+      navigator.clipboard.writeText(orderId);
+      toast.success("Order ID copied to clipboard!");
+    }
+  };
+
 
 
   if (orderId) {
     return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className="sm:max-w-md text-center py-10">
-          <div className="flex flex-col items-center space-y-4">
-            <CheckCircle2 className="w-16 h-16 text-green-500 animate-in zoom-in duration-300" />
-            <DialogTitle className="text-2xl font-bold">Order Received!</DialogTitle>
-            <DialogDescription className="text-lg">
-              Thank you for your purchase. Your order has been registered.
-            </DialogDescription>
-            <div className="bg-muted p-4 rounded-lg w-full mt-4">
-              <p className="text-sm text-muted-foreground uppercase tracking-wider font-bold">Order ID</p>
-              <p className="text-2xl font-mono font-black text-primary">{orderId}</p>
+        <DialogContent className="sm:max-w-md p-0 overflow-hidden border-0 bg-transparent shadow-none">
+          <div className="bg-card border-2 rounded-[2rem] overflow-hidden animate-in zoom-in-95 duration-500 shadow-2xl">
+            <div className="bg-primary/5 p-8 text-center space-y-4">
+              <div className="relative mx-auto w-16 h-16 md:w-20 md:h-20">
+                <div className="absolute inset-0 bg-green-500/20 rounded-full animate-ping" />
+                <div className="relative bg-green-500 rounded-full w-full h-full flex items-center justify-center shadow-lg shadow-green-500/30">
+                  <CheckCircle2 className="w-8 h-8 md:w-10 md:h-10 text-white" />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <DialogTitle className="text-[calc(1.25rem*var(--ui-scale))] md:text-[calc(1.5rem*var(--ui-scale))] font-black tracking-tight">
+                  {t("purchase.orderReceived", "Order Received!")}
+                </DialogTitle>
+                <DialogDescription className="text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] text-muted-foreground font-medium">
+                  {t("purchase.orderThanks", "Thank you for your purchase. Your order has been registered and is being processed.")}
+                </DialogDescription>
+              </div>
             </div>
-            <p className="text-sm text-muted-foreground">
-              Please save this ID. We will contact you via {contactType} shortly.
-            </p>
-            <Button onClick={handleClose} className="w-full mt-6">
-              Close
-            </Button>
+
+            <div className="p-8 space-y-6">
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000" />
+                <div className="relative bg-muted/50 border-2 border-border/50 p-6 rounded-2xl flex flex-col items-center gap-2">
+                  <p className="text-[calc(0.625rem*var(--ui-scale))] font-black uppercase tracking-[0.2em] text-muted-foreground">Reference ID</p>
+                  <div className="flex items-center gap-3">
+                    <p className="text-[calc(1.5rem*var(--ui-scale))] md:text-[calc(1.75rem*var(--ui-scale))] font-mono font-black text-primary tracking-tighter">{orderId}</p>
+                    <Button variant="ghost" size="icon" onClick={copyOrderId} className="h-8 w-8 rounded-full hover:bg-primary/10">
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-amber-500/10 border-2 border-amber-500/20 rounded-2xl p-4 flex gap-4 items-start">
+                <div className="p-2 rounded-lg bg-amber-500 text-white flex-shrink-0">
+                  {contactType === 'whatsapp' ? <Phone className="w-4 h-4" /> : <Send className="w-4 h-4" />}
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] font-bold text-amber-700 dark:text-amber-400">Next Steps</p>
+                  <p className="text-[calc(0.625rem*var(--ui-scale))] md:text-[calc(0.75rem*var(--ui-scale))] text-amber-600/80 dark:text-amber-500/80 font-medium leading-relaxed">
+                    Please keep this ID. Our team will contact you via <span className="font-black uppercase">{contactType}</span> shortly to deliver your product.
+                  </p>
+                </div>
+              </div>
+
+              <Button onClick={handleClose} className="w-full h-12 md:h-14 rounded-2xl text-base md:text-lg font-black shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
+                {t("common.backToShop", "Continue Shopping")}
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
@@ -127,26 +169,36 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle className="text-center text-2xl font-bold flex items-center justify-center">
-            <ShoppingCart className="w-6 h-6 mr-2" />
+      <DialogContent className="sm:max-w-lg p-0 overflow-hidden border-2 rounded-[2rem] bg-card shadow-2xl">
+        <DialogHeader className="p-8 pb-0">
+          <div className="flex items-center justify-between mb-2">
+            <div className="p-3 rounded-2xl bg-primary/10 text-primary">
+              <ShoppingCart className="w-6 h-6" />
+            </div>
+            <Badge variant="outline" className="rounded-full border-2 px-3 py-1 font-bold text-xs uppercase tracking-wider">
+              {items.length} {items.length === 1 ? 'Item' : 'Items'}
+            </Badge>
+          </div>
+          <DialogTitle className="text-[calc(1.25rem*var(--ui-scale))] md:text-[calc(1.5rem*var(--ui-scale))] font-black tracking-tight">
             {t("purchase.title")}
           </DialogTitle>
-          <DialogDescription className="text-center">
-            Complete your purchase to get instant access to this digital product
+          <DialogDescription className="text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] font-medium">
+            Complete your order details to receive your digital assets.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Order Summary */}
-          <div className="border rounded-lg p-4 space-y-4">
-            <h3 className="font-semibold text-lg">{t("purchase.orderSummary", "Order Summary")}</h3>
+        <div className="p-8 pt-6 space-y-6">
+          {/* Order Summary - More compact & fire */}
+          <div className="bg-muted/30 border-2 border-border/50 rounded-3xl p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-black text-sm uppercase tracking-widest text-muted-foreground/70">{t("purchase.orderSummary", "Summary")}</h3>
+              <span className="text-xs font-bold text-primary px-2 py-1 bg-primary/5 rounded-lg border border-primary/10">Secure Checkout</span>
+            </div>
 
-            <div className="space-y-3 max-h-60 overflow-y-auto">
+            <div className="space-y-3 max-h-40 overflow-y-auto pr-2 scrollbar-none">
               {items.map((item) => (
-                <div key={item.product.id} className="flex gap-3 pb-3 border-b border-border/50 last:border-0 last:pb-0">
-                  <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                <div key={item.product.id} className="flex gap-4 items-center">
+                  <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-xl overflow-hidden flex-shrink-0 border-2 border-background shadow-sm">
                     <Image
                       src={item.product.imageUrl}
                       alt={item.product.name[language]}
@@ -156,103 +208,109 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
                     />
                   </div>
 
-                  <div className="flex-1 space-y-1">
-                    <h4 className="font-medium text-sm line-clamp-1">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-bold text-sm line-clamp-1">
                       {item.product.name[language]}
                     </h4>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">
-                        {(item.product.discountPrice || item.product.price).toFixed(2)} AZN × {item.quantity}
-                      </span>
-                      <span className="font-semibold">
-                        {((item.product.discountPrice || item.product.price) * item.quantity).toFixed(2)} AZN
-                      </span>
-                    </div>
+                    <p className="text-xs text-muted-foreground font-medium">
+                      {(item.product.discountPrice || item.product.price).toFixed(2)} AZN × {item.quantity}
+                    </p>
+                  </div>
+                  <div className="text-sm font-black">
+                    {((item.product.discountPrice || item.product.price) * item.quantity).toFixed(2)}
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="flex items-center justify-between pt-3 border-t text-lg font-bold">
-              <span>{t("purchase.total", "Total")}:</span>
-              <span className="text-primary">
+            <div className="flex items-center justify-between pt-4 border-t-2 border-dashed border-border/50">
+              <span className="text-sm font-black uppercase tracking-widest text-muted-foreground/70">{t("purchase.total", "Total Amount")}</span>
+              <div className="text-[calc(1.125rem*var(--ui-scale))] md:text-[calc(1.25rem*var(--ui-scale))] font-black text-primary">
                 {items.reduce((sum, item) =>
                   sum + (item.product.discountPrice || item.product.price) * item.quantity, 0
-                ).toFixed(2)} AZN
-              </span>
+                ).toFixed(2)} <span className="text-xs">AZN</span>
+              </div>
             </div>
           </div>
 
           {/* Purchase Form */}
-          <form onSubmit={handlePurchase} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="customer-name" className="flex items-center">
-                Your Name (Optional)
-              </Label>
-              <Input
-                id="customer-name"
-                placeholder="Enter your name"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-              />
+          <form onSubmit={handlePurchase} className="space-y-5">
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="customer-name" className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 ml-1">
+                  Full Name
+                </Label>
+                <Input
+                  id="customer-name"
+                  placeholder="John Doe"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  className="h-10 md:h-12 rounded-xl border-2 focus-visible:ring-primary/20 bg-muted/20"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 ml-1">Contact Method</Label>
+                <RadioGroup 
+                  value={contactType} 
+                  onValueChange={(v) => setContactType(v as 'whatsapp' | 'telegram')}
+                  className="flex h-10 md:h-12 gap-2 p-1 bg-muted/30 rounded-xl border-2"
+                >
+                  <div className="flex-1">
+                    <RadioGroupItem value="whatsapp" id="whatsapp" className="sr-only" />
+                    <Label 
+                      htmlFor="whatsapp" 
+                      className={`flex items-center justify-center gap-2 h-full rounded-lg cursor-pointer transition-all duration-300 ${
+                        contactType === 'whatsapp' ? 'bg-card text-primary shadow-sm font-black' : 'text-muted-foreground font-bold hover:bg-card/50'
+                      }`}
+                    >
+                      <Phone className="w-3.5 h-3.5" /> <span className="text-xs">WhatsApp</span>
+                    </Label>
+                  </div>
+                  <div className="flex-1">
+                    <RadioGroupItem value="telegram" id="telegram" className="sr-only" />
+                    <Label 
+                      htmlFor="telegram" 
+                      className={`flex items-center justify-center gap-2 h-full rounded-lg cursor-pointer transition-all duration-300 ${
+                        contactType === 'telegram' ? 'bg-card text-primary shadow-sm font-black' : 'text-muted-foreground font-bold hover:bg-card/50'
+                      }`}
+                    >
+                      <Send className="w-3.5 h-3.5" /> <span className="text-xs">Telegram</span>
+                    </Label>
+                  </div>
+                </RadioGroup>
+              </div>
             </div>
 
-            <div className="space-y-3">
-              <Label>Contact Method</Label>
-              <RadioGroup 
-                value={contactType} 
-                onValueChange={(v) => setContactType(v as 'whatsapp' | 'telegram')}
-                className="flex gap-4"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="whatsapp" id="whatsapp" />
-                  <Label htmlFor="whatsapp" className="flex items-center gap-2 cursor-pointer">
-                    <Phone className="w-4 h-4 text-green-500" /> WhatsApp
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="telegram" id="telegram" />
-                  <Label htmlFor="telegram" className="flex items-center gap-2 cursor-pointer">
-                    <Send className="w-4 h-4 text-blue-500" /> Telegram
-                  </Label>
-                </div>
-              </RadioGroup>
-            </div>
-
             <div className="space-y-2">
-              <Label htmlFor="contact-id" className="flex items-center">
+              <Label htmlFor="contact-id" className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 ml-1">
                 {contactType === 'whatsapp' ? 'WhatsApp Number' : 'Telegram ID / Username'}
               </Label>
-              <Input
-                id="contact-id"
-                placeholder={contactType === 'whatsapp' ? '+994 XX XXX XX XX' : '@username or ID'}
-                value={contactId}
-                onChange={(e) => setContactId(e.target.value)}
-                required
-              />
-              <p className="text-xs text-muted-foreground">
-                We&apos;ll contact you via {contactType} to deliver your product.
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                  {contactType === 'whatsapp' ? <Phone className="w-4 h-4" /> : <Send className="w-4 h-4" />}
+                </div>
+                <Input
+                  id="contact-id"
+                  placeholder={contactType === 'whatsapp' ? '+994 XX XXX XX XX' : '@username or ID'}
+                  value={contactId}
+                  onChange={(e) => setContactId(e.target.value)}
+                  required
+                  className="h-10 md:h-12 pl-11 rounded-xl border-2 focus-visible:ring-primary/20 bg-muted/20"
+                />
+              </div>
+              <p className="text-[10px] text-muted-foreground font-medium ml-1">
+                Required for product delivery and order confirmation.
               </p>
             </div>
 
-            {/* Customer Info */}
-            {user && (
-              <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-                <h4 className="font-medium">Customer Information</h4>
-                <div className="text-sm space-y-1">
-                  <div><strong>Name:</strong> {user.name}</div>
-                  <div><strong>Email:</strong> {user.email}</div>
-                </div>
-              </div>
-            )}
-
             {/* Action Buttons */}
-            <div className="flex space-x-3 pt-4">
+            <div className="flex gap-3 pt-2">
               <Button
                 type="button"
                 variant="outline"
                 onClick={onClose}
-                className="flex-1"
+                className="h-12 md:h-14 flex-1 rounded-2xl font-bold border-2 active:scale-95 transition-all"
                 disabled={isProcessing}
               >
                 {t("purchase.cancel")}
@@ -260,17 +318,17 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
               
               <Button
                 type="submit"
-                className="flex-1"
+                className="h-12 md:h-14 flex-1 rounded-2xl font-black shadow-xl shadow-primary/20 active:scale-95 transition-all"
                 disabled={isProcessing}
               >
                 {isProcessing ? (
-                  <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  <div className="flex items-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent" />
                     {t("purchase.processing")}
                   </div>
                 ) : (
-                  <div className="flex items-center">
-                    <CreditCard className="w-4 h-4 mr-2" />
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="w-5 h-5" />
                     {t("purchase.confirm")}
                   </div>
                 )}
@@ -279,8 +337,9 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
           </form>
 
           {/* Security Notice */}
-          <div className="text-xs text-muted-foreground text-center border-t pt-4">
-            Your payment is secure and encrypted. You&apos;ll receive instant access after purchase.
+          <div className="flex items-center justify-center gap-2 text-[10px] text-muted-foreground font-bold uppercase tracking-widest opacity-60">
+            <CheckCircle2 className="w-3 h-3" />
+            Instant Digital Delivery After Verification
           </div>
         </div>
       </DialogContent>

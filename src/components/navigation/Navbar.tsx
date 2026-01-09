@@ -171,17 +171,17 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                       <span className="hidden sm:inline text-[calc(0.75rem*var(--ui-scale))] font-semibold">{user.name.split(' ')[0]}</span>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel className="flex items-center space-x-2">
-                      <UserIcon className="w-4 h-4" />
-                      <div>
-                        <div className="font-medium">{user.name}</div>
-                        <div className="text-xs text-muted-foreground">{user.email}</div>
+                  <DropdownMenuContent align="end" className="w-[calc(14rem*var(--ui-scale))] p-[calc(0.5rem*var(--ui-scale))]" style={{ transform: 'scale(var(--ui-scale))', transformOrigin: 'top right' }}>
+                    <DropdownMenuLabel className="flex items-center space-x-[calc(0.5rem*var(--ui-scale))] p-[calc(0.5rem*var(--ui-scale))]">
+                      <UserIcon className="w-[calc(1rem*var(--ui-scale))] h-[calc(1rem*var(--ui-scale))]" />
+                      <div className="overflow-hidden">
+                        <div className="font-bold text-[calc(0.875rem*var(--ui-scale))] truncate">{user.name}</div>
+                        <div className="text-[calc(0.75rem*var(--ui-scale))] text-muted-foreground truncate">{user.email}</div>
                       </div>
                     </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => onProfileClick()} className="cursor-pointer">
-                      <UserIcon className="w-4 h-4 mr-2" />
+                    <DropdownMenuSeparator className="my-[calc(0.25rem*var(--ui-scale))]" />
+                    <DropdownMenuItem onClick={() => onProfileClick()} className="cursor-pointer flex items-center p-[calc(0.5rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))] rounded-[calc(var(--radius-sm))]">
+                      <UserIcon className="w-[calc(1rem*var(--ui-scale))] h-[calc(1rem*var(--ui-scale))] mr-[calc(0.5rem*var(--ui-scale))]" />
                       {t("profile.title")}
                     </DropdownMenuItem>
                     {/* Admin Link - In production, you should check for admin role/email */}
@@ -189,9 +189,9 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                       const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS?.split(',') || [];
                       const isAdmin = adminEmails.includes(user.email || '');
                       return isAdmin ? (
-                        <DropdownMenuItem asChild className="cursor-pointer">
-                          <Link href="/admin" className="flex items-center">
-                            <ShieldCheck className="w-4 h-4 mr-2" />
+                        <DropdownMenuItem asChild className="cursor-pointer flex items-center p-[calc(0.5rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))] rounded-[calc(var(--radius-sm))]">
+                          <Link href="/admin" className="flex items-center w-full">
+                            <ShieldCheck className="w-[calc(1rem*var(--ui-scale))] h-[calc(1rem*var(--ui-scale))] mr-[calc(0.5rem*var(--ui-scale))]" />
                             Admin Panel
                           </Link>
                         </DropdownMenuItem>
@@ -201,14 +201,14 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                       onClick={() => {
                         onProfileClick("history");
                       }} 
-                      className="cursor-pointer"
+                      className="cursor-pointer flex items-center p-[calc(0.5rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))] rounded-[calc(var(--radius-sm))]"
                     >
-                      <Clock className="w-4 h-4 mr-2" />
+                      <Clock className="w-[calc(1rem*var(--ui-scale))] h-[calc(1rem*var(--ui-scale))] mr-[calc(0.5rem*var(--ui-scale))]" />
                       {t("profile.tabs.history")}
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600 focus:text-red-600">
-                      <LogOut className="w-4 h-4 mr-2" />
+                    <DropdownMenuSeparator className="my-[calc(0.25rem*var(--ui-scale))]" />
+                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600 focus:text-red-600 flex items-center p-[calc(0.5rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))] rounded-[calc(var(--radius-sm))]">
+                      <LogOut className="w-[calc(1rem*var(--ui-scale))] h-[calc(1rem*var(--ui-scale))] mr-[calc(0.5rem*var(--ui-scale))]" />
                       {t("nav.logout")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -247,46 +247,50 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden border-t bg-background/95 backdrop-blur animate-in slide-in-from-top-2 duration-300">
-            <div className="px-4 py-4 space-y-4">
+            <div className="px-4 py-[calc(1rem*var(--ui-scale))] space-y-[calc(1rem*var(--ui-scale))]">
               <Link 
                 href="/" 
-                className="block text-foreground/80 hover:text-foreground transition-colors py-2"
+                className="block text-foreground/80 hover:text-foreground transition-colors py-[calc(0.5rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))] font-medium"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {t("nav.home")}
               </Link>
               <Link 
                 href="#products" 
-                className="block text-foreground/80 hover:text-foreground transition-colors py-2"
+                className="block text-foreground/80 hover:text-foreground transition-colors py-[calc(0.5rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))] font-medium"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {t("nav.products")}
               </Link>
-              <Link 
-                href="#about" 
-                className="block text-foreground/80 hover:text-foreground transition-colors py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
+              <button 
+                className="block w-full text-left text-foreground/80 hover:text-foreground transition-colors py-[calc(0.5rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))] font-medium"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setIsAboutOpen(true);
+                }}
               >
                 {t("nav.about")}
-              </Link>
-              <Link 
-                href="#contact" 
-                className="block text-foreground/80 hover:text-foreground transition-colors py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
+              </button>
+              <button 
+                className="block w-full text-left text-foreground/80 hover:text-foreground transition-colors py-[calc(0.5rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))] font-medium"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setIsContactOpen(true);
+                }}
               >
                 {t("nav.contact")}
-              </Link>
+              </button>
               {user && (
                 <>
                   <Link 
                     href="/admin" 
-                    className="block text-foreground/80 hover:text-foreground transition-colors py-2"
+                    className="block text-foreground/80 hover:text-foreground transition-colors py-[calc(0.5rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))] font-medium"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Admin Panel
                   </Link>
                   <button 
-                    className="block w-full text-left text-foreground/80 hover:text-foreground transition-colors py-2"
+                    className="block w-full text-left text-foreground/80 hover:text-foreground transition-colors py-[calc(0.5rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))] font-medium"
                     onClick={() => {
                       onProfileClick("history");
                       setIsMobileMenuOpen(false);

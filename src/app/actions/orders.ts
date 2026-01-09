@@ -232,15 +232,20 @@ export async function getOrdersForAdmin(
     const ordersRef = adminDb.collection("orders");
     const snapshot = await ordersRef.orderBy("createdAt", "desc").get();
 
-    const orders: Order[] = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate() || new Date(),
-    })) as Order[];
+    const orders: Order[] = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate() || new Date(),
+      } as Order;
+    });
 
     return { success: true, data: orders };
-  } catch {
-    return { success: false, error: "Unauthorized or failed to fetch orders" };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unauthorized or failed to fetch orders";
+    console.error("Error in getOrdersForAdmin:", errorMessage);
+    return { success: false, error: errorMessage };
   }
 }
 
@@ -260,7 +265,9 @@ export async function updateOrderStatus(
     });
 
     return { success: true };
-  } catch {
-    return { success: false, error: "Unauthorized or failed to update order status" };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unauthorized or failed to update order status";
+    console.error("Error in updateOrderStatus:", errorMessage);
+    return { success: false, error: errorMessage };
   }
 }

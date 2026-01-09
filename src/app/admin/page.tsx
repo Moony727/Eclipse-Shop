@@ -24,11 +24,16 @@ export default function AdminDashboard() {
   });
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchStats = async () => {
-      if (!firebaseUser) return;
+      if (!firebaseUser) {
+        setIsLoading(false);
+        return;
+      }
       try {
+        setError(null);
         const token = await firebaseUser.getIdToken();
         const result = await getOrdersForAdmin(token);
         if (result.success && result.data) {
@@ -40,8 +45,13 @@ export default function AdminDashboard() {
             totalRevenue: orders.filter(o => o.status === 'completed').reduce((acc, o) => acc + o.totalAmount, 0)
           });
           setRecentOrders(orders.slice(0, 5));
+        } else {
+          setError(result.error || "Failed to fetch orders");
+          console.error("Error fetching dashboard stats:", result.error);
         }
       } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : "An error occurred";
+        setError(errorMsg);
         console.error("Error fetching dashboard stats:", error);
       } finally {
         setIsLoading(false);
@@ -57,6 +67,15 @@ export default function AdminDashboard() {
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-muted-foreground">Overview of your shop&apos;s performance</p>
       </div>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 text-red-600" />
+            <p className="text-sm text-red-800">{error}</p>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>

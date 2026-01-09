@@ -7,33 +7,33 @@ import { ModalProps } from "@/types";
 export function ContactModal({ isOpen, onClose }: ModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Contact Us</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="sm:max-w-md overflow-hidden">
+        <DialogHeader className="space-y-[calc(0.5rem*var(--ui-scale))]">
+          <DialogTitle className="text-[var(--text-2xl)] font-bold">Contact Us</DialogTitle>
+          <DialogDescription className="text-[calc(0.875rem*var(--ui-scale))]">
             Get in touch — we&apos;re here to help.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
-          <p>
-            For general inquiries, please email <strong>support@eclipse-shop.example</strong>.
-            For partnership or press, reach out to <strong>partners@eclipse-shop.example</strong>.
+        <div className="space-y-[calc(1rem*var(--ui-scale))] mt-[calc(1rem*var(--ui-scale))]">
+          <p className="text-[calc(1rem*var(--ui-scale))] leading-relaxed">
+            For general inquiries, please email <strong className="text-primary">support@eclipse-shop.example</strong>.
+            For partnership or press, reach out to <strong className="text-primary">partners@eclipse-shop.example</strong>.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <h4 className="font-medium">Support Hours</h4>
-              <p className="text-sm text-muted-foreground">Mon — Fri: 09:00 — 18:00 (UTC)</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-[calc(1rem*var(--ui-scale))]">
+            <div className="p-[calc(0.75rem*var(--ui-scale))] rounded-xl bg-muted/50">
+              <h4 className="font-bold text-[calc(0.875rem*var(--ui-scale))] mb-1">Support Hours</h4>
+              <p className="text-[calc(0.75rem*var(--ui-scale))] text-muted-foreground">Mon — Fri: 09:00 — 18:00 (UTC)</p>
             </div>
-            <div>
-              <h4 className="font-medium">Phone</h4>
-              <p className="text-sm text-muted-foreground">+1 (555) 123-4567</p>
+            <div className="p-[calc(0.75rem*var(--ui-scale))] rounded-xl bg-muted/50">
+              <h4 className="font-bold text-[calc(0.875rem*var(--ui-scale))] mb-1">Phone</h4>
+              <p className="text-[calc(0.75rem*var(--ui-scale))] text-muted-foreground">+1 (555) 123-4567</p>
             </div>
           </div>
 
-          <div className="flex justify-end">
-            <Button onClick={onClose}>Close</Button>
+          <div className="flex justify-end pt-[calc(0.5rem*var(--ui-scale))]">
+            <Button onClick={onClose} className="h-[calc(2.5rem*var(--ui-scale))] px-[calc(1.25rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))]">Close</Button>
           </div>
         </div>
       </DialogContent>

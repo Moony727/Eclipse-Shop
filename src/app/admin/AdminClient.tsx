@@ -22,7 +22,8 @@ import {
   CheckCircle2,
   Loader2,
   Phone,
-  Send
+  Send,
+  AlertCircle
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -34,22 +35,29 @@ export default function AdminClient() {
   const [searchId, setSearchId] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchOrders = useCallback(async () => {
     if (!firebaseUser) return;
     setIsLoading(true);
+    setError(null);
     try {
       const token = await firebaseUser.getIdToken();
       const result = await getOrdersForAdmin(token);
       if (result.success && result.data) {
         setOrders(result.data);
         setFilteredOrders(result.data);
+        setError(null);
       } else {
-        toast.error(result.error || "Failed to fetch orders");
+        const errorMsg = result.error || "Failed to fetch orders";
+        setError(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : "An error occurred while fetching orders";
+      setError(errorMsg);
       console.error("Error fetching orders:", error);
-      toast.error("An error occurred while fetching orders");
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }
@@ -108,8 +116,39 @@ export default function AdminClient() {
     );
   }
 
+  if (error && orders.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+        <AlertCircle className="w-8 h-8 text-red-500" />
+        <p className="text-muted-foreground">{error}</p>
+        <Button onClick={fetchOrders} variant="outline" size="sm">
+          <RefreshCw className="w-4 h-4 mr-2" />
+          Try Again
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-red-600" />
+              <p className="text-sm text-red-800">{error}</p>
+            </div>
+            <Button 
+              onClick={() => setError(null)} 
+              variant="ghost" 
+              size="sm"
+              className="text-red-600 hover:text-red-700"
+            >
+              ✕
+            </Button>
+          </div>
+        </div>
+      )}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black tracking-tight">Order Management</h1>
