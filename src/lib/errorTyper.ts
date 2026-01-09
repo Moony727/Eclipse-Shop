@@ -3,10 +3,10 @@
  * @param error - The error object or string message
  * @param cause - Optional cause of the error
  */
-export async function typeError(error: Error | string, cause?: string): Promise<void> {
+export async function typeError(error: unknown, cause?: string): Promise<void> {
   const timestamp = new Date().toISOString();
-  const message = typeof error === 'string' ? error : error.message;
-  const stack = typeof error === 'object' && error.stack ? error.stack : '';
+  const message = typeof error === 'string' ? error : error instanceof Error ? error.message : String(error);
+  const stack = error instanceof Error   const stack = typeof error === 'object' && error.stack ? error.stack : '';  const stack = typeof error === 'object' && error.stack ? error.stack : ''; error.stack ? error.stack : '';
 
   let fullMessage = `[${timestamp}] ERROR: ${message}`;
   if (cause) {
