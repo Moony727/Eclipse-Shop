@@ -65,9 +65,10 @@ export function ShopSection({
     setIsLoading(false);
   };
 
-  const handlePurchase = (_product: Product) => {
+  const handlePurchase = (product: Product) => {
     // This would typically trigger a global purchase modal or state
-    // window.dispatchEvent(new CustomEvent('open-purchase-modal', { detail: _product }));
+    // For now, we'll just log it
+    console.log("Purchase clicked for:", product);
   };
 
   return (

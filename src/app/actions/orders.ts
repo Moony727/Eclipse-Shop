@@ -112,12 +112,12 @@ export async function getOrderById(
           } as Product;
         }
       }
-    } catch (err) {
+    } catch {
       // Log error but don't fail the request
     }
 
     return { success: true, data: order };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       error: "Failed to fetch order"
@@ -162,7 +162,7 @@ export async function getUserOrders(
             } as Product;
           }
         }
-      } catch (err) {
+      } catch {
         // Log error but don't fail the request
       }
 
@@ -171,7 +171,7 @@ export async function getUserOrders(
 
     return { success: true, data: orders };
   } catch (error) {
-    console.error("Error fetching user orders:", error);
+    console.error("Error fetching user orders:", error as Error);
     return {
       success: false,
       error: "Failed to fetch user orders"
@@ -198,7 +198,7 @@ export async function getOrdersForAdmin(
     })) as Order[];
 
     return { success: true, data: orders };
-  } catch (error) {
+  } catch {
     return { success: false, error: "Unauthorized or failed to fetch orders" };
   }
 }
@@ -219,7 +219,7 @@ export async function updateOrderStatus(
     });
 
     return { success: true };
-  } catch (error) {
+  } catch {
     return { success: false, error: "Unauthorized or failed to update order status" };
   }
 }

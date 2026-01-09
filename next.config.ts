@@ -23,6 +23,11 @@ const nextConfig: NextConfig = {
         hostname: 'replicate.delivery', 
         pathname: '/**', 
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**',
+      },
     ],
   },
   // Security headers: configured for all routes to improve trust and reduce

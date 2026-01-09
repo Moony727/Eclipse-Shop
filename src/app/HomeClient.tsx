@@ -45,7 +45,7 @@ export default function HomePage() {
           setProducts([]);
           setFilteredProducts([]);
         }
-      } catch (error) {
+      } catch {
         setProducts([]);
         setFilteredProducts([]);
       } finally {
@@ -66,7 +66,7 @@ export default function HomePage() {
         } else {
           setCategories([]);
         }
-      } catch (error) {
+      } catch {
         setCategories([]);
       }
     };

@@ -6,6 +6,13 @@ import { Product, ProductFormData } from "@/types";
 import { verifyAdmin } from "@/lib/utils/admin";
 import { typeError } from "@/lib/errorTyper";
 
+interface CloudinaryUploadResult {
+  secure_url: string;
+  [key: string]: unknown;
+}
+
+type CloudinaryResponse = CloudinaryUploadResult | undefined;
+
 /**
  * Get a single product by ID
  */
@@ -93,7 +100,7 @@ export async function getProductsForAdmin(token: string): Promise<{ success: boo
     })) as Product[];
 
     return { success: true, data: products };
-  } catch (error) {
+  } catch {
     return { success: false, error: "Unauthorized or failed to fetch products" };
   }
 }
@@ -109,7 +116,7 @@ export async function toggleProductStatus(productId: string, isActive: boolean, 
       isActive,
     });
     return { success: true };
-  } catch (error) {
+  } catch {
     return { success: false, error: "Unauthorized or failed to update product status" };
   }
 }
@@ -268,7 +275,7 @@ async function uploadImage(file: File): Promise<string> {
     const fileBuffer = Buffer.from(bytes);
 
     // Upload to Cloudinary
-    const result = await new Promise<any>((resolve, reject) => {
+    const result = await new Promise<CloudinaryResponse>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: 'eclipse-shop/products',
@@ -283,7 +290,7 @@ async function uploadImage(file: File): Promise<string> {
           if (error) {
             reject(error);
           } else {
-            resolve(result);
+            resolve(result as CloudinaryUploadResult | undefined);
           }
         }
       );

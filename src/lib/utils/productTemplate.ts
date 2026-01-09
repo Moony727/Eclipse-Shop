@@ -1,20 +1,56 @@
 import { Product, ProductFormData } from "@/types";
 
+interface DbProduct {
+  name?: {
+    en?: string;
+    ru?: string;
+    az?: string;
+  } | string;
+  description?: {
+    en?: string;
+    ru?: string;
+    az?: string;
+  } | string;
+  price?: number;
+  discountPrice?: number;
+  category?: string;
+  subcategory?: string;
+  imageUrl?: string;
+  [key: string]: unknown;
+}
+
 /**
  * Creates a template product from database product data
  * This can be used to transform existing product data into a new format
  */
-export function createProductTemplate(dbProduct: any): ProductFormData {
+export function createProductTemplate(dbProduct: DbProduct): ProductFormData {
+  const getName = () => {
+    if (typeof dbProduct.name === 'object' && dbProduct.name) {
+      return dbProduct.name as Record<string, string>;
+    }
+    return { en: typeof dbProduct.name === 'string' ? dbProduct.name : '' };
+  };
+
+  const getDescription = () => {
+    if (typeof dbProduct.description === 'object' && dbProduct.description) {
+      return dbProduct.description as Record<string, string>;
+    }
+    return { en: typeof dbProduct.description === 'string' ? dbProduct.description : '' };
+  };
+
+  const name = getName();
+  const description = getDescription();
+
   return {
     name: {
-      en: dbProduct.name?.en || dbProduct.name || "",
-      ru: dbProduct.name?.ru || "",
-      az: dbProduct.name?.az || "",
+      en: name.en || "",
+      ru: name.ru || "",
+      az: name.az || "",
     },
     description: {
-      en: dbProduct.description?.en || dbProduct.description || "",
-      ru: dbProduct.description?.ru || "",
-      az: dbProduct.description?.az || "",
+      en: description.en || "",
+      ru: description.ru || "",
+      az: description.az || "",
     },
     price: dbProduct.price || 0,
     discountPrice: dbProduct.discountPrice || undefined,

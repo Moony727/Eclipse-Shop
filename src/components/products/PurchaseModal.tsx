@@ -135,6 +135,7 @@ export function PurchaseModal({ isOpen, onClose, product, user }: PurchaseModalP
                   src={product.imageUrl}
                   alt={product.name[language]}
                   fill
+                  unoptimized
                   className="object-cover"
                 />
               </div>
