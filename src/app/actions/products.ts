@@ -57,7 +57,7 @@ export async function getPublicProducts(filters?: {
 }): Promise<{ success: boolean; data?: Product[]; error?: string }> {
   try {
     const productsRef = adminDb.collection("products");
-    let query = productsRef.where("isActive", "==", true).orderBy("createdAt", "desc");
+    let query = productsRef.orderBy("createdAt", "desc");
 
     // Apply filters
     if (filters?.category && filters.category !== "all") {

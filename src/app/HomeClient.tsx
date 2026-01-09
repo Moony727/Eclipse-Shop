@@ -35,11 +35,12 @@ export default function HomePage() {
     const fetchProducts = async () => {
       setIsLoading(true);
       try {
-        const result = await getPublicProducts({ isActive: true });
-        
+        const result = await getPublicProducts();
+
         if (result.success && result.data) {
-          setProducts(result.data);
-          setFilteredProducts(result.data);
+          const activeProducts = result.data.filter(product => product.isActive);
+          setProducts(activeProducts);
+          setFilteredProducts(activeProducts);
         } else {
           // Fallback to empty array if fetch fails
           setProducts([]);
