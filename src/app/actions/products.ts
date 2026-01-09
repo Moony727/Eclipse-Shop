@@ -273,12 +273,11 @@ async function uploadImage(file: File): Promise<string> {
         {
           folder: 'eclipse-shop/products',
           public_id: `${Date.now()}-${Math.random().toString(36).substring(2)}`,
-          format: 'auto',
           quality: 'auto',
-          transformation: [
-            { width: 800, height: 600, crop: 'limit' }, // Resize to max 800x600
-            { quality: 'auto' }
-          ]
+          eager: [
+            { width: 800, height: 600, crop: 'limit', quality: 'auto' }
+          ],
+          eager_async: true
         },
         (error, result) => {
           if (error) {
