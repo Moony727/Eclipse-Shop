@@ -35,6 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               uid: currentFirebaseUser.uid,
               email: currentFirebaseUser.email || '',
               name: userData.name || '',
+              isAdmin: userData.isAdmin || false,
               createdAt: userData.createdAt?.toDate() || new Date()
             });
           } else {
@@ -42,6 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const newUser: Omit<User, 'uid'> = {
               email: currentFirebaseUser.email || '',
               name: currentFirebaseUser.displayName || '',
+              isAdmin: false,
               createdAt: new Date()
             };
 

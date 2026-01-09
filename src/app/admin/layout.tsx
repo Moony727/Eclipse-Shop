@@ -23,6 +23,7 @@ const sidebarItems = [
   { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
   { name: "Products", href: "/admin/products", icon: Package },
   { name: "Categories", href: "/admin/categories", icon: Tags },
+  { name: "Users", href: "/admin/users", icon: UserIcon },
 ];
 
 export default function AdminLayout({
