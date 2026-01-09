@@ -215,12 +215,14 @@ export default function ProductsPage() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <div className="text-sm font-bold">
-                        {product.discountPrice ? product.discountPrice : product.price} AZN
+                      <div className="space-y-1">
+                        <div className="text-sm font-bold text-green-600">
+                          {product.discountPrice ? product.discountPrice : product.price} AZN
+                        </div>
                         {product.discountPrice && (
-                          <span className="ml-1 text-[10px] text-muted-foreground line-through">
+                          <div className="text-[10px] text-muted-foreground line-through">
                             {product.price} AZN
-                          </span>
+                          </div>
                         )}
                       </div>
                     </TableCell>
