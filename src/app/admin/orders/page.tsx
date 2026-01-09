@@ -166,7 +166,7 @@ export default function OrdersPage() {
                         {new Date(order.createdAt).toLocaleString()}
                       </div>
                       <div className="font-bold text-primary text-sm">
-                        ${order.totalAmount.toFixed(2)}
+                        {order.totalAmount} AZN
                       </div>
                     </div>
                   </TableCell>
@@ -178,6 +178,15 @@ export default function OrdersPage() {
                           {order.items.slice(0, 2).map((item, idx) => (
                             <div key={idx} className="truncate max-w-32">
                               {item.quantity}x {item.productName[language] || item.productName.en}
+                              {item.price < item.originalPrice && (
+                                <span className="ml-1 text-xs">
+                                  <span className="line-through text-muted-foreground">{item.originalPrice} AZN</span>
+                                  <span className="text-primary font-semibold ml-1">{item.price} AZN</span>
+                                </span>
+                              )}
+                              {item.price === item.originalPrice && (
+                                <span className="ml-1 text-xs text-muted-foreground">{item.price} AZN</span>
+                              )}
                             </div>
                           ))}
                           {order.items.length > 2 && (

@@ -34,7 +34,8 @@ export interface Product {
 export interface OrderItem {
   productId: string;
   quantity: number;
-  price: number; // Price at time of order
+  price: number; // Effective price at time of order (discounted or regular)
+  originalPrice: number; // Original price at time of order
   productName: {
     en: string;
     ru: string;

@@ -197,7 +197,16 @@ export function UserProfile({ isOpen, onClose, user, initialTab = "info" }: User
                                     {item.productName[language as keyof typeof item.productName] || item.productName.en}
                                   </p>
                                   <p className="text-xs text-muted-foreground">
-                                    {item.quantity}x × ${item.price.toFixed(2)} = ${(item.quantity * item.price).toFixed(2)}
+                                    {item.quantity}x ×
+                                    {item.price < item.originalPrice ? (
+                                      <>
+                                        <span className="line-through text-muted-foreground mr-1">{item.originalPrice.toFixed(2)} AZN</span>
+                                        <span className="text-primary font-semibold">{item.price.toFixed(2)} AZN</span>
+                                      </>
+                                    ) : (
+                                      <span>{item.price.toFixed(2)} AZN</span>
+                                    )}
+                                    = ${(item.quantity * item.price).toFixed(2)}
                                   </p>
                                 </div>
                               </div>
@@ -224,7 +233,7 @@ export function UserProfile({ isOpen, onClose, user, initialTab = "info" }: User
                                   {order.productName?.[language as keyof typeof order.productName] || order.productName?.en}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
-                                  1x × ${order.totalAmount.toFixed(2)} = ${order.totalAmount.toFixed(2)}
+                                  1x × {order.totalAmount.toFixed(2)} AZN = {order.totalAmount.toFixed(2)} AZN
                                 </p>
                               </div>
                             </div>
@@ -238,7 +247,7 @@ export function UserProfile({ isOpen, onClose, user, initialTab = "info" }: User
                               : `1 ${t("orders.item", "item")}`
                             }
                           </span>
-                          <span className="font-bold text-primary">${order.totalAmount.toFixed(2)}</span>
+                          <span className="font-bold text-primary">{order.totalAmount.toFixed(2)} AZN</span>
                         </div>
                         <div className="mt-2 text-xs flex items-center gap-2 text-muted-foreground">
                           {order.contactType === 'whatsapp' ? <Phone className="w-3 h-3" /> : <Send className="w-3 h-3" />}

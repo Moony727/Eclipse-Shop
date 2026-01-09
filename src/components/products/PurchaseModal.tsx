@@ -55,6 +55,7 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
         productId: item.product.id,
         quantity: item.quantity,
         price: item.product.discountPrice || item.product.price,
+        originalPrice: item.product.price,
         productName: item.product.name,
       }));
 

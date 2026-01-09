@@ -12,27 +12,40 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       style={
         {
-          "--normal-bg": "var(--popover)",
-          "--normal-text": "var(--popover-foreground)",
-          "--normal-border": "var(--border)",
-          "--success-bg": "hsl(var(--success))",
-          "--success-border": "hsl(var(--success))",
-          "--success-text": "hsl(var(--success-foreground))",
-          "--error-bg": "hsl(var(--destructive))",
-          "--error-border": "hsl(var(--destructive))",
-          "--error-text": "hsl(var(--destructive-foreground))",
-          "--warning-bg": "hsl(var(--warning))",
-          "--warning-border": "hsl(var(--warning))",
-          "--warning-text": "hsl(var(--warning-foreground))",
-          "--info-bg": "hsl(var(--warning))",
-          "--info-border": "hsl(var(--warning))",
-          "--info-text": "hsl(var(--warning-foreground))",
-          "--width": "400px",
+          // Success - Green
+          "--success-bg": "#22c55e",
+          "--success-border": "#16a34a",
+          "--success-text": "#ffffff",
+          
+          // Error - Red
+          "--error-bg": "#ef4444",
+          "--error-border": "#dc2626",
+          "--error-text": "#ffffff",
+          
+          // Warning - Yellow
+          "--warning-bg": "#f59e0b",
+          "--warning-border": "#d97706",
+          "--warning-text": "#ffffff",
+          
+          // Info - Blue
+          "--info-bg": "#3b82f6",
+          "--info-border": "#2563eb",
+          "--info-text": "#ffffff",
+          
+          // Normal - Blue as default
+          "--normal-bg": "#3b82f6",
+          "--normal-text": "#ffffff",
+          "--normal-border": "#2563eb",
+          
+          // Responsive width
+          "--width": "clamp(300px, 90vw, 420px)",
           "--border-radius": "8px",
           "--font-size": "14px",
           "--font-weight": "500",
         } as React.CSSProperties
       }
+      position="top-center"
+      richColors
       {...props}
     />
   )

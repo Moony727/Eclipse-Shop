@@ -5,6 +5,7 @@ export const orderItemSchema = z.object({
   productId: z.string().min(1, "Product ID is required"),
   quantity: z.number().int().positive("Quantity must be positive"),
   price: z.number().positive("Price must be positive"),
+  originalPrice: z.number().positive("Original price must be positive"),
   productName: z.object({
     en: z.string(),
     ru: z.string(),
