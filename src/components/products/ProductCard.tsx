@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useCart } from "@/contexts/CartContext";
 import { ProductCardProps } from "@/types";
-import { ShoppingCart, ExternalLink, ArrowRight, Plus } from "lucide-react";
+import { ArrowRight, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 export function ProductCard({ product }: Omit<ProductCardProps, 'onPurchase'>) {
@@ -20,7 +20,7 @@ export function ProductCard({ product }: Omit<ProductCardProps, 'onPurchase'>) {
     : 0;
 
   return (
-    <Card className="group relative flex flex-col h-full overflow-hidden border-0 bg-card hover:bg-card/50 transition-all duration-500 rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-1" style={{ containerType: 'inline-size' }}>
+    <Card className="group relative flex flex-col h-full overflow-hidden border-0 bg-card hover:bg-card/50 transition-all duration-500 rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-1">
       {/* Image Container */}
       <div className="relative aspect-[4/3] overflow-hidden">
         <Image
@@ -62,17 +62,17 @@ export function ProductCard({ product }: Omit<ProductCardProps, 'onPurchase'>) {
       </div>
       
       {/* Content */}
-      <CardContent className="flex-1 space-y-3" style={{ padding: 'var(--space-fluid-lg)' }}>
+      <CardContent className="flex-1 p-5 space-y-3">
         <div className="space-y-1">
-          <h3 className="font-bold tracking-tight line-clamp-1 group-hover:text-primary transition-colors" style={{ fontSize: 'var(--text-fluid-xl)' }}>
+          <h3 className="text-[var(--text-xl)] font-bold tracking-tight line-clamp-1 group-hover:text-primary transition-colors">
             {product.name[language]}
           </h3>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 text-[var(--text-base)] opacity-70">
             <span>{t(`categories.${product.category}`, product.category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))}</span>
             <span>→</span>
             <span>{t(`subcategories.${product.subcategory}`, product.subcategory.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))}</span>
           </div>
-          <p className="text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">
+          <p className="text-[var(--text-base)] text-muted-foreground line-clamp-2 min-h-[3rem]">
             {product.description[language]}
           </p>
         </div>
@@ -80,7 +80,7 @@ export function ProductCard({ product }: Omit<ProductCardProps, 'onPurchase'>) {
         <div className="flex items-center gap-2 pt-2">
           {hasDiscount ? (
             <div className="flex items-baseline gap-2">
-              <span className="font-black text-primary" style={{ fontSize: 'var(--text-fluid-2xl)' }}>
+              <span className="text-[var(--text-2xl)] font-black text-primary">
                 {product.discountPrice?.toFixed(2)} AZN
               </span>
               <span className="text-sm text-muted-foreground line-through decoration-destructive/50">
@@ -88,7 +88,7 @@ export function ProductCard({ product }: Omit<ProductCardProps, 'onPurchase'>) {
               </span>
             </div>
           ) : (
-            <span className="font-black text-primary" style={{ fontSize: 'var(--text-fluid-2xl)' }}>
+            <span className="text-[var(--text-2xl)] font-black text-primary">
               {product.price.toFixed(2)} AZN
             </span>
           )}
@@ -96,7 +96,7 @@ export function ProductCard({ product }: Omit<ProductCardProps, 'onPurchase'>) {
       </CardContent>
       
       {/* Footer */}
-      <CardFooter className="pt-0" style={{ padding: 'var(--space-fluid-lg)', paddingTop: 0 }}>
+      <CardFooter className="p-5 pt-0">
         <Button
           onClick={() => {
             addItem(product);

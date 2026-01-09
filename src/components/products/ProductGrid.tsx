@@ -8,11 +8,10 @@ import { PackageSearch } from "lucide-react";
 
 interface ProductGridProps {
   products: Product[];
-  onPurchase?: (product: Product) => void; // Optional for backward compatibility
   isLoading: boolean;
 }
 
-export function ProductGrid({ products, onPurchase, isLoading }: ProductGridProps) {
+export function ProductGrid({ products, isLoading }: ProductGridProps) {
   const { t } = useLanguage();
 
   // Sort products by category then subcategory
@@ -24,10 +23,7 @@ export function ProductGrid({ products, onPurchase, isLoading }: ProductGridProp
 
   if (isLoading) {
     return (
-      <div className="grid gap-4" style={{
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: 'var(--gap-fluid-md)'
-      }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[var(--space-4)] md:gap-[var(--space-6)] lg:gap-[var(--space-8)]">
         {Array.from({ length: 8 }).map((_, index) => (
           <ProductCardSkeleton key={index} />
         ))}
@@ -37,14 +33,14 @@ export function ProductGrid({ products, onPurchase, isLoading }: ProductGridProp
 
   if (products.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 md:py-20 px-4 text-center bg-muted/30 rounded-2xl md:rounded-3xl border-2 border-dashed mx-4 md:mx-0">
-        <div className="w-16 h-16 md:w-20 md:h-20 bg-background rounded-full flex items-center justify-center shadow-lg mb-4 md:mb-6">
+      <div className="flex flex-col items-center justify-center py-[var(--space-12)] md:py-[var(--space-16)] px-[var(--space-4)] text-center bg-muted/30 rounded-2xl md:rounded-3xl border-2 border-dashed mx-4 md:mx-0">
+        <div className="w-16 h-16 md:w-20 md:h-20 bg-background rounded-full flex items-center justify-center shadow-lg mb-[var(--space-4)] md:mb-[var(--space-6)]">
           <PackageSearch className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground" />
         </div>
-        <h3 className="text-xl md:text-2xl font-bold mb-2">
+        <h3 className="text-[var(--text-xl)] md:text-[var(--text-2xl)] font-bold mb-2">
           {t("products.noProducts", "No Products Found")}
         </h3>
-        <p className="text-sm md:text-base text-muted-foreground max-w-xs md:max-w-sm mx-auto mb-6 md:mb-8">
+        <p className="text-[var(--text-base)] text-muted-foreground max-w-xs md:max-w-sm mx-auto mb-[var(--space-8)]">
           {t("products.noProductsDesc", "Try adjusting your filters or search terms to find what you're looking for.")}
         </p>
       </div>
@@ -52,19 +48,16 @@ export function ProductGrid({ products, onPurchase, isLoading }: ProductGridProp
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-[var(--space-8)]">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-black tracking-tight flex items-center gap-2">
+        <h2 className="text-[var(--text-2xl)] font-black tracking-tight flex items-center gap-2">
           <span className="w-8 h-1 bg-primary rounded-full"></span>
           {t("products.title", "Our Collection")}
           <span className="text-sm font-normal text-muted-foreground ml-2">({products.length})</span>
         </h2>
       </div>
 
-      <div className="grid animate-stagger" style={{
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: 'var(--gap-fluid-md)'
-      }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[var(--space-4)] md:gap-[var(--space-6)] lg:gap-[var(--space-8)]">
         {sortedProducts.map((product) => (
           <ProductCard
             key={product.id}

@@ -123,17 +123,6 @@ export const translations = {
       success: "Order placed successfully!",
       processing: "Processing your order..."
     },
-
-    // Contact
-    contact: {
-      title: "Contact Us",
-      subtitle: "Get in touch — we're here to help.",
-      general: "For general inquiries, please email",
-      partnership: "For partnership or press, reach out to",
-      supportHours: "Support Hours",
-      supportHoursText: "Mon — Fri: 09:00 — 18:00 (UTC)",
-      phone: "Phone"
-    },
     
     // Common
     common: {
@@ -169,39 +158,6 @@ export const translations = {
       en: "English",
       ru: "Русский",
       az: "Azərbaycan"
-    },
-
-    // Pages
-    pages: {
-      about: {
-        title: "About Eclipse Shop",
-        intro: "Eclipse Shop is a curated marketplace for premium digital products — templates, plugins, courses, and other developer/designer tools. Our mission is to provide high-quality digital goods and a secure shopping experience.",
-        security: "Security & Trust",
-        securityText: "We prioritize user safety. All payments are processed by trusted third-party providers (Stripe, PayPal, etc.) and we never collect payment card data on our servers. We use HTTPS everywhere and follow best practices for data protection.",
-        contact: "Contact",
-        contactText: "If you believe content on this site is harmful or noticed any security issue, contact us at"
-      },
-      terms: {
-        title: "Terms of Service",
-        intro: "By using Eclipse Shop you agree to these terms. This document outlines permitted use, intellectual property, and liabilities. It is a short summary — consult the full legal document where required.",
-        permitted: "Permitted Use",
-        permittedText: "You may use content for personal or commercial projects as described on each product page.",
-        refunds: "Refunds and Purchases",
-        refundsText: "Purchases are handled by third-party processors. Refunds are managed according to the vendor policy listed on product pages.",
-        contact: "Contact",
-        contactText: "For questions about terms contact"
-      },
-      privacy: {
-        title: "Privacy Policy",
-        intro: "This privacy policy explains what personal data we collect from you and how we use it.",
-        collect: "What we collect",
-        use: "How we use data",
-        useText: "Data is used to provide and improve services, process purchases, and comply with legal obligations. We do not sell your personal data to third parties.",
-        thirdParty: "Third-party services",
-        thirdPartyText: "Payments and analytics may be handled by third parties (Stripe, PayPal, Google Analytics). Review their privacy policies before use. We limit what we send to these providers.",
-        dataRemoval: "Contact & data removal",
-        dataRemovalText: "To request deletion or portability of your data, contact"
-      }
     }
   },
   
@@ -329,17 +285,6 @@ export const translations = {
       success: "Заказ успешно размещен!",
       processing: "Обработка вашего заказа..."
     },
-
-    // Contact
-    contact: {
-      title: "Связаться с нами",
-      subtitle: "Свяжитесь с нами — мы готовы помочь.",
-      general: "Для общих вопросов, пожалуйста, напишите на",
-      partnership: "Для партнерства или прессы, свяжитесь с",
-      supportHours: "Часы поддержки",
-      supportHoursText: "Пн — Пт: 09:00 — 18:00 (UTC)",
-      phone: "Телефон"
-    },
     
     // Common
     common: {
@@ -375,39 +320,6 @@ export const translations = {
       en: "English",
       ru: "Русский",
       az: "Azərbaycan"
-    },
-
-    // Pages
-    pages: {
-      about: {
-        title: "О Eclipse Shop",
-        intro: "Eclipse Shop — это отобранный рынок премиальных цифровых продуктов — шаблонов, плагинов, курсов и других инструментов для разработчиков и дизайнеров. Наша миссия — предоставить высококачественные цифровые товары и безопасный опыт покупок.",
-        security: "Безопасность и доверие",
-        securityText: "Мы приоритизируем безопасность пользователей. Все платежи обрабатываются проверенными поставщиками третьих сторон (Stripe, PayPal и т.д.), и мы никогда не собираем данные платежных карт на наших серверах. Мы используем HTTPS везде и следуем лучшим практикам защиты данных.",
-        contact: "Контакт",
-        contactText: "Если вы считаете, что контент на этом сайте вредоносен, или заметили проблему безопасности, свяжитесь с нами по адресу"
-      },
-      terms: {
-        title: "Условия обслуживания",
-        intro: "Используя Eclipse Shop, вы соглашаетесь с этими условиями. Этот документ описывает разрешенное использование, интеллектуальную собственность и ответственность. Это краткое резюме — обратитесь к полному юридическому документу, где требуется.",
-        permitted: "Разрешенное использование",
-        permittedText: "Вы можете использовать контент для личных или коммерческих проектов, как описано на каждой странице продукта.",
-        refunds: "Возвраты и покупки",
-        refundsText: "Покупки обрабатываются поставщиками третьих сторон. Возвраты управляются в соответствии с политикой поставщика, указанной на страницах продуктов.",
-        contact: "Контакт",
-        contactText: "По вопросам условий обслуживания свяжитесь с"
-      },
-      privacy: {
-        title: "Политика конфиденциальности",
-        intro: "Эта политика конфиденциальности объясняет, какие личные данные мы собираем и как их используем.",
-        collect: "Что мы собираем",
-        use: "Как мы используем данные",
-        useText: "Данные используются для предоставления и улучшения услуг, обработки покупок и соответствия юридическим обязательствам. Мы не продаем ваши личные данные третьим сторонам.",
-        thirdParty: "Услуги третьих сторон",
-        thirdPartyText: "Платежи и аналитика могут обрабатываться третьими сторонами (Stripe, PayPal, Google Analytics). Ознакомьтесь с их политиками конфиденциальности перед использованием. Мы ограничиваем информацию, которую отправляем этим поставщикам.",
-        dataRemoval: "Контакт и удаление данных",
-        dataRemovalText: "Чтобы запросить удаление или портабельность ваших данных, свяжитесь с"
-      }
     }
   },
   
@@ -535,17 +447,6 @@ export const translations = {
       success: "Sifariş uğurla verildi!",
       processing: "Sifarişiniz işlənir..."
     },
-
-    // Contact
-    contact: {
-      title: "Əlaqə",
-      subtitle: "Bizimlə əlaqə saxlayın — biz sizə kömək etməyə hazırıq.",
-      general: "Ümumi sorğular üçün, zəhmət olmasa",
-      partnership: "Partnerliq və ya mətbuat üçün, əlaqə saxlayın",
-      supportHours: "Dəstək saatları",
-      supportHoursText: "Baz — Cüm: 09:00 — 18:00 (UTC)",
-      phone: "Telefon"
-    },
     
     // Common
     common: {
@@ -581,39 +482,6 @@ export const translations = {
       en: "English",
       ru: "Русский",
       az: "Azərbaycan"
-    },
-
-    // Pages
-    pages: {
-      about: {
-        title: "Eclipse Shop haqqında",
-        intro: "Eclipse Shop — şablonlar, plaginin, kurslar və digər developer/dizayn alətləri üçün seçilmiş rəqəmsal məhsullar bazarı. Bizim missiyamız yüksək keyfiyyətli rəqəmsal mallar və təhlükəsiz alış-veriş təcrübəsi təmin etməkdir.",
-        security: "Təhlükəsizlik və inam",
-        securityText: "Biz istifadəçi təhlükəsizliyinə əhəmiyyət veririk. Bütün ödənişlər etibarlı üçüncü tərəf təminatçıları (Stripe, PayPal və s.) tərəfindən işlənir və biz heç vaxt ödəniş kartı məlumatlarını serverlerimizdə toplamırıq. Biz hər yerdə HTTPS istifadə edirik və məlumat qoruması üçün ən yaxşı praktikaya əməl edirik.",
-        contact: "Əlaqə",
-        contactText: "Bu saytdakı kontentin zərərli olduğunu düşünürsünüzsə və ya təhlükəsizlik problemi müşahidə etmişsinizsə, bizimlə əlaqə saxlayın"
-      },
-      terms: {
-        title: "Xidmət Şərtləri",
-        intro: "Eclipse Shop istifadə edərək, bu şərtlərlə razı olursunuz. Bu sənəd icazə verilən istifadə, intelektual mülkiyyət və məsuliyyəti ətraflı şəkildə izah edir. Bu qısa xülasədir — tam hüquqi sənəd üçün lazım gələrsə müraciət edin.",
-        permitted: "İcazə verilən istifadə",
-        permittedText: "Siz məhsul səhifəsində göstərildiyi kimi şəxsi və ya kommersiya layihələri üçün kontent istifadə edə bilərsiniz.",
-        refunds: "Geri qaytarışlar və Alışlar",
-        refundsText: "Alışlar üçüncü tərəf təminatçıları tərəfindən işlənir. Geri qaytarışlar məhsul səhifəsində göstərilən satıcı siyasətinə uyğun olaraq idarə olunur.",
-        contact: "Əlaqə",
-        contactText: "Şərtlər haqqında suallar üçün əlaqə saxlayın"
-      },
-      privacy: {
-        title: "Gizlilik Siyasəti",
-        intro: "Bu gizlilik siyasəti bizim sizin hansı şəxsi məlumatı topladığımızı və bunu necə istifadə etdiyimizi izah edir.",
-        collect: "Nə toplayırıq",
-        use: "Məlumatları necə istifadə edirik",
-        useText: "Məlumatlar xidmətləri təmin etmək və yaxşılaşdırmaq, alışları işləmək və hüquqi öhdəlikləri yerinə yetirmək üçün istifadə olunur. Biz sizin şəxsi məlumatlarınızı üçüncü tərəflərə satmırıq.",
-        thirdParty: "Üçüncü tərəf xidmətləri",
-        thirdPartyText: "Ödənişlər və analitika üçüncü tərəflər (Stripe, PayPal, Google Analytics) tərəfindən işlənə bilər. Istifadədən əvvəl onların gizlilik siyasətinə baxın. Biz bu təminatçılara göndərdiyimiz məlumatı məhdudlaşdırırıq.",
-        dataRemoval: "Əlaqə və məlumatların silinməsi",
-        dataRemovalText: "Məlumatlarınızın silinməsi və ya daşınabilirliyi tələb etmək üçün əlaqə saxlayın"
-      }
     }
   }
 };

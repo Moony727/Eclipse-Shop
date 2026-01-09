@@ -60,7 +60,7 @@ export function ProductFilters({
   };
 
   return (
-    <div className="space-y-6 mb-8" style={{ gap: 'var(--space-fluid-xl)' }}>
+    <div className="space-y-[var(--space-6)] mb-[var(--space-8)]">
       {/* Search Bar */}
       <div className="relative max-w-md mx-auto">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -69,14 +69,14 @@ export function ProductFilters({
           placeholder={t('products.search')}
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-10 pr-4"
+          className="pl-10 pr-4 h-11 rounded-xl"
         />
       </div>
 
       {/* Category Filters */}
-      <div className="space-y-4">
+      <div className="space-y-[var(--space-4)]">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold flex items-center">
+          <h3 className="text-[var(--text-lg)] font-semibold flex items-center">
             <Filter className="w-5 h-5 mr-2" />
             {t('products.category')}
           </h3>
@@ -84,7 +84,7 @@ export function ProductFilters({
             variant="outline"
             size="sm"
             onClick={clearFilters}
-            className="text-sm"
+            className="text-sm rounded-lg px-4"
           >
             {t('common.clear')}
           </Button>
@@ -97,8 +97,7 @@ export function ProductFilters({
                 <TabsTrigger
                   key={category.id}
                   value={category.id}
-                  className="flex-shrink-0"
-                  style={{ fontSize: 'var(--text-fluid-sm)' }}
+                  className="text-xs sm:text-sm flex-shrink-0"
                 >
                   {category.name}
                 </TabsTrigger>
@@ -115,12 +114,11 @@ export function ProductFilters({
               <div className="overflow-x-auto pb-2">
                 <TabsList className="inline-flex w-max min-w-full gap-1">
                   {subcategories.map((subcategory) => (
-                  <TabsTrigger
-                    key={subcategory.id}
-                    value={subcategory.id}
-                    className="flex-shrink-0"
-                    style={{ fontSize: 'var(--text-fluid-sm)' }}
-                  >
+                    <TabsTrigger
+                      key={subcategory.id}
+                      value={subcategory.id}
+                      className="text-xs sm:text-sm flex-shrink-0"
+                    >
                       {subcategory.name}
                     </TabsTrigger>
                   ))}

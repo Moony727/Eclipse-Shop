@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { CartProvider } from "@/contexts/CartContext";
+import { SizeProvider } from "@/contexts/SizeContext";
 import { Toaster } from "@/components/ui/sonner";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
@@ -14,7 +15,7 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://eclipseshop.xyz';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://eclipse-shop.vercel.app';
 
 export const metadata: Metadata = {
   title: {
@@ -108,16 +109,18 @@ export default function RootLayout({
             disableTransitionOnChange
             storageKey="eclipse-theme"
           >
-            <LanguageProvider>
-              <AuthProvider>
-                <CartProvider>
-                  <div id="root">
-                    {children}
-                  </div>
-                  <Toaster key="main-toaster" position="bottom-right" expand={true} richColors />
-                </CartProvider>
-              </AuthProvider>
-            </LanguageProvider>
+            <SizeProvider>
+              <LanguageProvider>
+                <AuthProvider>
+                  <CartProvider>
+                    <div id="root">
+                      {children}
+                    </div>
+                    <Toaster key="main-toaster" position="bottom-right" expand={true} richColors />
+                  </CartProvider>
+                </AuthProvider>
+              </LanguageProvider>
+            </SizeProvider>
           </ThemeProvider>
         </ErrorBoundary>
       </body>

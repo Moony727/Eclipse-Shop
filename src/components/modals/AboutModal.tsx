@@ -17,13 +17,13 @@ export function AboutModal({ isOpen, onClose }: ModalProps) {
 
         <div className="space-y-4">
           <p>
-            Eclipse Shop is a curated marketplace for premium digital goods — memberships,
-            software, ingame value and accounts. Our mission is to
-            make high-quality digital products accessible to creators and gamers worldwide.
+            Eclipse Shop is a curated marketplace for premium digital goods — templates,
+            software, creative assets and educational products. Our mission is to
+            make high-quality digital products accessible to creators and businesses worldwide.
           </p>
 
           <p>
-            Founded in 2025, our team focuses on product quality, secure checkout,
+            Founded in 2024, our team focuses on product quality, secure checkout,
             and excellent support. We work with creators to showcase their best
             work and help customers find the tools they need.
           </p>

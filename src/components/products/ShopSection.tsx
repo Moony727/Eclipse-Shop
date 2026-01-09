@@ -68,7 +68,7 @@ export function ShopSection({
   // Removed handlePurchase as products now use cart
 
   return (
-    <section className="space-y-8 animate-fade-in">
+    <section className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-2">
           <h2 className="text-3xl font-black tracking-tight">{title}</h2>

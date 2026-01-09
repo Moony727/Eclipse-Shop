@@ -4,7 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
@@ -26,11 +25,11 @@ interface CartDrawerProps {
 }
 
 export function CartDrawer({ children }: CartDrawerProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user } = useAuth();
-  const { items, updateQuantity, removeItem, getTotalPrice, clearCart } = useCart();
+  const { items, updateQuantity, removeItem, getTotalPrice } = useCart();
   const [isOpen, setIsOpen] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isProcessing] = useState(false);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
 
   const handleQuantityChange = (productId: string, newQuantity: number) => {
@@ -70,16 +69,18 @@ export function CartDrawer({ children }: CartDrawerProps) {
       <SheetTrigger asChild>
         {children}
       </SheetTrigger>
-      <SheetContent className="w-full sm:w-96 md:w-[450px]" side="right">
-        <SheetHeader>
-          <SheetTitle className="flex items-center gap-2">
-            <ShoppingCart className="w-5 h-5" />
+      <SheetContent className="w-full sm:max-w-md flex flex-col p-0 h-[100dvh]">
+        <SheetHeader className="p-6 border-b shrink-0">
+          <SheetTitle className="flex items-center gap-2 text-[var(--text-xl)] font-black">
+            <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <ShoppingCart className="w-5 h-5" />
+            </div>
             {t("cart.title", "Shopping Cart")}
             {totalItems > 0 && (
-              <Badge variant="secondary">{totalItems}</Badge>
+              <Badge variant="secondary" className="ml-auto rounded-full px-2 py-0.5">{totalItems}</Badge>
             )}
           </SheetTitle>
-          <SheetDescription>
+          <SheetDescription className="text-sm">
             {totalItems === 0
               ? t("cart.empty", "Your cart is empty")
               : t("cart.description", "Review your items and proceed to checkout")
@@ -87,83 +88,91 @@ export function CartDrawer({ children }: CartDrawerProps) {
           </SheetDescription>
         </SheetHeader>
 
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col flex-1 overflow-hidden">
           {/* Cart Items */}
-          <div className="flex-1 overflow-y-auto py-4">
+          <div className="flex-1 overflow-y-auto p-6 scrollbar-none">
             {items.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <ShoppingCart className="w-16 h-16 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">
-                  {t("cart.emptyTitle", "Your cart is empty")}
-                </h3>
-                <p className="text-muted-foreground">
-                  {t("cart.emptyDescription", "Add some products to get started")}
-                </p>
+              <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+                <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center">
+                  <ShoppingCart className="w-10 h-10 text-muted-foreground" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-[var(--text-lg)] font-bold">
+                    {t("cart.emptyTitle", "Your cart is empty")}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {t("cart.emptyDescription", "Add some products to get started")}
+                  </p>
+                </div>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="grid gap-[var(--space-4)]">
                 {items.map((item: CartItem) => (
-                  <div key={item.product.id} className="flex gap-4 p-4 border rounded-lg">
-                    <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                  <div key={item.product.id} className="group flex gap-4 p-3 rounded-2xl bg-muted/30 hover:bg-muted/50 border border-transparent hover:border-border transition-all duration-300">
+                    <div className="relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
                       <Image
                         src={item.product.imageUrl}
                         alt={item.product.name.en}
                         fill
                         unoptimized
-                        className="object-cover"
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                     </div>
 
-                    <div className="flex-1 space-y-2">
-                      <h4 className="font-medium line-clamp-2">
-                        {item.product.name.en}
-                      </h4>
+                    <div className="flex-1 flex flex-col justify-between min-w-0">
+                      <div className="space-y-1">
+                        <div className="flex justify-between items-start gap-2">
+                          <h4 className="font-bold text-[var(--text-base)] line-clamp-1">
+                            {item.product.name[language] || item.product.name.en}
+                          </h4>
+                          <button
+                            onClick={() => {
+                              removeItem(item.product.id);
+                              toast.success(t("cart.removed", "Item removed"));
+                            }}
+                            className="text-muted-foreground hover:text-destructive transition-colors p-1"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {t(`categories.${item.product.category}`, item.product.category)}
+                        </p>
+                      </div>
 
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                      <div className="flex items-center justify-between mt-2">
+                        <div className="flex items-center bg-background rounded-full border shadow-sm p-0.5">
                           <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
                             onClick={() => handleQuantityChange(item.product.id, item.quantity - 1)}
-                            className="h-8 w-8 p-0"
+                            className="h-7 w-7 rounded-full p-0 hover:bg-muted"
                           >
                             <Minus className="w-3 h-3" />
                           </Button>
 
-                          <span className="w-8 text-center font-medium">
+                          <span className="w-8 text-center text-sm font-bold">
                             {item.quantity}
                           </span>
 
                           <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
                             onClick={() => handleQuantityChange(item.product.id, item.quantity + 1)}
-                            className="h-8 w-8 p-0"
+                            className="h-7 w-7 rounded-full p-0 hover:bg-muted"
                           >
                             <Plus className="w-3 h-3" />
                           </Button>
                         </div>
 
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            removeItem(item.product.id);
-                            toast.success(t("cart.removed", "Item removed"));
-                          }}
-                          className="text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">
-                          {(item.product.discountPrice || item.product.price).toFixed(2)} AZN each
-                        </span>
-                        <span className="font-semibold">
-                          {((item.product.discountPrice || item.product.price) * item.quantity).toFixed(2)} AZN
-                        </span>
+                        <div className="text-right">
+                          <div className="text-xs text-muted-foreground line-through opacity-50">
+                            {item.product.discountPrice && item.product.price !== item.product.discountPrice && `${item.product.price.toFixed(2)} AZN`}
+                          </div>
+                          <div className="font-black text-primary">
+                            {((item.product.discountPrice || item.product.price) * item.quantity).toFixed(2)} AZN
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -174,19 +183,23 @@ export function CartDrawer({ children }: CartDrawerProps) {
 
           {/* Cart Summary */}
           {items.length > 0 && (
-            <div className="border-t pt-4 space-y-4">
-              <div className="flex items-center justify-between text-lg font-semibold">
-                <span>{t("cart.total", "Total")}:</span>
-                <span>{totalPrice.toFixed(2)} AZN</span>
+            <div className="p-6 border-t bg-background shrink-0 space-y-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{t("cart.subtotal", "Subtotal")}:</span>
+                  <span className="font-medium">{totalPrice.toFixed(2)} AZN</span>
+                </div>
+                <div className="flex items-center justify-between text-[var(--text-xl)] font-black">
+                  <span>{t("cart.total", "Total")}:</span>
+                  <span className="text-primary">{totalPrice.toFixed(2)} AZN</span>
+                </div>
               </div>
 
-              <Separator />
-
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <Button
                   onClick={handleCheckout}
                   disabled={isProcessing || !user}
-                  className="w-full"
+                  className="w-full h-12 rounded-xl text-base font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300"
                   size="lg"
                 >
                   {isProcessing ? (
@@ -196,16 +209,18 @@ export function CartDrawer({ children }: CartDrawerProps) {
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
-                      <CreditCard className="w-4 h-4" />
-                      {t("cart.checkout", "Checkout")}
+                      <CreditCard className="w-5 h-5" />
+                      {t("cart.checkout", "Checkout Now")}
                     </div>
                   )}
                 </Button>
 
                 {!user && (
-                  <p className="text-xs text-muted-foreground text-center">
-                    {t("cart.loginRequired", "Please log in to checkout")}
-                  </p>
+                  <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30">
+                    <p className="text-xs text-amber-700 dark:text-amber-400 text-center font-medium">
+                      {t("cart.loginRequired", "Please log in to checkout")}
+                    </p>
+                  </div>
                 )}
               </div>
             </div>

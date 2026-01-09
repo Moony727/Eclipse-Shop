@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useCart } from "@/contexts/CartContext";
-import { Product, User, CartItem } from "@/types";
+import { User, CartItem } from "@/types";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ShoppingCart, Phone, CreditCard, Send, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
@@ -145,7 +144,7 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
             <h3 className="font-semibold text-lg">{t("purchase.orderSummary", "Order Summary")}</h3>
 
             <div className="space-y-3 max-h-60 overflow-y-auto">
-              {items.map((item, index) => (
+              {items.map((item) => (
                 <div key={item.product.id} className="flex gap-3 pb-3 border-b border-border/50 last:border-0 last:pb-0">
                   <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
                     <Image
