@@ -4,11 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { useCart } from "@/contexts/CartContext";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuth } from "@/hooks/useAuth";
@@ -19,10 +14,10 @@ import { PurchaseModal } from "@/components/products/PurchaseModal";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface CartDrawerProps {
   children: React.ReactNode;
@@ -223,36 +218,19 @@ export function CartDrawer({ children }: CartDrawerProps) {
     </div>
   );
 
-  if (isMobile) {
-    return (
-      <>
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            {children}
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden h-[92vh] flex flex-col rounded-t-[2rem] sm:rounded-2xl bottom-0 sm:bottom-[unset] translate-y-0 sm:-translate-y-1/2">
-            <CartContent />
-          </DialogContent>
-        </Dialog>
-
-        <PurchaseModal
-          isOpen={showPurchaseModal}
-          onClose={handlePurchaseModalClose}
-          items={items}
-          user={user}
-        />
-      </>
-    );
-  }
-
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>
-        {children}
-      </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-md flex flex-col p-0 h-[100dvh]">
-        <CartContent />
-      </SheetContent>
+    <>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetTrigger asChild>
+          {children}
+        </SheetTrigger>
+        <SheetContent
+          side={isMobile ? "bottom" : "right"}
+          className={isMobile ? "w-full h-full flex flex-col p-0" : "w-full sm:max-w-md flex flex-col p-0 h-[100dvh]"}
+        >
+          <CartContent />
+        </SheetContent>
+      </Sheet>
 
       <PurchaseModal
         isOpen={showPurchaseModal}
@@ -260,6 +238,6 @@ export function CartDrawer({ children }: CartDrawerProps) {
         items={items}
         user={user}
       />
-    </Sheet>
+    </>
   );
 }
