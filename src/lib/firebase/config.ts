@@ -2,7 +2,7 @@ import { initializeApp, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
 import { getStorage, FirebaseStorage } from 'firebase/storage';
-import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+// import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -29,32 +29,33 @@ if (typeof window !== 'undefined' && firebaseConfig.apiKey && firebaseConfig.api
     document.body.appendChild(container);
   }
 
-  // Initialize App Check with reCAPTCHA v3
-  // Only initialize if Site Key is available
-  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-  const debugToken = process.env.NEXT_PUBLIC_APPCHECK_DEBUG_TOKEN;
-  
-  if ((siteKey && siteKey !== 'demo-key') || debugToken) {
-    try {
-      // In development with debug token
-      if (debugToken) {
-        (window as any).FIREBASE_APPCHECK_DEBUG_TOKEN = debugToken;
-        console.debug('App Check debug token set');
-      }
-      
-      // Only initialize if we have a real site key (not debug mode)
-      if (siteKey && siteKey !== 'demo-key') {
-        initializeAppCheck(app, {
-          provider: new ReCaptchaV3Provider(siteKey),
-          isTokenAutoRefreshEnabled: true,
-        });
-        console.debug('App Check initialized with reCAPTCHA V3');
-      }
-    } catch (error) {
-      // App Check may already be initialized or fail due to browser restrictions
-      console.debug('App Check initialization:', error instanceof Error ? error.message : 'unknown error');
-    }
-  }
+  // App Check removed as per user request
+  // // Initialize App Check with reCAPTCHA v3
+  // // Only initialize if Site Key is available
+  // const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  // const debugToken = process.env.NEXT_PUBLIC_APPCHECK_DEBUG_TOKEN;
+
+  // if ((siteKey && siteKey !== 'demo-key') || debugToken) {
+  //   try {
+  //     // In development with debug token
+  //     if (debugToken) {
+  //       (window as any).FIREBASE_APPCHECK_DEBUG_TOKEN = debugToken;
+  //       console.debug('App Check debug token set');
+  //     }
+
+  //     // Only initialize if we have a real site key (not debug mode)
+  //     if (siteKey && siteKey !== 'demo-key') {
+  //       initializeAppCheck(app, {
+  //         provider: new ReCaptchaV3Provider(siteKey),
+  //         isTokenAutoRefreshEnabled: true,
+  //       });
+  //       console.debug('App Check initialized with reCAPTCHA V3');
+  //     }
+  //   } catch (error) {
+  //     // App Check may already be initialized or fail due to browser restrictions
+  //     console.debug('App Check initialization:', error instanceof Error ? error.message : 'unknown error');
+  //   }
+  // }
 }
 
 // Initialize Firebase services only on client

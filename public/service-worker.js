@@ -48,6 +48,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  const url = new URL(event.request.url);
+
+  // Skip intercepting requests to Google domains to avoid CSP issues
+  if (url.hostname === 'www.google.com' || url.hostname === 'apis.google.com' || url.hostname === 'www.gstatic.com' || url.hostname === 'recaptcha.google.com' || url.hostname === 'challenge.cloudflare.com') {
+    return;
+  }
+
   event.respondWith(
     caches
       .match(event.request)
