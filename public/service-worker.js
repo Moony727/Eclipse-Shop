@@ -64,7 +64,11 @@ self.addEventListener('fetch', (event) => {
             const url = new URL(event.request.url);
             const isSupportedScheme = url.protocol === 'http:' || url.protocol === 'https:';
             
-            if (networkResponse && networkResponse.status === 200 && isSupportedScheme) {
+            // Don't cache external resources like Cloudinary images
+            const isExternalResource = !url.hostname.includes(new URL(self.location).hostname) && 
+                                       url.hostname !== 'res.cloudinary.com';
+            
+            if (networkResponse && networkResponse.status === 200 && isSupportedScheme && !isExternalResource) {
               const responseToCache = networkResponse.clone();
               caches
                 .open(CACHE_NAME)
