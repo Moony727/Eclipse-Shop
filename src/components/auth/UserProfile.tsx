@@ -206,7 +206,7 @@ export function UserProfile({ isOpen, onClose, user, initialTab = "info" }: User
                                     ) : (
                                       <span>{item.price.toFixed(2)} AZN</span>
                                     )}
-                                    = ${(item.quantity * item.price).toFixed(2)}
+                                    = {(item.quantity * item.price).toFixed(2)} AZN
                                   </p>
                                 </div>
                               </div>

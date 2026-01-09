@@ -159,10 +159,10 @@ export function CartDrawer({ children }: CartDrawerProps) {
 
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-muted-foreground">
-                          ${(item.product.discountPrice || item.product.price).toFixed(2)} each
+                          {(item.product.discountPrice || item.product.price).toFixed(2)} AZN each
                         </span>
                         <span className="font-semibold">
-                          ${((item.product.discountPrice || item.product.price) * item.quantity).toFixed(2)}
+                          {((item.product.discountPrice || item.product.price) * item.quantity).toFixed(2)} AZN
                         </span>
                       </div>
                     </div>
@@ -177,7 +177,7 @@ export function CartDrawer({ children }: CartDrawerProps) {
             <div className="border-t pt-4 space-y-4">
               <div className="flex items-center justify-between text-lg font-semibold">
                 <span>{t("cart.total", "Total")}:</span>
-                <span>${totalPrice.toFixed(2)}</span>
+                <span>{totalPrice.toFixed(2)} AZN</span>
               </div>
 
               <Separator />

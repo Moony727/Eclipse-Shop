@@ -163,10 +163,10 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
                     </h4>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">
-                        ${(item.product.discountPrice || item.product.price).toFixed(2)} × {item.quantity}
+                        {(item.product.discountPrice || item.product.price).toFixed(2)} AZN × {item.quantity}
                       </span>
                       <span className="font-semibold">
-                        ${((item.product.discountPrice || item.product.price) * item.quantity).toFixed(2)}
+                        {((item.product.discountPrice || item.product.price) * item.quantity).toFixed(2)} AZN
                       </span>
                     </div>
                   </div>
@@ -177,9 +177,9 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
             <div className="flex items-center justify-between pt-3 border-t text-lg font-bold">
               <span>{t("purchase.total", "Total")}:</span>
               <span className="text-primary">
-                ${items.reduce((sum, item) =>
+                {items.reduce((sum, item) =>
                   sum + (item.product.discountPrice || item.product.price) * item.quantity, 0
-                ).toFixed(2)}
+                ).toFixed(2)} AZN
               </span>
             </div>
           </div>

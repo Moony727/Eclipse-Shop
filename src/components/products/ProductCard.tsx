@@ -81,15 +81,15 @@ export function ProductCard({ product }: Omit<ProductCardProps, 'onPurchase'>) {
           {hasDiscount ? (
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-black text-primary">
-                ${product.discountPrice?.toFixed(2)}
+                {product.discountPrice?.toFixed(2)} AZN
               </span>
               <span className="text-sm text-muted-foreground line-through decoration-destructive/50">
-                ${product.price.toFixed(2)}
+                {product.price.toFixed(2)} AZN
               </span>
             </div>
           ) : (
             <span className="text-2xl font-black text-primary">
-              ${product.price.toFixed(2)}
+              {product.price.toFixed(2)} AZN
             </span>
           )}
         </div>
