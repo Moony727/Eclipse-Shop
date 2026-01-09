@@ -35,8 +35,10 @@ export default function AdminLayout({
   const { user, signOut } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Check if user is admin
-  if (!user || !user.isAdmin) {
+  // Check if user is admin (using email list from env)
+  const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS?.split(',') || [];
+  const isAdmin = user && adminEmails.includes(user.email || '');
+  if (!user || !isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-muted/30">
         <div className="text-center">

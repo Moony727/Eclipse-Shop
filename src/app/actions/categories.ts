@@ -2,6 +2,7 @@
 
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import { Category } from "@/types";
+import { verifyAdmin } from "@/lib/utils/admin";
 
 /**
  * Get all categories
@@ -28,7 +29,7 @@ export async function getCategories(): Promise<{ success: boolean; data?: Catego
  */
 export async function addCategory(category: Partial<Category>, token: string): Promise<{ success: boolean; error?: string }> {
   try {
-    await adminAuth.verifyIdToken(token);
+    await verifyAdmin(token);
     if (!category.id) throw new Error("Category ID is required");
     await adminDb.collection("categories").doc(category.id).set(category);
     return { success: true };
@@ -43,7 +44,7 @@ export async function addCategory(category: Partial<Category>, token: string): P
  */
 export async function deleteCategory(categoryId: string, token: string): Promise<{ success: boolean; error?: string }> {
   try {
-    await adminAuth.verifyIdToken(token);
+    await verifyAdmin(token);
     await adminDb.collection("categories").doc(categoryId).delete();
     return { success: true };
   } catch (error) {

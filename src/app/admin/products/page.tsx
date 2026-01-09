@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { getProductsForAdmin, toggleProductStatus, createProduct, updateProduct } from "@/app/actions/products";
+import { getProductsForAdmin, toggleProductStatus, createProduct, updateProduct, deleteProduct } from "@/app/actions/products";
 import { Product, ProductFormData } from "@/types";
 import {
   Package,
@@ -130,6 +130,25 @@ export default function ProductsPage() {
     }
   };
 
+  const handleDeleteProduct = async (productId: string) => {
+    if (!firebaseUser) return;
+    if (!confirm("Are you sure you want to delete this product? This action cannot be undone.")) {
+      return;
+    }
+    try {
+      const token = await firebaseUser.getIdToken();
+      const result = await deleteProduct(productId, token);
+      if (result.success) {
+        toast.success("Product deleted successfully");
+        setProducts(prev => prev.filter(p => p.id !== productId));
+      } else {
+        toast.error(result.error || "Failed to delete product");
+      }
+    } catch {
+      toast.error("An error occurred while deleting product");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -250,7 +269,12 @@ export default function ProductsPage() {
                         >
                           <Edit2 className="h-4 w-4" />
                         </Button>
-                        <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-8 w-8 text-destructive"
+                          onClick={() => handleDeleteProduct(product.id)}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>

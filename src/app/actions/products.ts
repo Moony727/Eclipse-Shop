@@ -165,6 +165,25 @@ export async function createProduct(formData: ProductFormData, token: string): P
 }
 
 /**
+ * Admin: Delete a product
+ */
+export async function deleteProduct(productId: string, token: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    await verifyAdmin(token);
+
+    const validation = productIdSchema.safeParse(productId);
+    if (!validation.success) {
+      return { success: false, error: validation.error.errors[0].message };
+    }
+
+    await adminDb.collection("products").doc(productId).delete();
+    return { success: true };
+  } catch {
+    return { success: false, error: "Unauthorized or failed to delete product" };
+  }
+}
+
+/**
  * Admin: Update a product
  */
 export async function updateProduct(productId: string, formData: ProductFormData, token: string): Promise<{ success: boolean; data?: Product; error?: string }> {
