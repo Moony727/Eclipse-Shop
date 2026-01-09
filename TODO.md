@@ -74,3 +74,20 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 Once all environment variables are set correctly, both Cloudinary uploads and Firestore connections will work properly.
+
+---
+# Detailed Console Log Error Typer
+
+## Tasks
+- [x] Create src/lib/errorTyper.ts with typeError function
+- [x] Implement detailed error logging with timestamp, message, cause, stack trace
+- [x] Add typewriter effect for Node.js environments using process.stdout
+- [x] Fallback to console.error for browser environments
+- [x] Integrate typeError into product upload error handling
+- [x] Fix duplicate "Failed to upload image" error messages
+
+## Status
+- ✅ **COMPLETED**: Error typer utility created and integrated successfully
+- ✅ Supports both Node.js and browser environments
+- ✅ Includes detailed error information and typewriter effect where possible
+- ✅ Fixed error message duplication in product upload functions

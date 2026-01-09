@@ -4,6 +4,7 @@ import { adminDb } from "@/lib/firebase/admin";
 import { productIdSchema } from "@/lib/validations/product.schema";
 import { Product, ProductFormData } from "@/types";
 import { verifyAdmin } from "@/lib/utils/admin";
+import { typeError } from "@/lib/errorTyper";
 
 /**
  * Get a single product by ID
@@ -126,7 +127,7 @@ export async function createProduct(formData: ProductFormData, token: string): P
         imageUrl = await uploadImage(formData.image);
       } catch (uploadError) {
         console.error('Image upload failed:', uploadError);
-        return { success: false, error: `Failed to upload image: ${uploadError instanceof Error ? uploadError.message : 'Unknown error'}` };
+        return { success: false, error: uploadError.message };
       }
     }
 
@@ -176,7 +177,7 @@ export async function updateProduct(productId: string, formData: ProductFormData
         updateData.imageUrl = await uploadImage(formData.image);
       } catch (uploadError) {
         console.error('Image upload failed:', uploadError);
-        return { success: false, error: `Failed to upload image: ${uploadError instanceof Error ? uploadError.message : 'Unknown error'}` };
+        return { success: false, error: uploadError.message };
       }
     }
 
@@ -295,7 +296,7 @@ async function uploadImage(file: File): Promise<string> {
 
     return result.secure_url;
   } catch (error) {
-    console.error('Cloudinary upload error:', error);
-    throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    await typeError(error, 'Cloudinary upload failed');
+    throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : JSON.stringify(error)}`);
   }
 }
