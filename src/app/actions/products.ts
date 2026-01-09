@@ -127,7 +127,8 @@ export async function createProduct(formData: ProductFormData, token: string): P
         imageUrl = await uploadImage(formData.image);
       } catch (uploadError) {
         console.error('Image upload failed:', uploadError);
-        return { success: false, error: uploadError.message };
+        const errorMessage = uploadError instanceof Error ? uploadError.message : 'Unknown error occurred';
+        return { success: false, error: errorMessage };
       }
     }
 
@@ -177,7 +178,8 @@ export async function updateProduct(productId: string, formData: ProductFormData
         updateData.imageUrl = await uploadImage(formData.image);
       } catch (uploadError) {
         console.error('Image upload failed:', uploadError);
-        return { success: false, error: uploadError.message };
+        const errorMessage = uploadError instanceof Error ? uploadError.message : 'Unknown error occurred';
+        return { success: false, error: errorMessage };
       }
     }
 
