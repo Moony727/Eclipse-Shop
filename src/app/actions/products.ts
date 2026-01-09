@@ -57,7 +57,7 @@ export async function getPublicProducts(filters?: {
 }): Promise<{ success: boolean; data?: Product[]; error?: string }> {
   try {
     const productsRef = adminDb.collection("products");
-    let query = productsRef.orderBy("isActive", "desc").orderBy("createdAt", "desc");
+    let query = productsRef.where("isActive", "==", true).orderBy("createdAt", "desc");
 
     // Apply filters
     if (filters?.category && filters.category !== "all") {
@@ -68,12 +68,11 @@ export async function getPublicProducts(filters?: {
     }
 
     const snapshot = await query.get();
-    const allProducts: Product[] = snapshot.docs.map((doc) => ({
+    const products: Product[] = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
       createdAt: doc.data().createdAt?.toDate() || new Date(),
     })) as Product[];
-    const products = allProducts.filter(product => product.isActive); // Filter active products after fetching
 
     return { success: true, data: products };
   } catch (error) {
