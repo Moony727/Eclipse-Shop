@@ -20,6 +20,15 @@ let app: FirebaseApp | undefined;
 if (typeof window !== 'undefined' && firebaseConfig.apiKey && firebaseConfig.apiKey !== 'demo-api-key') {
   app = initializeApp(firebaseConfig);
 
+  // Set up reCAPTCHA container for Firebase Auth and App Check
+  // This prevents the "placeholder element must be an element or id" error
+  if (!document.getElementById('recaptcha-container')) {
+    const container = document.createElement('div');
+    container.id = 'recaptcha-container';
+    container.style.display = 'none';
+    document.body.appendChild(container);
+  }
+
   // Initialize App Check with reCAPTCHA v3
   // Only initialize if Site Key is available
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;

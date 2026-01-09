@@ -70,12 +70,12 @@ const nextConfig: NextConfig = {
             // If you later migrate to nonce-based CSP, remove 'unsafe-inline'.
             value:
               "default-src 'self'; " +
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; " +
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-              "font-src 'self' https://fonts.gstatic.com data:; " +
-              "img-src 'self' data: blob: https: https://images.pexels.com https://storage.googleapis.com https://firebasestorage.googleapis.com https://replicate.delivery https://res.cloudinary.com; " +
-              "connect-src 'self' https://*.googleapis.com https://*.firebasestorage.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.vercel.app https://api.telegram.org https://res.cloudinary.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ wss://*.firebase.com; " +
-              "frame-src https://www.google.com/recaptcha/ https://recaptcha.google.com/; " +
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com https://cdn.jsdelivr.net https://apis.google.com https://challenge.cloudflare.com; " +
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.gstatic.com; " +
+              "font-src 'self' https://fonts.gstatic.com https://www.gstatic.com data:; " +
+              "img-src 'self' data: blob: https: https://images.pexels.com https://storage.googleapis.com https://firebasestorage.googleapis.com https://replicate.delivery https://res.cloudinary.com https://www.gstatic.com; " +
+              "connect-src 'self' https://*.googleapis.com https://*.firebasestorage.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.vercel.app https://api.telegram.org https://res.cloudinary.com https://www.google.com https://www.gstatic.com https://apis.google.com https://challenge.cloudflare.com wss://*.firebase.com; " +
+              "frame-src https://www.google.com https://recaptcha.google.com https://challenge.cloudflare.com; " +
               "frame-ancestors 'self'; " +
               "base-uri 'self'; " +
               "form-action 'self'; " +
