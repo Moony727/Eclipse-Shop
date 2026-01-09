@@ -4,14 +4,13 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useLanguage } from "@/hooks/useLanguage";
-import { Search, Filter, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, Filter, ChevronDown, ChevronUp, X } from "lucide-react";
 
 import { Category } from "@/types";
 
@@ -35,7 +34,7 @@ export function ProductFilters({
   onSearchChange,
 }: ProductFiltersProps) {
   const { t, language } = useLanguage();
-  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   const categories = [
     { id: 'all', name: t('products.all') },
@@ -68,62 +67,75 @@ export function ProductFilters({
   };
 
   return (
-    <div className="space-y-[var(--space-6)] mb-[var(--space-8)] w-full">
+    <div className="space-y-8 mb-12 w-full max-w-4xl mx-auto px-4">
       {/* Search Bar */}
-      <div className="relative max-w-md mx-auto w-full">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+      <div className="relative w-full group">
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 group-focus-within:text-primary transition-colors" />
         <Input
           type="text"
           placeholder={t('products.search')}
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-10 pr-4 h-11 rounded-xl w-full"
+          className="pl-12 pr-4 h-14 rounded-2xl w-full text-lg shadow-sm border-2 focus-visible:ring-primary/20 transition-all bg-card/50 backdrop-blur-sm"
         />
       </div>
 
-      {/* Collapsible Filters for Mobile */}
+      {/* Unified Collapsible Filters - "Fire style" for all screens */}
       <Collapsible
-        open={isMobileFiltersOpen}
-        onOpenChange={setIsMobileFiltersOpen}
-        className="block md:hidden border rounded-2xl overflow-hidden bg-muted/20"
+        open={isFiltersOpen}
+        onOpenChange={setIsFiltersOpen}
+        className="border-2 rounded-3xl overflow-hidden bg-card/30 backdrop-blur-md shadow-lg transition-all duration-300 hover:border-primary/30"
       >
         <CollapsibleTrigger asChild>
-          <Button variant="ghost" className="w-full flex items-center justify-between p-4 h-auto font-bold">
-            <div className="flex items-center">
-              <Filter className="w-5 h-5 mr-2" />
-              {t('products.category')}
+          <Button variant="ghost" className="w-full flex items-center justify-between p-6 h-auto font-black text-lg md:text-xl group">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                <Filter className="w-5 h-5 md:w-6 md:h-6" />
+              </div>
+              <span className="tracking-tight">{t('products.category')}</span>
               {selectedCategory !== 'all' && (
-                <Badge variant="secondary" className="ml-2 text-[10px] px-1.5 py-0">
+                <Badge className="ml-2 bg-primary text-primary-foreground font-bold px-3 py-1">
                   {categories.find(c => c.id === selectedCategory)?.name}
                 </Badge>
               )}
             </div>
-            {isMobileFiltersOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-muted-foreground hidden sm:inline">
+                {isFiltersOpen ? t('common.close', 'Close') : t('common.open', 'Browse')}
+              </span>
+              {isFiltersOpen ? (
+                <ChevronUp className="w-6 h-6 text-primary transition-transform" />
+              ) : (
+                <ChevronDown className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-transform" />
+              )}
+            </div>
           </Button>
         </CollapsibleTrigger>
-        <CollapsibleContent className="p-4 pt-0 space-y-6 animate-in slide-in-from-top-2 duration-200">
-          <div className="space-y-4">
+        <CollapsibleContent className="p-8 pt-0 space-y-8 animate-in slide-in-from-top-4 duration-500">
+          <div className="h-px bg-border/50 mb-6" />
+          
+          <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-muted-foreground">Select Category</span>
+              <h4 className="text-sm font-black uppercase tracking-widest text-muted-foreground/70">Main Categories</h4>
               <Button
-                variant="link"
+                variant="outline"
                 size="sm"
                 onClick={clearFilters}
-                className="text-xs h-auto p-0 h-6"
+                className="text-xs font-bold rounded-full h-8 px-4 border-2 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-all"
               >
                 {t('common.clear')}
               </Button>
             </div>
             
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-3">
               {categories.map((category) => (
                 <button
                   key={category.id}
                   onClick={() => onCategoryChange(category.id)}
-                  className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+                  className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all duration-300 transform active:scale-95 ${
                     selectedCategory === category.id
-                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
-                      : "bg-background border hover:bg-muted"
+                      ? "bg-primary text-primary-foreground shadow-xl shadow-primary/30 -translate-y-1"
+                      : "bg-background border-2 hover:border-primary/50 hover:bg-muted"
                   }`}
                 >
                   {category.name}
@@ -132,17 +144,17 @@ export function ProductFilters({
             </div>
 
             {selectedCategory !== 'all' && (
-              <div className="space-y-3 pt-2 border-t animate-in fade-in slide-in-from-top-1 duration-300">
-                <span className="text-sm font-medium text-muted-foreground">{t('products.subcategory')}</span>
-                <div className="flex flex-wrap gap-2">
+              <div className="space-y-6 pt-6 border-t-2 border-dashed animate-in fade-in slide-in-from-top-2 duration-400">
+                <h4 className="text-sm font-black uppercase tracking-widest text-muted-foreground/70">{t('products.subcategory')}</h4>
+                <div className="flex flex-wrap gap-3">
                   {subcategories.map((subcategory) => (
                     <button
                       key={subcategory.id}
                       onClick={() => onSubcategoryChange(subcategory.id)}
-                      className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+                      className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 transform active:scale-95 ${
                         selectedSubcategory === subcategory.id
-                          ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
-                          : "bg-background border hover:bg-muted"
+                          ? "bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 -translate-y-0.5"
+                          : "bg-background border-2 hover:border-primary/30 hover:bg-muted"
                       }`}
                     >
                       {subcategory.name}
@@ -155,85 +167,36 @@ export function ProductFilters({
         </CollapsibleContent>
       </Collapsible>
 
-      {/* Standard Filters for Desktop */}
-      <div className="hidden md:block space-y-[var(--space-4)]">
-        <div className="flex items-center justify-between">
-          <h3 className="text-[var(--text-lg)] font-semibold flex items-center">
-            <Filter className="w-5 h-5 mr-2" />
-            {t('products.category')}
-          </h3>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={clearFilters}
-            className="text-sm rounded-lg px-4"
-          >
-            {t('common.clear')}
-          </Button>
+      {/* Active Filter Pill Bar */}
+      {(selectedCategory !== 'all' || selectedSubcategory !== 'all' || searchQuery) && (
+        <div className="flex flex-wrap items-center gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">Active:</span>
+          {selectedCategory !== 'all' && (
+            <Badge variant="outline" className="pl-3 pr-1 py-1 gap-2 rounded-full border-2 border-primary/20 bg-primary/5 text-primary font-bold">
+              {categories.find(c => c.id === selectedCategory)?.name}
+              <button onClick={() => onCategoryChange('all')} className="hover:bg-primary hover:text-white rounded-full p-0.5 transition-colors">
+                <X className="w-3 h-3" />
+              </button>
+            </Badge>
+          )}
+          {selectedSubcategory !== 'all' && (
+            <Badge variant="outline" className="pl-3 pr-1 py-1 gap-2 rounded-full border-2 border-primary/20 bg-primary/5 text-primary font-bold">
+              {subcategories.find(s => s.id === selectedSubcategory)?.name}
+              <button onClick={() => onSubcategoryChange('all')} className="hover:bg-primary hover:text-white rounded-full p-0.5 transition-colors">
+                <X className="w-3 h-3" />
+              </button>
+            </Badge>
+          )}
+          {searchQuery && (
+            <Badge variant="outline" className="pl-3 pr-1 py-1 gap-2 rounded-full border-2 border-primary/20 bg-primary/5 text-primary font-bold">
+              &quot;{searchQuery}&quot;
+              <button onClick={() => onSearchChange('')} className="hover:bg-primary hover:text-white rounded-full p-0.5 transition-colors">
+                <X className="w-3 h-3" />
+              </button>
+            </Badge>
+          )}
         </div>
-
-        <Tabs value={selectedCategory} onValueChange={onCategoryChange}>
-          <div className="overflow-x-auto pb-2">
-            <TabsList className="inline-flex w-max min-w-full gap-1">
-              {categories.map((category) => (
-                <TabsTrigger
-                  key={category.id}
-                  value={category.id}
-                  className="text-xs sm:text-sm flex-shrink-0"
-                >
-                  {category.name}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </div>
-        </Tabs>
-
-        {/* Subcategory Filters */}
-        {selectedCategory !== 'all' && (
-          <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-400">
-            <h4 className="text-md font-medium">{t('products.subcategory')}</h4>
-            <Tabs value={selectedSubcategory} onValueChange={onSubcategoryChange}>
-              <div className="overflow-x-auto pb-2">
-                <TabsList className="inline-flex w-max min-w-full gap-1">
-                  {subcategories.map((subcategory) => (
-                    <TabsTrigger
-                      key={subcategory.id}
-                      value={subcategory.id}
-                      className="text-xs sm:text-sm flex-shrink-0"
-                    >
-                      {subcategory.name}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-              </div>
-            </Tabs>
-          </div>
-        )}
-      </div>
-
-      {/* Active Filters Display - Desktop Only */}
-      <div className="hidden md:block">
-        {(selectedCategory !== 'all' || selectedSubcategory !== 'all' || searchQuery) && (
-          <div className="flex flex-wrap gap-2 p-4 bg-muted/50 rounded-lg">
-            <span className="text-sm font-medium">Active filters:</span>
-            {selectedCategory !== 'all' && (
-              <span className="px-2 py-1 bg-primary/10 text-primary rounded text-sm">
-                {categories.find(c => c.id === selectedCategory)?.name}
-              </span>
-            )}
-            {selectedSubcategory !== 'all' && (
-              <span className="px-2 py-1 bg-primary/10 text-primary rounded text-sm">
-                {subcategories.find(s => s.id === selectedSubcategory)?.name}
-              </span>
-            )}
-            {searchQuery && (
-              <span className="px-2 py-1 bg-primary/10 text-primary rounded text-sm">
-                &quot;{searchQuery}&quot;
-              </span>
-            )}
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 }

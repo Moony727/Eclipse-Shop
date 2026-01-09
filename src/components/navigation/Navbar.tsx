@@ -70,25 +70,25 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
         : 'bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
     }`}>
       <div className="container mx-auto px-4">
-        <div className="flex h-14 md:h-16 items-center justify-between">
+        <div className="flex h-12 md:h-14 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
-            <div className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-lg bg-gradient-to-r from-primary to-purple-600 group-hover:scale-110 transition-transform duration-300">
-              <span className="text-white font-bold text-base md:text-lg">E</span>
+            <div className="flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gradient-to-r from-primary to-purple-600 group-hover:scale-110 transition-transform duration-300">
+              <span className="text-white font-bold text-sm md:text-base">E</span>
             </div>
-            <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-primary transition-all duration-300">
+            <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-primary transition-all duration-300">
               Eclipse
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-4">
             <button
               onClick={(e) => {
                 e.preventDefault();
                 scrollTo("home");
               }}
-              className="relative text-foreground/80 hover:text-foreground transition-all duration-300 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-0.5 before:bg-primary before:transition-all before:duration-300 hover:before:w-full"
+              className="relative text-xs font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
             >
               {t("nav.home")}
             </button>
@@ -97,7 +97,7 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                 e.preventDefault();
                 scrollTo("products");
               }}
-              className="relative text-foreground/80 hover:text-foreground transition-all duration-300 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-0.5 before:bg-primary before:transition-all before:duration-300 hover:before:w-full"
+              className="relative text-xs font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
             >
               {t("nav.products")}
             </button>
@@ -106,7 +106,7 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                 e.preventDefault();
                 setIsAboutOpen(true);
               }}
-              className="relative text-foreground/80 hover:text-foreground transition-all duration-300 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-0.5 before:bg-primary before:transition-all before:duration-300 hover:before:w-full"
+              className="relative text-xs font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
             >
               {t("nav.about")}
             </button>
@@ -115,26 +115,26 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                 e.preventDefault();
                 setIsContactOpen(true);
               }}
-              className="relative text-foreground/80 hover:text-foreground transition-all duration-300 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-0.5 before:bg-primary before:transition-all before:duration-300 hover:before:w-full"
+              className="relative text-xs font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
             >
               {t("nav.contact")}
             </button>
           </div>
 
           {/* Right Side Controls */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 md:space-x-3">
             {/* Cart Icon */}
             <CartDrawer>
               <Button
                 variant="ghost"
-                size="sm"
-                className="relative hover:scale-105 transition-transform duration-200"
+                size="icon"
+                className="h-8 w-8 relative hover:scale-105 transition-transform duration-200"
               >
-                <ShoppingCart className="w-5 h-5" />
+                <ShoppingCart className="w-4 h-4" />
                 {getTotalItems() > 0 && (
                   <Badge
                     variant="destructive"
-                    className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                    className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 text-[10px]"
                   >
                     {getTotalItems()}
                   </Badge>
@@ -143,32 +143,32 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
             </CartDrawer>
 
             {/* Language Switcher */}
-            <div className="transition-transform duration-200 hover:scale-105">
+            <div className="transition-transform duration-200 hover:scale-105 scale-90">
               <LanguageSwitcher />
             </div>
 
             {/* Theme Switcher */}
-            <div className="transition-transform duration-200 hover:scale-105">
+            <div className="transition-transform duration-200 hover:scale-105 scale-90">
               <ThemeSwitcher />
             </div>
 
             {/* User Authentication */}
             {user ? (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1">
                 {/* User Dropdown Menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="flex items-center space-x-2 hover:scale-105 transition-transform duration-200"
+                      className="h-8 flex items-center space-x-1.5 hover:scale-105 transition-transform duration-200 px-2"
                     >
-                      <Avatar className="w-8 h-8 ring-2 ring-primary/20">
-                        <AvatarFallback className="text-xs bg-gradient-to-r from-primary to-purple-600 text-white">
+                      <Avatar className="w-6 h-6 ring-2 ring-primary/20">
+                        <AvatarFallback className="text-[10px] bg-gradient-to-r from-primary to-purple-600 text-white">
                           {user.name.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="hidden sm:inline font-medium">{user.name}</span>
+                      <span className="hidden sm:inline text-xs font-semibold">{user.name.split(' ')[0]}</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">

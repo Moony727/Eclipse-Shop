@@ -97,11 +97,6 @@ export default function HomePage() {
     setFilteredProducts(filtered);
   }, [products, selectedCategory, selectedSubcategory, searchQuery]);
 
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   const handleProfileClick = (tab: "info" | "history" = "info") => {
     setProfileTab(tab);
     setShowProfileModal(true);
@@ -111,14 +106,6 @@ export default function HomePage() {
     setShowLoginModal(true);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-background">
       <Navbar
@@ -127,29 +114,34 @@ export default function HomePage() {
         onLoginClick={handleLoginClick}
       />
 
-      <main id="home" className="container mx-auto px-4 py-8 md:py-12">
+      <main id="home" className="container mx-auto px-4 py-6 md:py-10">
         {/* Hero Section */}
-        <section className="text-center py-12 md:py-16 mb-8 md:mb-12 px-4">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+        <section className="text-center py-10 md:py-14 mb-6 md:mb-10 px-4">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 md:mb-6 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent leading-tight">
             {t("hero.title", "Welcome to Eclipse Shop")}
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6 md:mb-8 px-4">
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-6 md:mb-8 px-4 font-medium">
             {t("hero.subtitle", "Discover premium digital products, software, and services designed to elevate your business and creativity.")}
           </p>
           <div className="flex justify-center px-4">
-            <div className="relative rounded-lg shadow-2xl max-w-full w-full h-48 md:h-64 lg:h-96">
-              <NextImage
-                src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e41ede49-48db-4084-b71d-39297b6eda42.png"
-                alt="Eclipse Shop - Premium Digital Marketplace"
-                fill
-                className="object-cover rounded-lg"
-              />
+            <div className="relative rounded-3xl shadow-2xl max-w-full w-full h-48 md:h-64 lg:h-96 overflow-hidden border-4 border-background group">
+              {loading ? (
+                <div className="absolute inset-0 bg-muted animate-pulse" />
+              ) : (
+                <NextImage
+                  src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e41ede49-48db-4084-b71d-39297b6eda42.png"
+                  alt="Eclipse Shop - Premium Digital Marketplace"
+                  fill
+                  priority
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              )}
             </div>
           </div>
         </section>
 
         {/* Filters */}
-        <section className="mb-8 w-full max-w-4xl mx-auto">
+        <section className="mb-12 w-full max-w-4xl mx-auto">
           <ProductFilters
             categories={categories}
             selectedCategory={selectedCategory}
@@ -162,10 +154,10 @@ export default function HomePage() {
         </section>
 
         {/* Products Grid */}
-        <section id="products">
+        <section id="products" className="min-h-[400px]">
           <ProductGrid
-          products={filteredProducts}
-          isLoading={isLoading}
+            products={filteredProducts}
+            isLoading={isLoading || loading}
           />
         </section>
       </main>
