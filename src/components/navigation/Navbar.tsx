@@ -70,13 +70,13 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
         : 'bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
     }`}>
       <div className="container mx-auto px-4">
-        <div className="flex h-12 md:h-14 items-center justify-between">
+        <div className="flex h-[var(--nav-height)] items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
-            <div className="flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gradient-to-r from-primary to-purple-600 group-hover:scale-110 transition-transform duration-300">
-              <span className="text-white font-bold text-sm md:text-base">E</span>
+            <div className="flex items-center justify-center w-[calc(1.75rem*var(--ui-scale))] h-[calc(1.75rem*var(--ui-scale))] md:w-[calc(2rem*var(--ui-scale))] md:h-[calc(2rem*var(--ui-scale))] rounded-lg bg-gradient-to-r from-primary to-purple-600 group-hover:scale-110 transition-transform duration-300">
+              <span className="text-white font-bold text-[calc(0.875rem*var(--ui-scale))] md:text-[calc(1rem*var(--ui-scale))]">E</span>
             </div>
-            <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-primary transition-all duration-300">
+            <span className="text-[calc(1.125rem*var(--ui-scale))] md:text-[calc(1.25rem*var(--ui-scale))] font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-primary transition-all duration-300">
               Eclipse
             </span>
           </Link>
@@ -88,7 +88,7 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                 e.preventDefault();
                 scrollTo("home");
               }}
-              className="relative text-xs font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
+              className="relative text-[calc(0.75rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
             >
               {t("nav.home")}
             </button>
@@ -97,7 +97,7 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                 e.preventDefault();
                 scrollTo("products");
               }}
-              className="relative text-xs font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
+              className="relative text-[calc(0.75rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
             >
               {t("nav.products")}
             </button>
@@ -106,7 +106,7 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                 e.preventDefault();
                 setIsAboutOpen(true);
               }}
-              className="relative text-xs font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
+              className="relative text-[calc(0.75rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
             >
               {t("nav.about")}
             </button>
@@ -115,7 +115,7 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                 e.preventDefault();
                 setIsContactOpen(true);
               }}
-              className="relative text-xs font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
+              className="relative text-[calc(0.75rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
             >
               {t("nav.contact")}
             </button>
@@ -128,13 +128,13 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 relative hover:scale-105 transition-transform duration-200"
+                className="h-[calc(2rem*var(--ui-scale))] w-[calc(2rem*var(--ui-scale))] relative hover:scale-105 transition-transform duration-200"
               >
-                <ShoppingCart className="w-4 h-4" />
+                <ShoppingCart className="w-[calc(1rem*var(--ui-scale))] h-[calc(1rem*var(--ui-scale))]" />
                 {getTotalItems() > 0 && (
                   <Badge
                     variant="destructive"
-                    className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 text-[10px]"
+                    className="absolute -top-1 -right-1 h-[calc(1rem*var(--ui-scale))] w-[calc(1rem*var(--ui-scale))] min-w-0 flex items-center justify-center p-0 text-[calc(0.625rem*var(--ui-scale))]"
                   >
                     {getTotalItems()}
                   </Badge>
@@ -143,12 +143,12 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
             </CartDrawer>
 
             {/* Language Switcher */}
-            <div className="transition-transform duration-200 hover:scale-105 scale-90">
+            <div className="transition-transform duration-200 hover:scale-105" style={{ transform: 'scale(var(--ui-scale))' }}>
               <LanguageSwitcher />
             </div>
 
             {/* Theme Switcher */}
-            <div className="transition-transform duration-200 hover:scale-105 scale-90">
+            <div className="transition-transform duration-200 hover:scale-105" style={{ transform: 'scale(var(--ui-scale))' }}>
               <ThemeSwitcher />
             </div>
 
@@ -161,14 +161,14 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-8 flex items-center space-x-1.5 hover:scale-105 transition-transform duration-200 px-2"
+                      className="h-[calc(2rem*var(--ui-scale))] flex items-center space-x-1.5 hover:scale-105 transition-transform duration-200 px-2"
                     >
-                      <Avatar className="w-6 h-6 ring-2 ring-primary/20">
-                        <AvatarFallback className="text-[10px] bg-gradient-to-r from-primary to-purple-600 text-white">
+                      <Avatar className="w-[calc(1.5rem*var(--ui-scale))] h-[calc(1.5rem*var(--ui-scale))] ring-2 ring-primary/20">
+                        <AvatarFallback className="text-[calc(0.625rem*var(--ui-scale))] bg-gradient-to-r from-primary to-purple-600 text-white">
                           {user.name.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="hidden sm:inline text-xs font-semibold">{user.name.split(' ')[0]}</span>
+                      <span className="hidden sm:inline text-[calc(0.75rem*var(--ui-scale))] font-semibold">{user.name.split(' ')[0]}</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
@@ -227,14 +227,14 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
             {/* Mobile Menu Button */}
             <Button
               variant="ghost"
-              size="sm"
-              className="md:hidden hover:scale-105 transition-transform duration-200"
+              size="icon"
+              className="md:hidden h-[calc(2rem*var(--ui-scale))] w-[calc(2rem*var(--ui-scale))] hover:scale-105 transition-transform duration-200"
               onClick={toggleMobileMenu}
             >
               {isMobileMenuOpen ? (
-                <X className="h-5 w-5 transition-transform duration-200 rotate-90" />
+                <X className="h-[calc(1rem*var(--ui-scale))] w-[calc(1rem*var(--ui-scale))] transition-transform duration-200 rotate-90" />
               ) : (
-                <Menu className="h-5 w-5 transition-transform duration-200" />
+                <Menu className="h-[calc(1rem*var(--ui-scale))] w-[calc(1rem*var(--ui-scale))] transition-transform duration-200" />
               )}
             </Button>
           </div>
