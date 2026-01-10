@@ -5,7 +5,6 @@
 const CACHE_NAME = 'eclipse-shop-v2';
 const STATIC_ASSETS = [
   '/',
-  '/index.html',
   '/manifest.json',
   '/favicon.svg',
 ];

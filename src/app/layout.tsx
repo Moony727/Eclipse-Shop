@@ -113,9 +113,7 @@ export default function RootLayout({
               <LanguageProvider>
                 <AuthProvider>
                   <CartProvider>
-                    <div id="root">
-                      {children}
-                    </div>
+                    {children}
                     <Toaster key="main-toaster" position="bottom-right" expand={true} richColors />
                   </CartProvider>
                 </AuthProvider>
