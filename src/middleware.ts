@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth } from '@/lib/firebase/admin';
-import { randomBytes } from 'crypto';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Generate nonce for CSP
-  const nonce = randomBytes(16).toString('base64');
+  const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
 
   // Set CSP header with nonce
   const csp = [
