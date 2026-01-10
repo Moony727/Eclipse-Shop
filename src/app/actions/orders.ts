@@ -50,15 +50,12 @@ export async function createOrder(
     const docRef = await ordersRef.add(orderData);
 
     // Send Telegram notification (non-blocking)
-    const firstItem = validation.data.items[0];
     sendTelegramNotification({
       orderId: docRef.id,
       customerName: validation.data.customerName || validation.data.userName,
       contactId: validation.data.contactId,
       contactType: validation.data.contactType,
-      productName: validation.data.items.length === 1
-        ? `${firstItem.productName.en} (x${firstItem.quantity})`
-        : `${firstItem.productName.en} and ${validation.data.items.length - 1} other item(s)`,
+      items: validation.data.items,
       totalAmount: validation.data.totalAmount,
       orderDate: new Date().toLocaleString(),
     }).catch(() => {
@@ -164,19 +161,27 @@ export async function getOrderById(
 export async function getUserOrders(
   token: string
 ): Promise<{ success: boolean; data?: Order[]; error?: string }> {
+  console.log("getUserOrders called, admin initialized:", isAdminInitialized);
+
   if (!isAdminInitialized || !adminAuth || !adminDb) {
+    console.error("Admin SDK not initialized:", { isAdminInitialized, adminAuth: !!adminAuth, adminDb: !!adminDb });
     return { success: false, error: "Server configuration error" };
   }
 
   try {
+    console.log("Verifying token...");
     const decodedToken = await adminAuth.verifyIdToken(token);
     const userId = decodedToken.uid;
+    console.log("Token verified for user:", userId);
 
     const ordersRef = adminDb.collection("orders");
+    console.log("Querying orders for user:", userId);
     const snapshot = await ordersRef
       .where("userId", "==", userId)
       .orderBy("createdAt", "desc")
       .get();
+
+    console.log("Found orders:", snapshot.size);
 
     const orders: Order[] = await Promise.all(snapshot.docs.map(async (doc) => {
       const data = doc.data();
@@ -226,6 +231,7 @@ export async function getUserOrders(
       return order;
     }));
 
+    console.log("Successfully processed", orders.length, "orders");
     return { success: true, data: orders };
   } catch (error) {
     console.error("Error fetching user orders:", error as Error);

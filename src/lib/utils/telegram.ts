@@ -3,12 +3,24 @@
  * This runs server-side only to keep the bot token secure
  */
 
+interface OrderItem {
+  productId: string;
+  quantity: number;
+  price: number;
+  originalPrice: number;
+  productName: {
+    en: string;
+    ru: string;
+    az: string;
+  };
+}
+
 interface TelegramMessage {
   orderId: string;
   customerName: string;
   contactId: string;
   contactType: 'whatsapp' | 'telegram';
-  productName: string;
+  items: OrderItem[];
   totalAmount: number;
   orderDate: string;
 }
@@ -71,14 +83,23 @@ function formatOrderMessage(message: TelegramMessage): string {
   const maskedContact = message.contactId.length > 4
     ? '*'.repeat(message.contactId.length - 4) + message.contactId.slice(-4)
     : message.contactId;
+
+  // Format items list
+  const itemsList = message.items.map((item, index) =>
+    `${index + 1}. ${item.productName.en} (x${item.quantity}) - ${(item.quantity * item.price).toFixed(2)} AZN`
+  ).join('\n');
+
   return `
-New Order!
-Name: ${message.customerName}
-${contactLabel}: ${maskedContact}
-Order ID: ${message.orderId}
-Order Time: ${message.orderDate}
-Product Name: ${message.productName}
-Price: ${message.totalAmount.toFixed(2)} AZN
+🛒 <b>New Order!</b>
+👤 Name: ${message.customerName}
+📞 ${contactLabel}: ${maskedContact}
+🆔 Order ID: ${message.orderId}
+⏰ Order Time: ${message.orderDate}
+
+📦 <b>Items:</b>
+${itemsList}
+
+💰 <b>Total: ${message.totalAmount.toFixed(2)} AZN</b>
   `.trim();
 }
 
