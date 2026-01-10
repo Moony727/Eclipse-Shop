@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import { getOrdersForAdmin } from "@/app/actions/orders";
 import { Order } from "@/types";
 import {
@@ -16,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 
 export default function AdminDashboard() {
   const { firebaseUser } = useAuth();
+  const { t } = useLanguage();
   const [stats, setStats] = useState({
     totalOrders: 0,
     pendingOrders: 0,
@@ -64,8 +66,8 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground">Overview of your shop&apos;s performance</p>
+        <h1 className="text-3xl font-bold tracking-tight">{t("admin.dashboard", "Dashboard")}</h1>
+        <p className="text-muted-foreground">{t("admin.dashboardDesc", "Overview of your shop's performance")}</p>
       </div>
 
       {error && (
@@ -80,42 +82,42 @@ export default function AdminDashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("admin.totalOrders", "Total Orders")}</CardTitle>
             <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalOrders}</div>
-            <p className="text-xs text-muted-foreground">Lifetime orders</p>
+            <p className="text-xs text-muted-foreground">{t("admin.lifetimeOrders", "Lifetime orders")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("admin.pendingOrders", "Pending Orders")}</CardTitle>
             <Clock className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.pendingOrders}</div>
-            <p className="text-xs text-muted-foreground">Requires attention</p>
+            <p className="text-xs text-muted-foreground">{t("admin.requiresAttention", "Requires attention")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("admin.completedOrders", "Completed")}</CardTitle>
             <CheckCircle2 className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.completedOrders}</div>
-            <p className="text-xs text-muted-foreground">Successfully delivered</p>
+            <p className="text-xs text-muted-foreground">{t("admin.successfullyDelivered", "Successfully delivered")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("admin.totalRevenue", "Total Revenue")}</CardTitle>
             <TrendingUp className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalRevenue} AZN</div>
-            <p className="text-xs text-muted-foreground">From completed orders</p>
+            <p className="text-xs text-muted-foreground">{t("admin.fromCompletedOrders", "From completed orders")}</p>
           </CardContent>
         </Card>
       </div>
@@ -123,14 +125,14 @@ export default function AdminDashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
           <CardHeader>
-            <CardTitle>Recent Orders</CardTitle>
+            <CardTitle>{t("admin.recentOrders", "Recent Orders")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-8">
               {isLoading ? (
-                <p className="text-center text-muted-foreground">Loading...</p>
+                <p className="text-center text-muted-foreground">{t("common.loading", "Loading...")}</p>
               ) : recentOrders.length === 0 ? (
-                <p className="text-center text-muted-foreground">No recent orders</p>
+                <p className="text-center text-muted-foreground">{t("orders.noOrders", "No orders yet")}</p>
               ) : (
                 recentOrders.map((order) => (
                   <div key={order.id} className="flex items-center">
@@ -139,15 +141,15 @@ export default function AdminDashboard() {
                         {order.customerName || order.userName}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {order.productName?.en || order.items?.[0]?.productName?.en || 'Unknown Product'}
+                        {order.productName?.en || order.items?.[0]?.productName?.en || t("common.unknown", "Unknown Product")}
                       </p>
                     </div>
                     <div className="ml-auto font-medium">
                       <Badge variant={order.status === 'completed' ? 'secondary' : 'outline'} className={
-                        order.status === 'completed' ? 'bg-green-100 text-green-800' : 
+                        order.status === 'completed' ? 'bg-green-100 text-green-800' :
                         order.status === 'requested' ? 'bg-yellow-100 text-yellow-800' : ''
                       }>
-                        {order.status}
+                        {t(`orders.status.${order.status}`, order.status)}
                       </Badge>
                     </div>
                     <div className="ml-4 text-sm font-bold">
@@ -161,14 +163,14 @@ export default function AdminDashboard() {
         </Card>
         <Card className="col-span-3">
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+            <CardTitle>{t("admin.quickActions", "Quick Actions")}</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4">
             <div className="flex items-center space-x-4 rounded-md border p-4">
               <AlertCircle className="h-5 w-5 text-primary" />
               <div className="flex-1 space-y-1">
-                <p className="text-sm font-medium leading-none">System Status</p>
-                <p className="text-xs text-muted-foreground">All systems operational</p>
+                <p className="text-sm font-medium leading-none">{t("admin.systemStatus", "System Status")}</p>
+                <p className="text-xs text-muted-foreground">{t("admin.allSystemsOperational", "All systems operational")}</p>
               </div>
             </div>
             {/* Add more quick actions here if needed */}

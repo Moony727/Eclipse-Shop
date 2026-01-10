@@ -29,7 +29,7 @@ import { toast } from "sonner";
 
 export default function AdminClient() {
   const { firebaseUser } = useAuth();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [orders, setOrders] = useState<Order[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [searchId, setSearchId] = useState("");
@@ -49,12 +49,12 @@ export default function AdminClient() {
         setFilteredOrders(result.data);
         setError(null);
       } else {
-        const errorMsg = result.error || "Failed to fetch orders";
+        const errorMsg = result.error || t("admin.failedToFetchOrders", "Failed to fetch orders");
         setError(errorMsg);
         toast.error(errorMsg);
       }
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : "An error occurred while fetching orders";
+      const errorMsg = error instanceof Error ? error.message : t("admin.errorOccurred", "An error occurred while fetching orders");
       setError(errorMsg);
       console.error("Error fetching orders:", error);
       toast.error(errorMsg);
@@ -85,13 +85,13 @@ export default function AdminClient() {
       const token = await firebaseUser.getIdToken();
       const result = await updateOrderStatus(orderId, newStatus, token);
       if (result.success) {
-        toast.success(`Order updated to ${newStatus}`);
+        toast.success(`${t("admin.orderUpdated", "Order updated to")} ${t(`admin.${newStatus}`, newStatus)}`);
         setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
       } else {
-        toast.error(result.error || "Failed to update status");
+        toast.error(result.error || t("admin.failedToUpdateOrder", "Failed to update status"));
       }
     } catch {
-      toast.error("An error occurred while updating status");
+      toast.error(t("admin.errorOccurred", "An error occurred while updating status"));
     } finally {
       setIsUpdating(null);
     }
@@ -99,10 +99,10 @@ export default function AdminClient() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'requested': return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 border-yellow-200">Requested</Badge>;
-      case 'process': return <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Processing</Badge>;
-      case 'completed': return <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">Completed</Badge>;
-      case 'cancelled': return <Badge variant="destructive">Cancelled</Badge>;
+      case 'requested': return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 border-yellow-200">{t("admin.requested", "Requested")}</Badge>;
+      case 'process': return <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">{t("admin.processing", "Processing")}</Badge>;
+      case 'completed': return <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">{t("admin.completed", "Completed")}</Badge>;
+      case 'cancelled': return <Badge variant="destructive">{t("admin.cancelled", "Cancelled")}</Badge>;
       default: return <Badge variant="outline">{status}</Badge>;
     }
   };
@@ -111,7 +111,7 @@ export default function AdminClient() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <p className="text-muted-foreground">Loading orders...</p>
+        <p className="text-muted-foreground">{t("admin.loadingOrders", "Loading orders...")}</p>
       </div>
     );
   }
@@ -123,7 +123,7 @@ export default function AdminClient() {
         <p className="text-muted-foreground">{error}</p>
         <Button onClick={fetchOrders} variant="outline" size="sm">
           <RefreshCw className="w-4 h-4 mr-2" />
-          Try Again
+          {t("admin.tryAgain", "Try Again")}
         </Button>
       </div>
     );
@@ -151,19 +151,19 @@ export default function AdminClient() {
       )}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Order Management</h1>
-          <p className="text-muted-foreground">Manage and track customer orders</p>
+          <h1 className="text-3xl font-black tracking-tight">{t("admin.orderManagement", "Order Management")}</h1>
+          <p className="text-muted-foreground">{t("admin.manageOrdersDesc", "Manage and track customer orders")}</p>
         </div>
         <Button onClick={fetchOrders} variant="outline" size="sm" className="w-fit">
           <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-          Refresh
+          {t("admin.refresh", "Refresh")}
         </Button>
       </div>
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
-          placeholder="Check Order ID..."
+          placeholder={t("admin.checkOrderId", "Check Order ID...")}
           className="pl-10 h-12 text-lg"
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
@@ -174,18 +174,18 @@ export default function AdminClient() {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
-              <TableHead>Order Details</TableHead>
-              <TableHead>Customer</TableHead>
-              <TableHead>Contact</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("admin.orderDetails", "Order Details")}</TableHead>
+              <TableHead>{t("admin.customer", "Customer")}</TableHead>
+              <TableHead>{t("admin.contact", "Contact")}</TableHead>
+              <TableHead>{t("admin.status", "Status")}</TableHead>
+              <TableHead className="text-right">{t("admin.actions", "Actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredOrders.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
-                  No orders found
+                  {t("admin.noOrdersFound", "No orders found")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -195,7 +195,7 @@ export default function AdminClient() {
                     <div className="space-y-1">
                       <div className="font-bold flex items-center gap-2">
                         <span className="text-xs font-mono text-muted-foreground">#{order.id.slice(-6).toUpperCase()}</span>
-                        {order.productName ? (order.productName[language] || order.productName.en) : (order.items?.[0]?.productName?.[language] || order.items?.[0]?.productName?.en || 'Unknown Product')}
+                        {order.productName ? (order.productName[language] || order.productName.en) : (order.items?.[0]?.productName?.[language] || order.items?.[0]?.productName?.en || t("common.unknown", "Unknown Product"))}
                       </div>
                       <div className="text-xs text-muted-foreground">
                         {new Date(order.createdAt).toLocaleString()}
@@ -227,35 +227,35 @@ export default function AdminClient() {
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       {order.status === 'requested' && (
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
+                        <Button
+                          size="sm"
+                          variant="outline"
                           className="h-8"
                           disabled={isUpdating === order.id}
                           onClick={() => handleUpdateStatus(order.id, 'process')}
                         >
-                          Process
+                          {t("admin.process", "Process")}
                         </Button>
                       )}
                       {order.status === 'process' && (
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           className="h-8 bg-green-600 hover:bg-green-700"
                           disabled={isUpdating === order.id}
                           onClick={() => handleUpdateStatus(order.id, 'completed')}
                         >
-                          Complete
+                          {t("admin.complete", "Complete")}
                         </Button>
                       )}
                       {(order.status === 'requested' || order.status === 'process') && (
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
+                        <Button
+                          size="sm"
+                          variant="ghost"
                           className="h-8 text-destructive hover:text-destructive hover:bg-destructive/10"
                           disabled={isUpdating === order.id}
                           onClick={() => handleUpdateStatus(order.id, 'cancelled')}
                         >
-                          Cancel
+                          {t("admin.cancel", "Cancel")}
                         </Button>
                       )}
                       {order.status === 'completed' && (

@@ -1,12 +1,12 @@
-# Task: Make Product Cart a Modal Page Depending on Screen Size
+# Task: Fix Shopping Cart Modal - Remove Double Close Button, Make Normal Centered Modal
 
 ## Completed Tasks
-- [x] Analyze current CartDrawer implementation
-- [x] Modify cart to use Dialog modal on mobile screens
-- [x] Keep drawer behavior on larger screens
-- [x] Add close button for mobile modal
-- [x] Test responsive behavior (code compiles)
+- [x] Remove extra close button added to cart header
+- [x] Change Dialog to normal centered modal instead of full screen
+- [x] Make modal scrollable with max-h-[80vh] and overflow-hidden
+- [x] Remove unused Sheet imports
+- [x] Test modal behavior (code compiles)
 
 ## Pending Tasks
-- [x] Implement modal/page cart based on screen size
-- [x] Ensure smooth transitions and functionality
+- [x] Implement normal modal design
+- [x] Ensure no double close buttons

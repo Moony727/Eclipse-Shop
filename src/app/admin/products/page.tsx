@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import { getProductsForAdmin, toggleProductStatus, createProduct, updateProduct, deleteProduct } from "@/app/actions/products";
 import { Product, ProductFormData } from "@/types";
 import {
@@ -32,6 +33,7 @@ import ProductForm from "@/components/admin/ProductForm";
 
 export default function ProductsPage() {
   const { firebaseUser } = useAuth();
+  const { t } = useLanguage();
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -50,10 +52,10 @@ export default function ProductsPage() {
         setProducts(result.data);
         setFilteredProducts(result.data);
       } else {
-        toast.error(result.error || "Failed to fetch products");
+        toast.error(result.error || t("admin.failedToFetch", "Failed to fetch products"));
       }
     } catch {
-      toast.error("An error occurred while fetching products");
+      toast.error(t("admin.errorOccurred", "An error occurred while fetching products"));
     } finally {
       setIsLoading(false);
     }
@@ -81,13 +83,13 @@ export default function ProductsPage() {
       const token = await firebaseUser.getIdToken();
       const result = await toggleProductStatus(productId, !currentStatus, token);
       if (result.success) {
-        toast.success(`Product status updated`);
+        toast.success(t("admin.productUpdated", "Product status updated"));
         setProducts(prev => prev.map(p => p.id === productId ? { ...p, isActive: !currentStatus } : p));
       } else {
-        toast.error(result.error || "Failed to update status");
+        toast.error(result.error || t("admin.failedToUpdate", "Failed to update status"));
       }
     } catch {
-      toast.error("An error occurred");
+      toast.error(t("admin.errorOccurred", "An error occurred"));
     }
   };
 
@@ -109,22 +111,22 @@ export default function ProductsPage() {
       if (editingProduct) {
         const result = await updateProduct(editingProduct.id, formData, token);
         if (result.success && result.data) {
-          toast.success("Product updated successfully");
+          toast.success(t("admin.productUpdatedSuccess", "Product updated successfully"));
           setProducts(prev => prev.map(p => p.id === editingProduct.id ? result.data! : p));
         } else {
-          toast.error(result.error || "Failed to update product");
+          toast.error(result.error || t("admin.failedToUpdateProduct", "Failed to update product"));
         }
       } else {
         const result = await createProduct(formData, token);
         if (result.success && result.data) {
-          toast.success("Product created successfully");
+          toast.success(t("admin.productCreated", "Product created successfully"));
           setProducts(prev => [result.data!, ...prev]);
         } else {
-          toast.error(result.error || "Failed to create product");
+          toast.error(result.error || t("admin.failedToCreate", "Failed to create product"));
         }
       }
     } catch {
-      toast.error("An error occurred");
+      toast.error(t("admin.errorOccurred", "An error occurred"));
     } finally {
       setIsSubmitting(false);
     }
@@ -132,20 +134,20 @@ export default function ProductsPage() {
 
   const handleDeleteProduct = async (productId: string) => {
     if (!firebaseUser) return;
-    if (!confirm("Are you sure you want to delete this product? This action cannot be undone.")) {
+    if (!confirm(t("admin.confirmDelete", "Are you sure you want to delete this product? This action cannot be undone."))) {
       return;
     }
     try {
       const token = await firebaseUser.getIdToken();
       const result = await deleteProduct(productId, token);
       if (result.success) {
-        toast.success("Product deleted successfully");
+        toast.success(t("admin.productDeleted", "Product deleted successfully"));
         setProducts(prev => prev.filter(p => p.id !== productId));
       } else {
-        toast.error(result.error || "Failed to delete product");
+        toast.error(result.error || t("admin.failedToDelete", "Failed to delete product"));
       }
     } catch {
-      toast.error("An error occurred while deleting product");
+      toast.error(t("admin.errorOccurred", "An error occurred while deleting product"));
     }
   };
 
@@ -153,17 +155,17 @@ export default function ProductsPage() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Product Management</h1>
-          <p className="text-muted-foreground">Add, edit and manage your products</p>
+          <h1 className="text-2xl font-bold tracking-tight">{t("admin.productManagement", "Product Management")}</h1>
+          <p className="text-muted-foreground">{t("admin.manageProductsDesc", "Add, edit and manage your products")}</p>
         </div>
         <div className="flex gap-2">
           <Button onClick={fetchProducts} variant="outline" size="sm" disabled={isLoading}>
             <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-            Refresh
+            {t("admin.refresh", "Refresh")}
           </Button>
           <Button size="sm" className="bg-primary" onClick={handleAddProduct}>
             <Plus className="w-4 h-4 mr-2" />
-            Add Product
+            {t("admin.addProduct", "Add Product")}
           </Button>
         </div>
       </div>
@@ -171,7 +173,7 @@ export default function ProductsPage() {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
-          placeholder="Search products..."
+          placeholder={t("admin.searchProducts", "Search products...")}
           className="pl-10 h-10"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -183,12 +185,12 @@ export default function ProductsPage() {
           <Table>
             <TableHeader className="sticky top-0 bg-muted/50 z-10">
               <TableRow>
-                <TableHead className="w-[80px]">Image</TableHead>
-                <TableHead>Product Name</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="w-[80px]">{t("admin.image", "Image")}</TableHead>
+                <TableHead>{t("admin.productName", "Product Name")}</TableHead>
+                <TableHead>{t("admin.category", "Category")}</TableHead>
+                <TableHead>{t("admin.price", "Price")}</TableHead>
+                <TableHead>{t("admin.status", "Status")}</TableHead>
+                <TableHead className="text-right">{t("admin.actions", "Actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -197,14 +199,14 @@ export default function ProductsPage() {
                   <TableCell colSpan={6} className="h-32 text-center">
                     <div className="flex flex-col items-center justify-center space-y-2">
                       <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                      <p className="text-sm text-muted-foreground">Loading products...</p>
+                      <p className="text-sm text-muted-foreground">{t("admin.loadingProducts", "Loading products...")}</p>
                     </div>
                   </TableCell>
                 </TableRow>
               ) : filteredProducts.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
-                    No products found
+                    {t("admin.noProductsFound", "No products found")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -247,17 +249,17 @@ export default function ProductsPage() {
                     </TableCell>
                     <TableCell>
                       <Badge variant={product.isActive ? "secondary" : "destructive"} className="text-[10px]">
-                        {product.isActive ? "Active" : "Inactive"}
+                        {product.isActive ? t("admin.active", "Active") : t("admin.inactive", "Inactive")}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
-                        <Button 
-                          size="icon" 
-                          variant="ghost" 
+                        <Button
+                          size="icon"
+                          variant="ghost"
                           className="h-8 w-8"
                           onClick={() => handleToggleStatus(product.id, product.isActive)}
-                          title={product.isActive ? "Deactivate" : "Activate"}
+                          title={product.isActive ? t("admin.deactivate", "Deactivate") : t("admin.activate", "Activate")}
                         >
                           {product.isActive ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </Button>
@@ -266,6 +268,7 @@ export default function ProductsPage() {
                           variant="ghost"
                           className="h-8 w-8 text-blue-500"
                           onClick={() => handleEditProduct(product)}
+                          title={t("admin.edit", "Edit")}
                         >
                           <Edit2 className="h-4 w-4" />
                         </Button>
@@ -274,6 +277,7 @@ export default function ProductsPage() {
                           variant="ghost"
                           className="h-8 w-8 text-destructive"
                           onClick={() => handleDeleteProduct(product.id)}
+                          title={t("admin.delete", "Delete")}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

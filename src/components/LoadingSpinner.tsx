@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg";
@@ -9,6 +10,7 @@ interface LoadingSpinnerProps {
 }
 
 export function LoadingSpinner({ size = "md", className, text }: LoadingSpinnerProps) {
+  const { t } = useLanguage();
   const sizeClasses = {
     sm: "w-4 h-4",
     md: "w-8 h-8",
@@ -37,10 +39,11 @@ interface LoadingPageProps {
   className?: string;
 }
 
-export function LoadingPage({ text = "Loading...", className }: LoadingPageProps) {
+export function LoadingPage({ text, className }: LoadingPageProps) {
+  const { t } = useLanguage();
   return (
     <div className={cn("min-h-screen flex items-center justify-center bg-background", className)}>
-      <LoadingSpinner size="lg" text={text} />
+      <LoadingSpinner size="lg" text={text || t("common.loading", "Loading...")} />
     </div>
   );
 }

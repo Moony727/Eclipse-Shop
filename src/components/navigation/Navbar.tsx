@@ -196,7 +196,7 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                         <DropdownMenuItem asChild className="cursor-pointer flex items-center p-[calc(0.5rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))] rounded-[calc(var(--radius-sm))]">
                           <Link href="/admin" className="flex items-center w-full">
                             <ShieldCheck className="w-[calc(1rem*var(--ui-scale))] h-[calc(1rem*var(--ui-scale))] mr-[calc(0.5rem*var(--ui-scale))]" />
-                            Admin Panel
+                            {t("nav.adminPanel")}
                           </Link>
                         </DropdownMenuItem>
                       ) : null;
@@ -295,7 +295,7 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                         className="block text-foreground/80 hover:text-foreground transition-colors py-[calc(0.5rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))] font-medium"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        Admin Panel
+                        {t("nav.adminPanel")}
                       </Link>
                     ) : null;
                   })()}
