@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
   // Set CSP header with nonce
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'nonce-" + nonce + "' https://www.google.com https://www.gstatic.com https://cdn.jsdelivr.net https://apis.google.com https://challenge.cloudflare.com",
+    "script-src 'self' 'nonce-" + nonce + "' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://cdn.jsdelivr.net https://apis.google.com https://challenge.cloudflare.com",
     "style-src 'self' https://fonts.googleapis.com https://www.gstatic.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' data: blob: https: https://images.pexels.com https://storage.googleapis.com https://firebasestorage.googleapis.com https://replicate.delivery https://res.cloudinary.com",
