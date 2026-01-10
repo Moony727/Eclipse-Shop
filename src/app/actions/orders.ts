@@ -184,23 +184,24 @@ export async function getUserOrders(
 
     const ordersRef = adminDb.collection("orders");
 
-    // Get total count for pagination
-    const countQuery = ordersRef.where("userId", "==", userId);
-    const totalSnapshot = await countQuery.count().get();
-    const total = totalSnapshot.data().count;
+    // Get total count for pagination (simplified approach)
+    let total = 0;
+    try {
+      const countSnapshot = await ordersRef.where("userId", "==", userId).get();
+      total = countSnapshot.size;
+    } catch (countError) {
+      console.warn("Could not get total count:", countError);
+      // Continue without total count
+    }
 
-    // Get orders with pagination
+    // Get orders with simple pagination
     let query = ordersRef
       .where("userId", "==", userId)
       .orderBy("createdAt", "desc");
 
-    if (offset > 0) {
-      // For offset, we need to get all and slice, or use cursor
-      // Since Firestore doesn't support offset directly with orderBy, we'll fetch with limit + offset
-      query = query.limit(limit + offset);
-    } else {
-      query = query.limit(limit);
-    }
+    // For now, just use limit and handle offset client-side if needed
+    // Firestore doesn't support offset with orderBy easily
+    query = query.limit(Math.min(limit + offset, 100)); // Cap at 100 to prevent abuse
 
     const snapshot = await query.get();
 
@@ -208,7 +209,7 @@ export async function getUserOrders(
       return { success: true, data: [], total: 0 };
     }
 
-    // Apply offset if needed
+    // Apply offset if needed (client-side pagination)
     const docs = offset > 0 ? snapshot.docs.slice(offset) : snapshot.docs;
 
     const orders: Order[] = docs.map((doc) => {
@@ -239,7 +240,6 @@ export async function getUserOrders(
         const productPromises = Array.from(productIds).map(id => productsRef.doc(id).get());
         const productDocs = await Promise.all(productPromises);
 
-        // Create product map
         const productMap = new Map<string, Product>();
         productDocs.forEach(doc => {
           if (doc.exists) {
@@ -292,9 +292,15 @@ export async function getOrdersForAdmin(
 
     const ordersRef = adminDb.collection("orders");
 
-    // Get total count
-    const totalSnapshot = await ordersRef.count().get();
-    const total = totalSnapshot.data().count;
+    // Get total count (simplified approach)
+    let total = 0;
+    try {
+      const countSnapshot = await ordersRef.get();
+      total = countSnapshot.size;
+    } catch (countError) {
+      console.warn("Could not get total count:", countError);
+      // Continue without total count
+    }
 
     // Get orders with pagination
     let query = ordersRef.orderBy("createdAt", "desc");
