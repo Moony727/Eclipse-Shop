@@ -63,24 +63,7 @@ const nextConfig: NextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), payment=()',
           },
-          {
-            key: 'Content-Security-Policy',
-            // Strict CSP without unsafe directives for highest security
-            value:
-              "default-src 'self'; " +
-              "script-src 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://cdn.jsdelivr.net https://apis.google.com https://challenge.cloudflare.com; " +
-              "style-src 'self' https://fonts.googleapis.com https://www.gstatic.com; " +
-              "font-src 'self' https://fonts.gstatic.com data:; " +
-              "img-src 'self' data: blob: https: https://images.pexels.com https://storage.googleapis.com https://firebasestorage.googleapis.com https://replicate.delivery https://res.cloudinary.com; " +
-              "connect-src 'self' https://*.googleapis.com https://*.firebasestorage.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.vercel.app https://api.telegram.org https://res.cloudinary.com https://www.google.com https://www.gstatic.com https://apis.google.com wss://*.firebase.com; " +
-              "frame-src https://www.google.com https://recaptcha.google.com https://challenge.cloudflare.com; " +
-              "frame-ancestors 'self'; " +
-              "base-uri 'self'; " +
-              "form-action 'self'; " +
-              "manifest-src 'self'; " +
-              "worker-src 'self'; " +
-              "upgrade-insecure-requests;",
-          },
+
           // CORS restricted to your domain
           {
             key: 'Access-Control-Allow-Origin',
