@@ -202,9 +202,8 @@ export async function getUserOrders(
     }
 
     // Get orders with simple pagination
-    let query = ordersRef
-      .where("userId", "==", userId)
-      .orderBy("createdAt", "desc");
+    // Temporarily remove orderBy to avoid index requirement while index is building
+    let query = ordersRef.where("userId", "==", userId);
 
     // For now, just use limit and handle offset client-side if needed
     // Firestore doesn't support offset with orderBy easily
@@ -227,6 +226,9 @@ export async function getUserOrders(
         createdAt: data.createdAt?.toDate() || new Date(),
       } as Order;
     });
+
+    // Sort client-side by createdAt desc
+    orders.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
     // Batch fetch products if requested
     if (includeProducts && adminDb) {
