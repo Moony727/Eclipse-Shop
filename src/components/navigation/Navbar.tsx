@@ -88,36 +88,40 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                 e.preventDefault();
                 scrollTo("home");
               }}
-              className="relative text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] lg:text-[calc(1rem*var(--ui-scale))] xl:text-[calc(1.125rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
+              className="relative text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] lg:text-[calc(1rem*var(--ui-scale))] xl:text-[calc(1.125rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300 group"
             >
               {t("nav.home")}
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </button>
             <button
               onClick={(e) => {
                 e.preventDefault();
                 scrollTo("products");
               }}
-              className="relative text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] lg:text-[calc(1rem*var(--ui-scale))] xl:text-[calc(1.125rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
+              className="relative text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] lg:text-[calc(1rem*var(--ui-scale))] xl:text-[calc(1.125rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300 group"
             >
               {t("nav.products")}
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </button>
             <button
               onClick={(e) => {
                 e.preventDefault();
                 setIsAboutOpen(true);
               }}
-              className="relative text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] lg:text-[calc(1rem*var(--ui-scale))] xl:text-[calc(1.125rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
+              className="relative text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] lg:text-[calc(1rem*var(--ui-scale))] xl:text-[calc(1.125rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300 group"
             >
               {t("nav.about")}
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </button>
             <button
               onClick={(e) => {
                 e.preventDefault();
                 setIsContactOpen(true);
               }}
-              className="relative text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] lg:text-[calc(1rem*var(--ui-scale))] xl:text-[calc(1.125rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
+              className="relative text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] lg:text-[calc(1rem*var(--ui-scale))] xl:text-[calc(1.125rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300 group"
             >
               {t("nav.contact")}
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </button>
           </div>
 

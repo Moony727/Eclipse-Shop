@@ -33,14 +33,14 @@ export function ProductGrid({ products, isLoading }: ProductGridProps) {
 
   if (products.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-[var(--space-12)] md:py-[var(--space-16)] px-[var(--space-4)] text-center bg-muted/30 rounded-2xl md:rounded-3xl border-2 border-dashed mx-4 md:mx-0">
-        <div className="w-16 h-16 md:w-20 md:h-20 bg-background rounded-full flex items-center justify-center shadow-lg mb-[var(--space-4)] md:mb-[var(--space-6)]">
+      <div className="flex flex-col items-center justify-center py-[var(--space-12)] md:py-[var(--space-16)] px-[var(--space-4)] text-center bg-muted/30 rounded-2xl md:rounded-3xl border-2 border-dashed mx-4 md:mx-0 animate-in fade-in zoom-in-95 duration-500">
+        <div className="w-16 h-16 md:w-20 md:h-20 bg-background rounded-full flex items-center justify-center shadow-lg mb-[var(--space-4)] md:mb-[var(--space-6)] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
           <PackageSearch className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground" />
         </div>
-        <h3 className="text-[var(--text-xl)] md:text-[var(--text-2xl)] font-bold mb-2">
+        <h3 className="text-[var(--text-xl)] md:text-[var(--text-2xl)] font-bold mb-2 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
           {t("products.noProducts", "No Products Found")}
         </h3>
-        <p className="text-[var(--text-base)] text-muted-foreground max-w-xs md:max-w-sm mx-auto mb-[var(--space-8)]">
+        <p className="text-[var(--text-base)] text-muted-foreground max-w-xs md:max-w-sm mx-auto mb-[var(--space-8)] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500">
           {t("products.noProductsDesc", "Try adjusting your filters or search terms to find what you're looking for.")}
         </p>
       </div>
