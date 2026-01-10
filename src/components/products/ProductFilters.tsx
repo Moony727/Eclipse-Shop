@@ -92,7 +92,7 @@ export function ProductFilters({
               <div className="p-2 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
                 <Filter className="w-5 h-5 md:w-6 md:h-6" />
               </div>
-              <span className="tracking-tight">{t('products.category')}</span>
+              <span className="tracking-tight">{t('products.filter')}</span>
               {selectedCategory !== 'all' && (
                 <Badge className="ml-2 bg-primary text-primary-foreground font-bold px-3 py-1">
                   {categories.find(c => c.id === selectedCategory)?.name}

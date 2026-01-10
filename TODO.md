@@ -1,12 +1,13 @@
-# Task: Fix Shopping Cart Modal - Remove Double Close Button, Make Normal Centered Modal
+# Task: Fix Admin Panel and Cart Issues
 
 ## Completed Tasks
-- [x] Remove extra close button added to cart header
-- [x] Change Dialog to normal centered modal instead of full screen
-- [x] Make modal scrollable with max-h-[80vh] and overflow-hidden
-- [x] Remove unused Sheet imports
-- [x] Test modal behavior (code compiles)
+- [x] Make cart a side panel on bigger screens (tablets, desktop, laptop)
+- [x] Fix user management fetch users (updated firestore rules for admin access)
+- [x] Rename "Categorie" to "Filter" in translations
+- [x] Add translations for contacts and about us modals
+- [x] Add translations for purchase modal
+- [x] Fix order history display (handle string vs object productName)
 
 ## Pending Tasks
-- [x] Implement normal modal design
-- [x] Ensure no double close buttons
+- [x] Test all changes (app compiles and runs)
+- [x] Deploy firestore rules

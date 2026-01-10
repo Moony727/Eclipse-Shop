@@ -193,9 +193,9 @@ export function UserProfile({ isOpen, onClose, user, initialTab = "info" }: User
                                   )}
                                 </div>
                                 <div className="flex-1">
-                                  <p className="text-sm font-medium line-clamp-1">
-                                    {item.productName[language as keyof typeof item.productName] || item.productName.en}
-                                  </p>
+                                <p className="text-sm font-medium line-clamp-1">
+                                  {typeof item.productName === 'string' ? item.productName : (item.productName[language as keyof typeof item.productName] || item.productName.en)}
+                                </p>
                                   <p className="text-xs text-muted-foreground">
                                     {item.quantity}x ×
                                     {item.price < item.originalPrice ? (
@@ -230,7 +230,7 @@ export function UserProfile({ isOpen, onClose, user, initialTab = "info" }: User
                               </div>
                               <div className="flex-1">
                                 <p className="text-sm font-medium line-clamp-1">
-                                  {order.productName?.[language as keyof typeof order.productName] || order.productName?.en}
+                                  {typeof order.productName === 'string' ? order.productName : (order.productName?.[language as keyof typeof order.productName] || order.productName?.en)}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
                                   1x × {order.totalAmount.toFixed(2)} AZN = {order.totalAmount.toFixed(2)} AZN

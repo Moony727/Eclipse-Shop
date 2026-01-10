@@ -21,7 +21,7 @@ export const translations = {
     products: {
       title: "Our Collection",
       search: "Search products...",
-      category: "Category",
+      filter: "Filter",
       subcategory: "Subcategory",
       all: "All",
       price: "Price",
@@ -121,7 +121,25 @@ export const translations = {
       confirm: "Confirm Purchase",
       cancel: "Cancel",
       success: "Order placed successfully!",
-      processing: "Processing your order..."
+      processing: "Processing your order...",
+      orderReceived: "Order Received!",
+      orderThanks: "Thank you for your purchase. Your order has been registered and is being processed.",
+      orderSummary: "Summary",
+      contactRequired: "Please enter your WhatsApp number or Telegram ID",
+      failedOrder: "Failed to process order. Please try again.",
+      orderIdCopied: "Order ID copied to clipboard!",
+      nextSteps: "Next Steps",
+      keepId: "Please keep this ID. Our team will contact you via {contactType} shortly to deliver your product.",
+      continueShopping: "Continue Shopping",
+      fullName: "Full Name",
+      contactMethod: "Contact Method",
+      telegramId: "Telegram ID / Username",
+      placeholderWhatsapp: "+994 XX XXX XX XX",
+      placeholderTelegram: "@username or ID",
+      requiredContact: "Required for product delivery and order confirmation.",
+      secureCheckout: "Secure Checkout",
+      instantDelivery: "Instant Digital Delivery After Verification",
+      completeOrderDetails: "Complete your order details to receive your digital assets."
     },
     
     // Cart
@@ -220,7 +238,18 @@ export const translations = {
       save: "Save",
       delete: "Delete",
       yes: "Yes",
-      no: "No"
+      no: "No",
+      aboutTitle: "About Eclipse Shop",
+      aboutDescription: "Learn more about our mission and the team behind Eclipse Shop.",
+      aboutContent1: "Eclipse Shop is a curated marketplace for premium digital goods — templates, software, creative assets and educational products. Our mission is to make high-quality digital products accessible to creators and businesses worldwide.",
+      aboutContent2: "Founded in 2024, our team focuses on product quality, secure checkout, and excellent support. We work with creators to showcase their best work and help customers find the tools they need.",
+      contactTitle: "Contact Us",
+      contactDescription: "Get in touch — we're here to help.",
+      contactContent: "For general inquiries, please email <strong>support@eclipse-shop.example</strong>. For partnership or press, reach out to <strong>partners@eclipse-shop.example</strong>.",
+      supportHours: "Support Hours",
+      supportHoursValue: "Mon — Fri: 09:00 — 18:00 (UTC)",
+      phone: "Phone",
+      phoneValue: "+1 (555) 123-4567"
     },
 
     // Common
@@ -291,7 +320,7 @@ export const translations = {
     products: {
       title: "Наша коллекция",
       search: "Поиск товаров...",
-      category: "Категория",
+      filter: "Фильтр",
       subcategory: "Подкатегория",
       all: "Все",
       price: "Цена",
@@ -391,7 +420,24 @@ export const translations = {
       confirm: "Подтвердить покупку",
       cancel: "Отмена",
       success: "Заказ успешно размещен!",
-      processing: "Обработка вашего заказа..."
+      processing: "Обработка вашего заказа...",
+      orderReceived: "Заказ получен!",
+      orderThanks: "Спасибо за покупку. Ваш заказ зарегистрирован и находится в обработке.",
+      orderSummary: "Сводка",
+      contactRequired: "Пожалуйста, введите ваш номер WhatsApp или Telegram ID",
+      failedOrder: "Не удалось обработать заказ. Пожалуйста, попробуйте еще раз.",
+      orderIdCopied: "ID заказа скопирован в буфер обмена!",
+      nextSteps: "Следующие шаги",
+      keepId: "Пожалуйста, сохраните этот ID. Наша команда свяжется с вами по {contactType} в ближайшее время для доставки вашего продукта.",
+      continueShopping: "Продолжить покупки",
+      fullName: "Полное имя",
+      contactMethod: "Способ связи",
+      telegramId: "Telegram ID / Имя пользователя",
+      placeholderWhatsapp: "+994 XX XXX XX XX",
+      placeholderTelegram: "@username или ID",
+      requiredContact: "Требуется для доставки продукта и подтверждения заказа.",
+      secureCheckout: "Безопасная оплата",
+      instantDelivery: "Мгновенная доставка цифровых товаров после проверки"
     },
 
     // Cart
@@ -490,9 +536,19 @@ export const translations = {
       save: "Сохранить",
       delete: "Удалить",
       yes: "Да",
-      no: "Нет"
+      no: "Нет",
+      aboutTitle: "О Eclipse Shop",
+      aboutDescription: "Узнайте больше о нашей миссии и команде за Eclipse Shop.",
+      aboutContent1: "Eclipse Shop - это кураторский рынок премиальных цифровых товаров — шаблоны, программное обеспечение, творческие активы и образовательные продукты. Наша миссия — сделать высококачественные цифровые продукты доступными для создателей и бизнеса по всему миру.",
+      aboutContent2: "Основан в 2024 году, наша команда сосредоточена на качестве продуктов, безопасной оплате и отличной поддержке. Мы работаем с создателями, чтобы продемонстрировать их лучшую работу и помочь клиентам найти необходимые инструменты.",
+      contactTitle: "Свяжитесь с нами",
+      contactDescription: "Свяжитесь с нами — мы здесь, чтобы помочь.",
+      contactContent: "По общим вопросам, пожалуйста, напишите на <strong>support@eclipse-shop.example</strong>. Для партнерства или прессы, обращайтесь на <strong>partners@eclipse-shop.example</strong>.",
+      supportHours: "Часы поддержки",
+      supportHoursValue: "Пн — Пт: 09:00 — 18:00 (UTC)",
+      phone: "Телефон",
+      phoneValue: "+1 (555) 123-4567"
     },
-
     // Common
     common: {
       loading: "Загрузка...",
@@ -562,7 +618,7 @@ export const translations = {
     products: {
       title: "Bizim Kolleksiya",
       search: "Məhsul axtarın...",
-      category: "Kateqoriya",
+      filter: "Filtr",
       subcategory: "Alt kateqoriya",
       all: "Hamısı",
       price: "Qiymət",
@@ -663,7 +719,24 @@ export const translations = {
       confirm: "Alışı təsdiq et",
       cancel: "Ləğv et",
       success: "Sifariş uğurla verildi!",
-      processing: "Sifarişiniz işlənir..."
+      processing: "Sifarişiniz işlənir...",
+      orderReceived: "Sifariş qəbul edildi!",
+      orderThanks: "Alışınız üçün təşəkkür edirik. Sifarişiniz qeydiyyatdan keçib və işlənilir.",
+      orderSummary: "Xülasə",
+      contactRequired: "Zəhmət olmasa WhatsApp nömrənizi və ya Telegram ID-nizi daxil edin",
+      failedOrder: "Sifarişi emal etmək mümkün olmadı. Zəhmət olmasa yenidən cəhd edin.",
+      orderIdCopied: "Sifariş ID-si buferə kopyalandı!",
+      nextSteps: "Növbəti addımlar",
+      keepId: "Zəhmət olmasa bu ID-ni saxlayın. Komandamız tezliklə məhsulunuzu çatdırmaq üçün {contactType} vasitəsilə sizinlə əlaqə saxlayacaq.",
+      continueShopping: "Alış-verişə davam et",
+      fullName: "Tam ad",
+      contactMethod: "Əlaqə üsulu",
+      telegramId: "Telegram ID / İstifadəçi adı",
+      placeholderWhatsapp: "+994 XX XXX XX XX",
+      placeholderTelegram: "@istifadəçi adı və ya ID",
+      requiredContact: "Məhsul çatdırılması və sifariş təsdiqi üçün tələb olunur.",
+      secureCheckout: "Təhlükəsiz ödəniş",
+      instantDelivery: "Yoxlamadan sonra rəqəmsal məhsulların dərhal çatdırılması"
     },
 
     // Cart
@@ -762,7 +835,18 @@ export const translations = {
       save: "Yadda saxla",
       delete: "Sil",
       yes: "Bəli",
-      no: "Xeyr"
+      no: "Xeyr",
+      aboutTitle: "Eclipse Shop haqqında",
+      aboutDescription: "Bizim missiyamız və Eclipse Shop komandası haqqında daha çox məlumat əldə edin.",
+      aboutContent1: "Eclipse Shop premium rəqəmsal məhsullar üçün kurator bazar yeridir — şablonlar, proqram təminatı, yaradıcı aktivlər və təhsil məhsulları. Bizim missiyamız yüksək keyfiyyətli rəqəmsal məhsulları dünya üzrə yaradıcılara və bizneslərə əlçatan etməkdir.",
+      aboutContent2: "2024-cü ildə təsis edilmişdir, komandamız məhsul keyfiyyətinə, təhlükəsiz ödənişə və mükəmməl dəstəyə fokuslanır. Biz yaradıcılarla işləyirik ki, onların ən yaxşı işlərini nümayiş etdirək və müştərilərə lazım olan alətləri tapmağa kömək edək.",
+      contactTitle: "Əlaqə",
+      contactDescription: "Əlaqə saxlayın — biz kömək etmək üçün buradayıq.",
+      contactContent: "Ümumi suallar üçün, zəhmət olmasa <strong>support@eclipse-shop.example</strong> ünvanına yazın. Tərəfdaşlıq və ya mətbuat üçün <strong>partners@eclipse-shop.example</strong> ilə əlaqə saxlayın.",
+      supportHours: "Dəstək Saatları",
+      supportHoursValue: "B.e — C.a: 09:00 — 18:00 (UTC)",
+      phone: "Telefon",
+      phoneValue: "+1 (555) 123-4567"
     },
 
     // Common

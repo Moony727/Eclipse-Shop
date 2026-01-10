@@ -18,6 +18,11 @@ import {
   DialogContent,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface CartDrawerProps {
   children: React.ReactNode;
@@ -220,14 +225,25 @@ export function CartDrawer({ children }: CartDrawerProps) {
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger asChild>
-          {children}
-        </DialogTrigger>
-        <DialogContent className="max-w-md max-h-[80vh] overflow-hidden flex flex-col p-0">
-          <CartContent />
-        </DialogContent>
-      </Dialog>
+      {isMobile ? (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            {children}
+          </DialogTrigger>
+          <DialogContent className="max-w-md max-h-[80vh] overflow-hidden flex flex-col p-0">
+            <CartContent />
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            {children}
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[400px] sm:w-[540px] overflow-hidden flex flex-col p-0">
+            <CartContent />
+          </SheetContent>
+        </Sheet>
+      )}
 
       <PurchaseModal
         isOpen={showPurchaseModal}

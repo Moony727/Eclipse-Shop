@@ -43,7 +43,7 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
     if (items.length === 0 || !user) return;
 
     if (!contactId.trim()) {
-      toast.error("Please enter your WhatsApp number or Telegram ID");
+      toast.error(t("purchase.contactRequired"));
       return;
     }
 
@@ -80,11 +80,11 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
         clearCart(); // Clear cart after successful order
         toast.success(t("purchase.success"));
       } else {
-        toast.error(result.error || "Failed to process order. Please try again.");
+        toast.error(result.error || t("purchase.failedOrder"));
       }
     } catch (error) {
       console.error("Purchase error:", error);
-      toast.error("Failed to process order. Please try again.");
+      toast.error(t("purchase.failedOrder"));
     } finally {
       setIsProcessing(false);
     }
@@ -100,7 +100,7 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
   const copyOrderId = () => {
     if (orderId) {
       navigator.clipboard.writeText(orderId);
-      toast.success("Order ID copied to clipboard!");
+      toast.success(t("purchase.orderIdCopied"));
     }
   };
 
@@ -148,9 +148,9 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
                   {contactType === 'whatsapp' ? <Phone className="w-4 h-4" /> : <Send className="w-4 h-4" />}
                 </div>
                 <div className="space-y-1">
-                  <p className="text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] font-bold text-amber-700 dark:text-amber-400">Next Steps</p>
+                  <p className="text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] font-bold text-amber-700 dark:text-amber-400">{t("purchase.nextSteps")}</p>
                   <p className="text-[calc(0.625rem*var(--ui-scale))] md:text-[calc(0.75rem*var(--ui-scale))] text-amber-600/80 dark:text-amber-500/80 font-medium leading-relaxed">
-                    Please keep this ID. Our team will contact you via <span className="font-black uppercase">{contactType}</span> shortly to deliver your product.
+                    {t("purchase.keepId", "Please keep this ID. Our team will contact you via {contactType} shortly to deliver your product.").replace("{contactType}", contactType.toUpperCase())}
                   </p>
                 </div>
               </div>
@@ -183,7 +183,7 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
             {t("purchase.title")}
           </DialogTitle>
           <DialogDescription className="text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] font-medium">
-            Complete your order details to receive your digital assets.
+            {t("purchase.completeOrderDetails")}
           </DialogDescription>
         </DialogHeader>
 
@@ -192,7 +192,7 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
           <div className="bg-muted/30 border-2 border-border/50 rounded-3xl p-5 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-black text-sm uppercase tracking-widest text-muted-foreground/70">{t("purchase.orderSummary", "Summary")}</h3>
-              <span className="text-xs font-bold text-primary px-2 py-1 bg-primary/5 rounded-lg border border-primary/10">Secure Checkout</span>
+              <span className="text-xs font-bold text-primary px-2 py-1 bg-primary/5 rounded-lg border border-primary/10">{t("purchase.secureCheckout")}</span>
             </div>
 
             <div className="space-y-3 max-h-40 overflow-y-auto pr-2 scrollbar-none">
@@ -238,7 +238,7 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="customer-name" className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 ml-1">
-                  Full Name
+                  {t("purchase.fullName")}
                 </Label>
                 <Input
                   id="customer-name"
@@ -250,7 +250,7 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 ml-1">Contact Method</Label>
+                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 ml-1">{t("purchase.contactMethod")}</Label>
                 <RadioGroup 
                   value={contactType} 
                   onValueChange={(v) => setContactType(v as 'whatsapp' | 'telegram')}
@@ -284,7 +284,7 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
 
             <div className="space-y-2">
               <Label htmlFor="contact-id" className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 ml-1">
-                {contactType === 'whatsapp' ? 'WhatsApp Number' : 'Telegram ID / Username'}
+                {contactType === 'whatsapp' ? t("purchase.whatsapp") : t("purchase.telegramId")}
               </Label>
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
@@ -292,7 +292,7 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
                 </div>
                 <Input
                   id="contact-id"
-                  placeholder={contactType === 'whatsapp' ? '+994 XX XXX XX XX' : '@username or ID'}
+                  placeholder={contactType === 'whatsapp' ? t("purchase.placeholderWhatsapp") : t("purchase.placeholderTelegram")}
                   value={contactId}
                   onChange={(e) => setContactId(e.target.value)}
                   required
@@ -300,7 +300,7 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
                 />
               </div>
               <p className="text-[10px] text-muted-foreground font-medium ml-1">
-                Required for product delivery and order confirmation.
+                {t("purchase.requiredContact")}
               </p>
             </div>
 
@@ -339,7 +339,7 @@ export function PurchaseModal({ isOpen, onClose, items = [], user }: PurchaseMod
           {/* Security Notice */}
           <div className="flex items-center justify-center gap-2 text-[10px] text-muted-foreground font-bold uppercase tracking-widest opacity-60">
             <CheckCircle2 className="w-3 h-3" />
-            Instant Digital Delivery After Verification
+            {t("purchase.instantDelivery")}
           </div>
         </div>
       </DialogContent>
