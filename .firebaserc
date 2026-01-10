@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "eclipse-shop"
-  }
+    "default": "eclipse-shop",
+    "eclipse": "eclipseshop-1fa06"
+  },
+  "targets": {},
+  "etags": {}
 }
