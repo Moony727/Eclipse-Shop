@@ -7,6 +7,9 @@ export interface User {
   name: string;
   isAdmin?: boolean;
   createdAt: Date;
+  // User preferences
+  theme?: 'light' | 'dark' | 'system';
+  language?: Language;
 }
 
 // Product types

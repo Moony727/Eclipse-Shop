@@ -8,7 +8,8 @@ export const translations = {
       contact: "Contact",
       login: "Login",
       profile: "Profile",
-      logout: "Logout"
+      logout: "Logout",
+      adminPanel: "Admin"
     },
     
     // Hero section
@@ -307,7 +308,8 @@ export const translations = {
       contact: "Контакты",
       login: "Войти",
       profile: "Профиль",
-      logout: "Выйти"
+      logout: "Выйти",
+      adminPanel: "Админ"
     },
     
     // Hero section
@@ -605,7 +607,7 @@ export const translations = {
       login: "Giriş",
       profile: "Profil",
       logout: "Çıxış",
-      adminPanel: "Admin Paneli"
+      adminPanel: "Admin"
     },
     
     // Hero section
