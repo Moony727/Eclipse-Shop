@@ -8,7 +8,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuth } from "@/hooks/useAuth";
 import { CartItem } from "@/types";
-import { ShoppingCart, Plus, Minus, Trash2, CreditCard } from "lucide-react";
+import { ShoppingCart, Plus, Minus, Trash2, CreditCard, X } from "lucide-react";
 import { toast } from "sonner";
 import { PurchaseModal } from "@/components/products/PurchaseModal";
 
@@ -18,6 +18,11 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface CartDrawerProps {
   children: React.ReactNode;
@@ -68,6 +73,16 @@ export function CartDrawer({ children }: CartDrawerProps) {
     <div className="flex flex-col flex-1 overflow-hidden h-full">
       <div className={`${isMobile ? 'p-[calc(1rem*var(--ui-scale))] border-b' : 'p-[calc(1.5rem*var(--ui-scale))] border-b'} shrink-0`}>
         <div className="flex items-center gap-[calc(0.5rem*var(--ui-scale))] text-[var(--text-xl)] font-black">
+          {isMobile && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsOpen(false)}
+              className="mr-2"
+            >
+              <X className="w-5 h-5" />
+            </Button>
+          )}
           <div className="p-[calc(0.5rem*var(--ui-scale))] rounded-lg bg-primary/10 text-primary">
             <ShoppingCart className="w-[calc(1.25rem*var(--ui-scale))] h-[calc(1.25rem*var(--ui-scale))]" />
           </div>
@@ -220,17 +235,28 @@ export function CartDrawer({ children }: CartDrawerProps) {
 
   return (
     <>
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetTrigger asChild>
-          {children}
-        </SheetTrigger>
-        <SheetContent
-          side={isMobile ? "bottom" : "right"}
-          className={isMobile ? "w-full h-full flex flex-col p-0" : "w-full sm:max-w-md flex flex-col p-0 h-[100dvh]"}
-        >
-          <CartContent />
-        </SheetContent>
-      </Sheet>
+      {isMobile ? (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            {children}
+          </DialogTrigger>
+          <DialogContent className="w-full h-full max-w-none max-h-none p-0 flex flex-col">
+            <CartContent />
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            {children}
+          </SheetTrigger>
+          <SheetContent
+            side="right"
+            className="w-full sm:max-w-md flex flex-col p-0 h-[100dvh]"
+          >
+            <CartContent />
+          </SheetContent>
+        </Sheet>
+      )}
 
       <PurchaseModal
         isOpen={showPurchaseModal}

@@ -1,12 +1,12 @@
-# Task: Add Navbar Hover Animations, Expandable Menu Animations, No Product Animation, Optimize TS
+# Task: Make Product Cart a Modal Page Depending on Screen Size
 
 ## Completed Tasks
-- [x] Analyze current navbar and product grid code
-- [x] Add underline hover animation to navbar components
-- [x] Add smooth animations to expandable mobile menu transitions (enhanced existing slide-in)
-- [x] Add animation for "no products" state in ProductGrid
-- [x] Optimize TypeScript code and fix any issues (no issues found)
+- [x] Analyze current CartDrawer implementation
+- [x] Modify cart to use Dialog modal on mobile screens
+- [x] Keep drawer behavior on larger screens
+- [x] Add close button for mobile modal
+- [x] Test responsive behavior (code compiles)
 
 ## Pending Tasks
-- [x] Implement all animations and optimizations
-- [x] Test animations work smoothly (server running, code compiles)
+- [x] Implement modal/page cart based on screen size
+- [x] Ensure smooth transitions and functionality
