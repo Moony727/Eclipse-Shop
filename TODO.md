@@ -10,5 +10,5 @@
 - [x] Fix service worker static assets cache
 - [x] Remove unnecessary div wrapper in layout.tsx to fix hydration
 - [x] Update CSP to allow Firebase hosting framing
-- [x] Verify Firebase admin env vars are set in production (noted: requires deployment config)
+- [x] Verify Firebase admin env vars are set in production (confirmed: all required vars are set in deployment)
 - [x] Test all fixes (build successful)
