@@ -3,6 +3,7 @@
 import { adminAuth, adminDb, isAdminInitialized } from "@/lib/firebase/admin";
 import { Category } from "@/types";
 import { verifyAdmin } from "@/lib/utils/admin";
+import { categorySchema, categoryIdSchema } from "@/lib/validations/category.schema";
 
 /**
  * Get all categories
@@ -38,12 +39,17 @@ export async function addCategory(category: Partial<Category>, token: string): P
     }
 
     await verifyAdmin(token);
-    if (!category.id) throw new Error("Category ID is required");
-    await adminDb.collection("categories").doc(category.id).set(category);
+
+    const validation = categorySchema.safeParse(category);
+    if (!validation.success) {
+      return { success: false, error: validation.error.errors[0].message };
+    }
+
+    await adminDb.collection("categories").doc(validation.data.id).set(validation.data);
     return { success: true };
   } catch (error) {
     console.error("Error adding category:", error);
-    return { success: false, error: "Failed to add category" };
+    return { success: false, error: error instanceof Error ? error.message : "Failed to add category" };
   }
 }
 
@@ -57,10 +63,16 @@ export async function deleteCategory(categoryId: string, token: string): Promise
     }
 
     await verifyAdmin(token);
-    await adminDb.collection("categories").doc(categoryId).delete();
+
+    const validation = categoryIdSchema.safeParse(categoryId);
+    if (!validation.success) {
+      return { success: false, error: validation.error.errors[0].message };
+    }
+
+    await adminDb.collection("categories").doc(validation.data).delete();
     return { success: true };
   } catch (error) {
     console.error("Error deleting category:", error);
-    return { success: false, error: "Failed to delete category" };
+    return { success: false, error: error instanceof Error ? error.message : "Failed to delete category" };
   }
 }

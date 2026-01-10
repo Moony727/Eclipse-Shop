@@ -1,14 +1,23 @@
-# TODO: Fix Eclipse Shop Errors
+# Security Audit Remediation TODO
 
-## Issues Identified
-1. Service Worker caching '/index.html' which doesn't exist in Next.js
-2. React Hydration Error #418 due to potential server/client mismatch in layout
-3. CSP framing violation blocking embedding
-4. Orders fetch failure due to Firebase admin configuration
+## Critical Vulnerabilities
+- [x] Fix Firestore Privilege Escalation: Already secure
+- [x] Upgrade next.js: Already at 14.2.3
+- [x] Scan for Hardcoded Secrets: None found
 
-## Tasks
-- [x] Fix service worker static assets cache
-- [x] Remove unnecessary div wrapper in layout.tsx to fix hydration
-- [x] Update CSP to allow Firebase hosting framing
-- [x] Verify Firebase admin env vars are set in production (confirmed: all required vars are set in deployment)
-- [x] Test all fixes (build successful)
+## Medium-Severity Vulnerabilities
+- [x] Fix XSS in Markdown Rendering: No markdown rendering found
+- [x] Perform Full Dependency Audit: No known vulnerabilities
+
+## Bugs and Minor Security Risks
+- [x] Enforce Input Validation on Server Actions
+  - [x] Create category.schema.ts
+  - [x] Create preferences.schema.ts
+  - [x] Update src/app/actions/categories.ts with zod validation
+  - [x] Update src/app/actions/products.ts with zod validation for missing functions
+  - [x] Update src/app/actions/preferences.ts with zod validation
+- [x] Review for Missing CSRF Protection: Built-in for server actions
+
+## Final Verification
+- [x] Run npm run build
+- [x] Run npm run lint

@@ -76,7 +76,7 @@ const nextConfig: NextConfig = {
               "font-src 'self' https://fonts.gstatic.com https://www.gstatic.com data:; " +
               "img-src 'self' data: blob: https: https://images.pexels.com https://storage.googleapis.com https://firebasestorage.googleapis.com https://replicate.delivery https://res.cloudinary.com https://www.gstatic.com; " +
               "connect-src 'self' https://*.googleapis.com https://*.firebasestorage.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.vercel.app https://api.telegram.org https://res.cloudinary.com https://www.google.com https://www.gstatic.com https://apis.google.com https://challenge.cloudflare.com wss://*.firebase.com; " +
-              "frame-src https://www.google.com https://recaptcha.google.com https://challenge.cloudflare.com; " +
+              "frame-src https://www.google.com https://recaptcha.google.com https://challenge.cloudflare.com https://eclipseshop-1fa06.firebaseapp.com; " +
               "frame-ancestors 'self' https://www.google.com https://apis.google.com https://challenge.cloudflare.com; " +
               "base-uri 'self'; " +
               "form-action 'self'; " +

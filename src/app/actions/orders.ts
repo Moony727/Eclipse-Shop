@@ -179,7 +179,14 @@ export async function getUserOrders(
   }
 
   try {
-    const decodedToken = await adminAuth.verifyIdToken(token);
+    let decodedToken;
+    try {
+      decodedToken = await adminAuth.verifyIdToken(token);
+    } catch (error) {
+      console.error("Error verifying ID token:", error);
+      return { success: false, error: "Invalid authentication token." };
+    }
+    
     const userId = decodedToken.uid;
 
     const ordersRef = adminDb.collection("orders");
@@ -270,7 +277,8 @@ export async function getUserOrders(
     return { success: true, data: orders, total };
   } catch (error) {
     console.error("Error fetching user orders:", error);
-    return { success: false, error: "Failed to fetch user orders" };
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+    return { success: false, error: `Failed to fetch user orders: ${errorMessage}` };
   }
 }
 

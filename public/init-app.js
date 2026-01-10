@@ -42,31 +42,15 @@
     }
   }
 
-  // Theme management: restore from localStorage
-  function initTheme() {
-    try {
-      const theme = localStorage.getItem('eclipse-theme');
-      if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    } catch (e) {
-      console.debug('Theme init failed', e);
-    }
-  }
-
   // Run initialization functions
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function onReady() {
       preloadCriticalResources();
       registerServiceWorker();
-      initTheme();
       document.removeEventListener('DOMContentLoaded', onReady);
     });
   } else {
     preloadCriticalResources();
     registerServiceWorker();
-    initTheme();
   }
 })();

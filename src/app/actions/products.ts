@@ -1,7 +1,7 @@
 "use server";
 
 import { adminDb, isAdminInitialized } from "@/lib/firebase/admin";
-import { productIdSchema } from "@/lib/validations/product.schema";
+import { productIdSchema, productFormSchema } from "@/lib/validations/product.schema";
 import { Product, ProductFormData } from "@/types";
 import { verifyAdmin } from "@/lib/utils/admin";
 import { typeError } from "@/lib/errorTyper";
@@ -131,7 +131,12 @@ export async function toggleProductStatus(productId: string, isActive: boolean, 
 
     await verifyAdmin(token);
 
-    await adminDb.collection("products").doc(productId).update({
+    const validation = productIdSchema.safeParse(productId);
+    if (!validation.success) {
+      return { success: false, error: validation.error.errors[0].message };
+    }
+
+    await adminDb.collection("products").doc(validation.data).update({
       isActive,
     });
     return { success: true };
@@ -151,10 +156,15 @@ export async function createProduct(formData: ProductFormData, token: string): P
 
     await verifyAdmin(token);
 
+    const validation = productFormSchema.safeParse(formData);
+    if (!validation.success) {
+      return { success: false, error: validation.error.errors[0].message };
+    }
+
     let imageUrl = '';
-    if (formData.image) {
+    if (validation.data.image) {
       try {
-        imageUrl = await uploadImage(formData.image);
+        imageUrl = await uploadImage(validation.data.image);
       } catch (uploadError) {
         const errorMessage = uploadError instanceof Error ? uploadError.message : 'Unknown error occurred';
         return { success: false, error: errorMessage };
@@ -162,12 +172,12 @@ export async function createProduct(formData: ProductFormData, token: string): P
     }
 
     const productData = {
-      name: formData.name,
-      description: formData.description,
-      price: formData.price,
-      discountPrice: formData.discountPrice !== undefined ? formData.discountPrice : undefined,
-      category: formData.category,
-      subcategory: formData.subcategory,
+      name: validation.data.name,
+      description: validation.data.description,
+      price: validation.data.price,
+      discountPrice: validation.data.discountPrice !== undefined ? validation.data.discountPrice : undefined,
+      category: validation.data.category,
+      subcategory: validation.data.subcategory,
       imageUrl,
       isActive: true,
       createdAt: new Date(),
@@ -219,18 +229,23 @@ export async function updateProduct(productId: string, formData: ProductFormData
 
     await verifyAdmin(token);
 
+    const validation = productFormSchema.safeParse(formData);
+    if (!validation.success) {
+      return { success: false, error: validation.error.errors[0].message };
+    }
+
     const updateData: Partial<Product> = {
-      name: formData.name,
-      description: formData.description,
-      price: formData.price,
-      discountPrice: formData.discountPrice !== undefined ? formData.discountPrice : undefined,
-      category: formData.category,
-      subcategory: formData.subcategory,
+      name: validation.data.name,
+      description: validation.data.description,
+      price: validation.data.price,
+      discountPrice: validation.data.discountPrice !== undefined ? validation.data.discountPrice : undefined,
+      category: validation.data.category,
+      subcategory: validation.data.subcategory,
     };
 
-    if (formData.image) {
+    if (validation.data.image) {
       try {
-        updateData.imageUrl = await uploadImage(formData.image);
+        updateData.imageUrl = await uploadImage(validation.data.image);
       } catch (uploadError) {
         const errorMessage = uploadError instanceof Error ? uploadError.message : 'Unknown error occurred';
         return { success: false, error: errorMessage };

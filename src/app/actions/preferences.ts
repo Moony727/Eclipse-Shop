@@ -1,6 +1,7 @@
 "use server";
 
 import { adminAuth, adminDb, isAdminInitialized } from "@/lib/firebase/admin";
+import { preferencesSchema } from "@/lib/validations/preferences.schema";
 
 /**
  * Update user preferences (theme and language)
@@ -14,15 +15,20 @@ export async function updateUserPreferences(
   }
 
   try {
+    const validation = preferencesSchema.safeParse(preferences);
+    if (!validation.success) {
+      return { success: false, error: validation.error.errors[0].message };
+    }
+
     const decodedToken = await adminAuth.verifyIdToken(token);
     const userId = decodedToken.uid;
 
     const updateData: Record<string, any> = {};
-    if (preferences.theme !== undefined) {
-      updateData.theme = preferences.theme;
+    if (validation.data.theme !== undefined) {
+      updateData.theme = validation.data.theme;
     }
-    if (preferences.language !== undefined) {
-      updateData.language = preferences.language;
+    if (validation.data.language !== undefined) {
+      updateData.language = validation.data.language;
     }
 
     await adminDb.collection("users").doc(userId).update(updateData);
