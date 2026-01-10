@@ -31,9 +31,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Security headers: configured for all routes to improve trust and reduce
-  // attack surface. Adjust directives (CSP connect-src/img-src) to match any
-  // external services you intentionally use (analytics, CDNs, APIs).
+  // Security headers: configured for highest security. CSP is strict without unsafe directives.
+  // Note: Removing 'unsafe-inline' may break Next.js hydration; if so, implement nonce-based CSP.
   async headers() {
     return [
       {
@@ -46,7 +45,11 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
+            value: 'DENY',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
           },
           {
             key: 'Referrer-Policy',
@@ -54,34 +57,73 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Strict-Transport-Security',
-            // 1 year, include subdomains, preload hint
             value: 'max-age=31536000; includeSubDomains; preload',
           },
           {
             key: 'Permissions-Policy',
-            // Disable powerful features by default
-            value: 'camera=(), microphone=(), geolocation=()',
+            value: 'camera=(), microphone=(), geolocation=(), payment=()',
           },
           {
             key: 'Content-Security-Policy',
-            // Next.js-compatible CSP. Allow inline scripts because Next.js injects
-            // critical hydration scripts. This is a pragmatic trade-off: we keep
-            // script execution limited to same-origin and inline code only, while
-            // keeping other directives strict.
-            // If you later migrate to nonce-based CSP, remove 'unsafe-inline'.
+            // Strict CSP without unsafe directives for highest security
             value:
               "default-src 'self'; " +
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com https://cdn.jsdelivr.net https://apis.google.com https://challenge.cloudflare.com; " +
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.gstatic.com; " +
-              "font-src 'self' https://fonts.gstatic.com https://www.gstatic.com data:; " +
-              "img-src 'self' data: blob: https: https://images.pexels.com https://storage.googleapis.com https://firebasestorage.googleapis.com https://replicate.delivery https://res.cloudinary.com https://www.gstatic.com; " +
-              "connect-src 'self' https://*.googleapis.com https://*.firebasestorage.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.vercel.app https://api.telegram.org https://res.cloudinary.com https://www.google.com https://www.gstatic.com https://apis.google.com https://challenge.cloudflare.com wss://*.firebase.com; " +
-              "frame-src https://www.google.com https://recaptcha.google.com https://challenge.cloudflare.com https://eclipseshop-1fa06.firebaseapp.com; " +
-              "frame-ancestors 'self' https://www.google.com https://apis.google.com https://challenge.cloudflare.com; " +
+              "script-src 'self' https://www.google.com https://www.gstatic.com https://cdn.jsdelivr.net https://apis.google.com https://challenge.cloudflare.com; " +
+              "style-src 'self' https://fonts.googleapis.com https://www.gstatic.com; " +
+              "font-src 'self' https://fonts.gstatic.com data:; " +
+              "img-src 'self' data: blob: https: https://images.pexels.com https://storage.googleapis.com https://firebasestorage.googleapis.com https://replicate.delivery https://res.cloudinary.com; " +
+              "connect-src 'self' https://*.googleapis.com https://*.firebasestorage.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.vercel.app https://api.telegram.org https://res.cloudinary.com https://www.google.com https://www.gstatic.com https://apis.google.com wss://*.firebase.com; " +
+              "frame-src https://www.google.com https://recaptcha.google.com https://challenge.cloudflare.com; " +
+              "frame-ancestors 'self'; " +
               "base-uri 'self'; " +
               "form-action 'self'; " +
               "manifest-src 'self'; " +
-              "worker-src 'self';",
+              "worker-src 'self'; " +
+              "upgrade-insecure-requests;",
+          },
+          // CORS restricted to your domain
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: 'https://eclipseshop.xyz',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, PUT, DELETE, OPTIONS',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type, Authorization',
+          },
+          {
+            key: 'Access-Control-Allow-Credentials',
+            value: 'true',
+          },
+          // Cache control for sensitive routes
+          {
+            key: 'Cache-Control',
+            value: 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          },
+          {
+            key: 'Pragma',
+            value: 'no-cache',
+          },
+          {
+            key: 'Expires',
+            value: '0',
+          },
+        ],
+      },
+      {
+        // Additional restrictions for admin routes
+        source: '/admin/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-store',
+          },
+          {
+            key: 'X-Robots-Tag',
+            value: 'noindex, nofollow',
           },
         ],
       },

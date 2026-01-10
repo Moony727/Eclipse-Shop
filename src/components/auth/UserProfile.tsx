@@ -166,7 +166,7 @@ export function UserProfile({ isOpen, onClose, user, initialTab = "info" }: User
             </TabsContent>
 
             <TabsContent value="history" className="h-full m-0">
-              <ScrollArea className="h-full p-6">
+              <ScrollArea className="max-h-[500px] p-6">
                 {isLoadingOrders ? (
                   <div className="flex flex-col items-center justify-center py-12 space-y-4">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>

@@ -1,4 +1,4 @@
-export const translations = {
+ export const translations = {
   en: {
     // Navigation
     nav: {

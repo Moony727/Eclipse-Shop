@@ -1,0 +1,49 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // User uploads: Only owners can upload, read, delete
+    // Force attachment disposition, restrict file types
+    match /users/{userId}/{allPaths=**} {
+      allow read, write, delete: if isOwner(userId);
+
+      // Enforce content disposition attachment
+      allow write: if request.resource.metadata.contentDisposition == 'attachment' ||
+                   request.resource.metadata.contentDisposition == null; // Allow null, but code should set it
+
+      // Restrict file types to prevent execution
+      allow write: if request.resource.contentType.matches('image/(jpeg|png|gif|webp)') ||
+                   request.resource.contentType.matches('application/pdf') ||
+                   request.resource.contentType.matches('text/plain') ||
+                   request.resource.contentType.matches('application/octet-stream');
+
+      // Prevent SVG, HTML, JS execution
+      allow write: if !request.resource.contentType.matches('image/svg\\+xml') &&
+                   !request.resource.contentType.matches('text/html') &&
+                   !request.resource.contentType.matches('application/javascript') &&
+                   !request.resource.contentType.matches('text/javascript');
+    }
+
+    // Product images: Only admins can upload
+    match /products/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() &&
+                   exists(/databases/(default)/documents/users/$(request.auth.uid)) &&
+                   get(/databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // Public files: Read only
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

@@ -18,9 +18,7 @@ export const productSchema = z.object({
   }),
   price: z.number().positive("Price must be positive"),
   discountPrice: z.number().positive("Discount price must be positive").optional(),
-  category: z.enum(["software", "templates", "courses", "graphics"], {
-    errorMap: () => ({ message: "Invalid category" }),
-  }),
+  category: z.string().min(1, "Category is required").transform(sanitizeString),
   subcategory: z.string().min(1, "Subcategory is required").transform(sanitizeString),
   imageUrl: z.string().url("Invalid image URL"),
   isActive: z.boolean().default(true),
@@ -51,9 +49,7 @@ export const productFormSchema = z.object({
   }),
   price: z.number().positive("Price must be positive"),
   discountPrice: z.number().positive("Discount price must be positive").optional(),
-  category: z.enum(["software", "templates", "courses", "graphics"], {
-    errorMap: () => ({ message: "Invalid category" }),
-  }),
+  category: z.string().min(1, "Category is required").transform(sanitizeString),
   subcategory: z.string().min(1, "Subcategory is required").transform(sanitizeString),
   image: z.instanceof(File).optional(),
 }).refine(

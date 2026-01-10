@@ -146,6 +146,20 @@ export async function toggleProductStatus(productId: string, isActive: boolean, 
 }
 
 /**
+ * Check if a category exists in the database
+ */
+async function categoryExists(categoryId: string): Promise<boolean> {
+  try {
+    if (!adminDb) return false;
+    const categoryRef = adminDb.collection("categories").doc(categoryId);
+    const categorySnap = await categoryRef.get();
+    return categorySnap.exists;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Admin: Create a new product
  */
 export async function createProduct(formData: ProductFormData, token: string): Promise<{ success: boolean; data?: Product; error?: string }> {
@@ -159,6 +173,12 @@ export async function createProduct(formData: ProductFormData, token: string): P
     const validation = productFormSchema.safeParse(formData);
     if (!validation.success) {
       return { success: false, error: validation.error.errors[0].message };
+    }
+
+    // Check if category exists
+    const categoryValid = await categoryExists(validation.data.category);
+    if (!categoryValid) {
+      return { success: false, error: "Invalid category" };
     }
 
     let imageUrl = '';
@@ -232,6 +252,12 @@ export async function updateProduct(productId: string, formData: ProductFormData
     const validation = productFormSchema.safeParse(formData);
     if (!validation.success) {
       return { success: false, error: validation.error.errors[0].message };
+    }
+
+    // Check if category exists
+    const categoryValid = await categoryExists(validation.data.category);
+    if (!categoryValid) {
+      return { success: false, error: "Invalid category" };
     }
 
     const updateData: Partial<Product> = {

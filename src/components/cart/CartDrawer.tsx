@@ -91,7 +91,7 @@ export function CartDrawer({ children }: CartDrawerProps) {
 
       <div className="flex flex-col flex-1 overflow-hidden">
         {/* Cart Items */}
-        <div className={`flex-1 overflow-y-auto ${isMobile ? 'p-[calc(1rem*var(--ui-scale))]' : 'p-[calc(1.5rem*var(--ui-scale))]'} scrollbar-none`}>
+        <div className={`flex-1 overflow-y-auto max-h-[400px] ${isMobile ? 'p-[calc(1rem*var(--ui-scale))]' : 'p-[calc(1.5rem*var(--ui-scale))]'} scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent`}>
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
               <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
