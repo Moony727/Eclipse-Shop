@@ -49,17 +49,25 @@ export async function createOrder(
 
     const docRef = await ordersRef.add(orderData);
 
-    // Send Telegram notification (non-blocking)
-    sendTelegramNotification({
-      orderId: docRef.id,
-      customerName: validation.data.customerName || validation.data.userName,
-      contactId: validation.data.contactId,
-      contactType: validation.data.contactType,
-      items: validation.data.items,
-      totalAmount: validation.data.totalAmount,
-      orderDate: new Date().toLocaleString(),
-    }).catch(() => {
-      // Notification failed, but don't fail the order
+    // Send Telegram notification asynchronously (non-blocking)
+    setImmediate(async () => {
+      try {
+        const success = await sendTelegramNotification({
+          orderId: docRef.id,
+          customerName: validation.data.customerName || validation.data.userName,
+          contactId: validation.data.contactId,
+          contactType: validation.data.contactType,
+          items: validation.data.items,
+          totalAmount: validation.data.totalAmount,
+          orderDate: new Date().toLocaleString(),
+        });
+
+        if (!success) {
+          console.warn(`Failed to send Telegram notification for order ${docRef.id}`);
+        }
+      } catch (error) {
+        console.error(`Error sending Telegram notification for order ${docRef.id}:`, error);
+      }
     });
 
     return { success: true, data: { orderId: docRef.id } };
@@ -73,11 +81,12 @@ export async function createOrder(
 }
 
 /**
- * Get a single order by ID (Order Owner)
+ * Get a single order by ID (Order Owner) with batch product fetching
  */
 export async function getOrderById(
   orderId: string,
-  token: string
+  token: string,
+  includeProducts: boolean = true
 ): Promise<{ success: boolean; data?: Order; error?: string }> {
   if (!isAdminInitialized || !adminAuth || !adminDb) {
     return { success: false, error: "Server configuration error" };
@@ -109,156 +118,100 @@ export async function getOrderById(
       createdAt: data.createdAt?.toDate() || new Date(),
     } as Order;
 
-    // Fetch product details for the order
-    try {
-      if (adminDb) {
-        if (order.items && order.items.length > 0) {
-          // New structure: fetch products for each item
-          await Promise.all(order.items.map(async (item) => {
-            const productDoc = await adminDb!.collection("products").doc(item.productId).get();
-            if (productDoc.exists) {
-              const productData = productDoc.data();
-              if (productData) {
-                item.product = {
-                  id: productDoc.id,
-                  ...productData,
-                  createdAt: productData.createdAt?.toDate() || new Date(),
-                } as Product;
-              }
-            }
-          }));
-        } else if (order.productId) {
-          // Legacy structure: single product
-          const productDoc = await adminDb!.collection("products").doc(order.productId).get();
-          if (productDoc.exists) {
-            const productData = productDoc.data();
-            if (productData) {
-              order.product = {
-                id: productDoc.id,
-                ...productData,
-                createdAt: productData.createdAt?.toDate() || new Date(),
-              } as Product;
+    // Batch fetch product details if requested
+    if (includeProducts && adminDb) {
+      const productIds = new Set<string>();
+
+      if (order.items && order.items.length > 0) {
+        order.items.forEach(item => productIds.add(item.productId));
+      } else if (order.productId) {
+        productIds.add(order.productId);
+      }
+
+      if (productIds.size > 0) {
+        const productsRef = adminDb.collection("products");
+        const productPromises = Array.from(productIds).map(id => productsRef.doc(id).get());
+        const productDocs = await Promise.all(productPromises);
+
+        const productMap = new Map<string, Product>();
+        productDocs.forEach(doc => {
+          if (doc.exists) {
+            const data = doc.data();
+            if (data) {
+              productMap.set(doc.id, {
+                id: doc.id,
+                ...data,
+                createdAt: data.createdAt?.toDate() || new Date(),
+              } as Product);
             }
           }
+        });
+
+        // Assign products
+        if (order.items && order.items.length > 0) {
+          order.items.forEach(item => {
+            item.product = productMap.get(item.productId);
+          });
+        } else if (order.productId) {
+          order.product = productMap.get(order.productId);
         }
       }
-    } catch {
-      // Log error but don't fail the request
     }
 
     return { success: true, data: order };
-  } catch {
-    return {
-      success: false,
-      error: "Failed to fetch order"
-    };
+  } catch (error) {
+    console.error("Error fetching order by ID:", error);
+    return { success: false, error: "Failed to fetch order" };
   }
 }
 
 /**
- * Get all orders for a user
+ * Get all orders for a user with batch product fetching and optional pagination
  */
 export async function getUserOrders(
-  token: string
-): Promise<{ success: boolean; data?: Order[]; error?: string }> {
-  console.log("getUserOrders called, admin initialized:", isAdminInitialized);
+  token: string,
+  options?: { limit?: number; offset?: number; includeProducts?: boolean }
+): Promise<{ success: boolean; data?: Order[]; error?: string; total?: number }> {
+  const { limit = 50, offset = 0, includeProducts = true } = options || {};
 
   if (!isAdminInitialized || !adminAuth || !adminDb) {
-    console.error("Admin SDK not initialized:", { isAdminInitialized, adminAuth: !!adminAuth, adminDb: !!adminDb });
     return { success: false, error: "Server configuration error" };
   }
 
   try {
-    console.log("Verifying token...");
     const decodedToken = await adminAuth.verifyIdToken(token);
     const userId = decodedToken.uid;
-    console.log("Token verified for user:", userId);
 
     const ordersRef = adminDb.collection("orders");
-    console.log("Querying orders for user:", userId);
-    const snapshot = await ordersRef
+
+    // Get total count for pagination
+    const countQuery = ordersRef.where("userId", "==", userId);
+    const totalSnapshot = await countQuery.count().get();
+    const total = totalSnapshot.data().count;
+
+    // Get orders with pagination
+    let query = ordersRef
       .where("userId", "==", userId)
-      .orderBy("createdAt", "desc")
-      .get();
+      .orderBy("createdAt", "desc");
 
-    console.log("Found orders:", snapshot.size);
+    if (offset > 0) {
+      // For offset, we need to get all and slice, or use cursor
+      // Since Firestore doesn't support offset directly with orderBy, we'll fetch with limit + offset
+      query = query.limit(limit + offset);
+    } else {
+      query = query.limit(limit);
+    }
 
-    const orders: Order[] = await Promise.all(snapshot.docs.map(async (doc) => {
-      const data = doc.data();
-      const order: Order = {
-        id: doc.id,
-        ...data,
-        createdAt: data.createdAt?.toDate() || new Date(),
-      } as Order;
+    const snapshot = await query.get();
 
-      // Fetch product details for the order
-      try {
-        if (adminDb) {
-          if (order.items && order.items.length > 0) {
-            // New structure: fetch products for each item
-            await Promise.all(order.items.map(async (item) => {
-              const productDoc = await adminDb!.collection("products").doc(item.productId).get();
-              if (productDoc.exists) {
-                const productData = productDoc.data();
-                if (productData) {
-                  item.product = {
-                    id: productDoc.id,
-                    ...productData,
-                    createdAt: productData.createdAt?.toDate() || new Date(),
-                  } as Product;
-                }
-              }
-            }));
-          } else if (order.productId) {
-            // Legacy structure: single product
-            const productDoc = await adminDb!.collection("products").doc(order.productId).get();
-            if (productDoc.exists) {
-              const productData = productDoc.data();
-              if (productData) {
-                order.product = {
-                  id: productDoc.id,
-                  ...productData,
-                  createdAt: productData.createdAt?.toDate() || new Date(),
-                } as Product;
-              }
-            }
-          }
-        }
-      } catch {
-        // Log error but don't fail the request
-      }
+    if (snapshot.empty) {
+      return { success: true, data: [], total: 0 };
+    }
 
-      return order;
-    }));
+    // Apply offset if needed
+    const docs = offset > 0 ? snapshot.docs.slice(offset) : snapshot.docs;
 
-    console.log("Successfully processed", orders.length, "orders");
-    return { success: true, data: orders };
-  } catch (error) {
-    console.error("Error fetching user orders:", error as Error);
-    return {
-      success: false,
-      error: "Failed to fetch user orders"
-    };
-  }
-}
-
-/**
- * Admin: Get all orders
- */
-export async function getOrdersForAdmin(
-  token: string
-): Promise<{ success: boolean; data?: Order[]; error?: string }> {
-  if (!isAdminInitialized || !adminAuth || !adminDb) {
-    return { success: false, error: "Server configuration error" };
-  }
-
-  try {
-    await verifyAdmin(token);
-
-    const ordersRef = adminDb.collection("orders");
-    const snapshot = await ordersRef.orderBy("createdAt", "desc").get();
-
-    const orders: Order[] = snapshot.docs.map((doc) => {
+    const orders: Order[] = docs.map((doc) => {
       const data = doc.data();
       return {
         id: doc.id,
@@ -267,7 +220,152 @@ export async function getOrdersForAdmin(
       } as Order;
     });
 
-    return { success: true, data: orders };
+    // Batch fetch products if requested
+    if (includeProducts && adminDb) {
+      const productIds = new Set<string>();
+
+      // Collect all product IDs
+      orders.forEach(order => {
+        if (order.items && order.items.length > 0) {
+          order.items.forEach(item => productIds.add(item.productId));
+        } else if (order.productId) {
+          productIds.add(order.productId);
+        }
+      });
+
+      if (productIds.size > 0) {
+        // Batch fetch products
+        const productsRef = adminDb.collection("products");
+        const productPromises = Array.from(productIds).map(id => productsRef.doc(id).get());
+        const productDocs = await Promise.all(productPromises);
+
+        // Create product map
+        const productMap = new Map<string, Product>();
+        productDocs.forEach(doc => {
+          if (doc.exists) {
+            const data = doc.data();
+            if (data) {
+              productMap.set(doc.id, {
+                id: doc.id,
+                ...data,
+                createdAt: data.createdAt?.toDate() || new Date(),
+              } as Product);
+            }
+          }
+        });
+
+        // Assign products to orders
+        orders.forEach(order => {
+          if (order.items && order.items.length > 0) {
+            order.items.forEach(item => {
+              item.product = productMap.get(item.productId);
+            });
+          } else if (order.productId) {
+            order.product = productMap.get(order.productId);
+          }
+        });
+      }
+    }
+
+    return { success: true, data: orders, total };
+  } catch (error) {
+    console.error("Error fetching user orders:", error);
+    return { success: false, error: "Failed to fetch user orders" };
+  }
+}
+
+/**
+ * Admin: Get all orders with optional batch product fetching and pagination
+ */
+export async function getOrdersForAdmin(
+  token: string,
+  options?: { limit?: number; offset?: number; includeProducts?: boolean }
+): Promise<{ success: boolean; data?: Order[]; error?: string; total?: number }> {
+  const { limit = 100, offset = 0, includeProducts = false } = options || {};
+
+  if (!isAdminInitialized || !adminAuth || !adminDb) {
+    return { success: false, error: "Server configuration error" };
+  }
+
+  try {
+    await verifyAdmin(token);
+
+    const ordersRef = adminDb.collection("orders");
+
+    // Get total count
+    const totalSnapshot = await ordersRef.count().get();
+    const total = totalSnapshot.data().count;
+
+    // Get orders with pagination
+    let query = ordersRef.orderBy("createdAt", "desc");
+
+    if (offset > 0) {
+      query = query.limit(limit + offset);
+    } else {
+      query = query.limit(limit);
+    }
+
+    const snapshot = await query.get();
+
+    if (snapshot.empty) {
+      return { success: true, data: [], total: 0 };
+    }
+
+    const docs = offset > 0 ? snapshot.docs.slice(offset) : snapshot.docs;
+
+    const orders: Order[] = docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate() || new Date(),
+      } as Order;
+    });
+
+    // Batch fetch products if requested
+    if (includeProducts && adminDb) {
+      const productIds = new Set<string>();
+
+      orders.forEach(order => {
+        if (order.items && order.items.length > 0) {
+          order.items.forEach(item => productIds.add(item.productId));
+        } else if (order.productId) {
+          productIds.add(order.productId);
+        }
+      });
+
+      if (productIds.size > 0) {
+        const productsRef = adminDb.collection("products");
+        const productPromises = Array.from(productIds).map(id => productsRef.doc(id).get());
+        const productDocs = await Promise.all(productPromises);
+
+        const productMap = new Map<string, Product>();
+        productDocs.forEach(doc => {
+          if (doc.exists) {
+            const data = doc.data();
+            if (data) {
+              productMap.set(doc.id, {
+                id: doc.id,
+                ...data,
+                createdAt: data.createdAt?.toDate() || new Date(),
+              } as Product);
+            }
+          }
+        });
+
+        orders.forEach(order => {
+          if (order.items && order.items.length > 0) {
+            order.items.forEach(item => {
+              item.product = productMap.get(item.productId);
+            });
+          } else if (order.productId) {
+            order.product = productMap.get(order.productId);
+          }
+        });
+      }
+    }
+
+    return { success: true, data: orders, total };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unauthorized or failed to fetch orders";
     console.error("Error in getOrdersForAdmin:", errorMessage);
@@ -276,7 +374,7 @@ export async function getOrdersForAdmin(
 }
 
 /**
- * Admin: Update order status
+ * Admin: Update order status with validation
  */
 export async function updateOrderStatus(
   orderId: string,
@@ -288,10 +386,27 @@ export async function updateOrderStatus(
   }
 
   try {
+    if (!orderId || !status) {
+      return { success: false, error: "Order ID and status are required" };
+    }
+
+    // Validate status
+    const validStatuses: Order['status'][] = ['requested', 'process', 'completed', 'cancelled'];
+    if (!validStatuses.includes(status)) {
+      return { success: false, error: "Invalid status" };
+    }
+
     await verifyAdmin(token);
+
+    // Check if order exists
+    const orderDoc = await adminDb.collection("orders").doc(orderId).get();
+    if (!orderDoc.exists) {
+      return { success: false, error: "Order not found" };
+    }
 
     await adminDb.collection("orders").doc(orderId).update({
       status,
+      updatedAt: Timestamp.now(),
     });
 
     return { success: true };
