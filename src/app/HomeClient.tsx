@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import NextImage from "next/image";
 import { Navbar } from "@/components/navigation/Navbar";
-import { ProductGrid } from "@/components/products/ProductGrid";
+const ProductGrid = lazy(() => import("@/components/products/ProductGrid").then(mod => ({ default: mod.ProductGrid })));
 import { ProductFilters } from "@/components/products/ProductFilters";
 import { LoginModal } from "@/components/auth/LoginModal";
 import { UserProfile } from "@/components/auth/UserProfile";
@@ -156,10 +156,12 @@ export default function HomePage() {
 
         {/* Products Grid */}
         <section id="products" className="min-h-[400px]">
-          <ProductGrid
-            products={filteredProducts}
-            isLoading={isLoading || loading}
-          />
+          <Suspense fallback={<div className="flex items-center justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
+            <ProductGrid
+              products={filteredProducts}
+              isLoading={isLoading || loading}
+            />
+          </Suspense>
         </section>
       </main>
 

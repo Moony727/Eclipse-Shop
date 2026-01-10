@@ -88,7 +88,7 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                 e.preventDefault();
                 scrollTo("home");
               }}
-              className="relative text-[calc(0.75rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
+              className="relative text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] lg:text-[calc(1rem*var(--ui-scale))] xl:text-[calc(1.125rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
             >
               {t("nav.home")}
             </button>
@@ -97,7 +97,7 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                 e.preventDefault();
                 scrollTo("products");
               }}
-              className="relative text-[calc(0.75rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
+              className="relative text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] lg:text-[calc(1rem*var(--ui-scale))] xl:text-[calc(1.125rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
             >
               {t("nav.products")}
             </button>
@@ -106,7 +106,7 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                 e.preventDefault();
                 setIsAboutOpen(true);
               }}
-              className="relative text-[calc(0.75rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
+              className="relative text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] lg:text-[calc(1rem*var(--ui-scale))] xl:text-[calc(1.125rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
             >
               {t("nav.about")}
             </button>
@@ -115,7 +115,7 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
                 e.preventDefault();
                 setIsContactOpen(true);
               }}
-              className="relative text-[calc(0.75rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
+              className="relative text-[calc(0.75rem*var(--ui-scale))] md:text-[calc(0.875rem*var(--ui-scale))] lg:text-[calc(1rem*var(--ui-scale))] xl:text-[calc(1.125rem*var(--ui-scale))] font-medium text-foreground/80 hover:text-foreground transition-all duration-300"
             >
               {t("nav.contact")}
             </button>
@@ -282,14 +282,20 @@ export function Navbar({ user, onProfileClick, onLoginClick }: NavbarProps) {
               </button>
               {user && (
                 <>
-                  <Link 
-                    href="/admin" 
-                    className="block text-foreground/80 hover:text-foreground transition-colors py-[calc(0.5rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))] font-medium"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Admin Panel
-                  </Link>
-                  <button 
+                  {(() => {
+                    const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS?.split(',') || [];
+                    const isAdmin = adminEmails.includes(user.email || '');
+                    return isAdmin ? (
+                      <Link
+                        href="/admin"
+                        className="block text-foreground/80 hover:text-foreground transition-colors py-[calc(0.5rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))] font-medium"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Admin Panel
+                      </Link>
+                    ) : null;
+                  })()}
+                  <button
                     className="block w-full text-left text-foreground/80 hover:text-foreground transition-colors py-[calc(0.5rem*var(--ui-scale))] text-[calc(0.875rem*var(--ui-scale))] font-medium"
                     onClick={() => {
                       onProfileClick("history");

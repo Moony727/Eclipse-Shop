@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  compress: true,
   images: {
     remotePatterns: [
       {
@@ -18,10 +19,10 @@ const nextConfig: NextConfig = {
         hostname: 'firebasestorage.googleapis.com',
         pathname: '/v0/b/**',
       },
-      { 
-        protocol: 'https', 
-        hostname: 'replicate.delivery', 
-        pathname: '/**', 
+      {
+        protocol: 'https',
+        hostname: 'replicate.delivery',
+        pathname: '/**',
       },
       {
         protocol: 'https',
