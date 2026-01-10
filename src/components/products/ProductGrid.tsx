@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { ProductCard } from "./ProductCard";
 import { ProductCardSkeleton } from "./ProductCardSkeleton";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -15,11 +16,11 @@ export function ProductGrid({ products, isLoading }: ProductGridProps) {
   const { t } = useLanguage();
 
   // Sort products by category then subcategory
-  const sortedProducts = [...products].sort((a, b) => {
+  const sortedProducts = useMemo(() => [...products].sort((a, b) => {
     const categoryCompare = a.category.localeCompare(b.category);
     if (categoryCompare !== 0) return categoryCompare;
     return a.subcategory.localeCompare(b.subcategory);
-  });
+  }), [products]);
 
   if (isLoading) {
     return (
@@ -58,7 +59,6 @@ export function ProductGrid({ products, isLoading }: ProductGridProps) {
       </div>
 
       <div
-        key={products.map(p => p.id).join(',')}
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 animate-in fade-in zoom-in-95 duration-500"
       >
         {sortedProducts.map((product) => (

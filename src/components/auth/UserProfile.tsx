@@ -23,7 +23,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { User, Order } from "@/types";
-import { LogOut, Settings, User as UserIcon, Package, Phone, Send } from "lucide-react";
+import { LogOut, Settings, User as UserIcon, Package, Phone, Send, AlertCircle } from "lucide-react";
 import { getUserOrders } from "@/app/actions/orders";
 import NextImage from "next/image";
 
@@ -39,6 +39,7 @@ export function UserProfile({ isOpen, onClose, user, initialTab = "info" }: User
   const { t, language } = useLanguage();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoadingOrders, setIsLoadingOrders] = useState(false);
+  const [ordersError, setOrdersError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>(initialTab);
 
   useEffect(() => {
@@ -51,14 +52,22 @@ export function UserProfile({ isOpen, onClose, user, initialTab = "info" }: User
     const fetchOrders = async () => {
       if (isOpen && firebaseUser) {
         setIsLoadingOrders(true);
+        setOrdersError(null);
         try {
           const token = await firebaseUser.getIdToken();
           const result = await getUserOrders(token);
           if (result.success && result.data) {
             setOrders(result.data);
+            setOrdersError(null);
+          } else {
+            console.error("Failed to fetch orders:", result.error);
+            setOrders([]);
+            setOrdersError(result.error || "Failed to load orders");
           }
         } catch (error) {
           console.error("Error fetching orders:", error);
+          setOrders([]);
+          setOrdersError("An error occurred while loading orders");
         } finally {
           setIsLoadingOrders(false);
         }
@@ -160,6 +169,17 @@ export function UserProfile({ isOpen, onClose, user, initialTab = "info" }: User
                   <div className="flex flex-col items-center justify-center py-12 space-y-4">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                     <p className="text-muted-foreground">{t("common.loading", "Loading history...")}</p>
+                  </div>
+                ) : ordersError ? (
+                  <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                    <AlertCircle className="w-12 h-12 text-red-500" />
+                    <div className="text-center space-y-2">
+                      <h4 className="font-semibold text-lg">{t("orders.error", "Error loading orders")}</h4>
+                      <p className="text-muted-foreground max-w-[250px] mx-auto">{ordersError}</p>
+                    </div>
+                    <Button variant="outline" onClick={() => window.location.reload()}>
+                      {t("common.retry", "Retry")}
+                    </Button>
                   </div>
                 ) : orders.length > 0 ? (
                   <div className="space-y-4">

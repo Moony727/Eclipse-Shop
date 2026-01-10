@@ -22,8 +22,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { db } from "@/lib/firebase/config";
-import { doc, updateDoc, collection, getDocs } from "firebase/firestore";
+import { getUsersForAdmin, toggleUserAdminStatus } from "@/app/actions/users";
 
 export default function UsersPage() {
   const { firebaseUser } = useAuth();
@@ -31,21 +30,23 @@ export default function UsersPage() {
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState<string | null>(null);
 
   const fetchUsers = useCallback(async () => {
     if (!firebaseUser) return;
     setIsLoading(true);
     try {
-      const usersRef = collection(db, "users");
-      const snapshot = await getDocs(usersRef);
-      const usersData: User[] = snapshot.docs.map((doc) => ({
-        uid: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-      })) as User[];
-      setUsers(usersData);
-      setFilteredUsers(usersData);
-    } catch {
+      const token = await firebaseUser.getIdToken();
+      const result = await getUsersForAdmin(token);
+      
+      if (result.success && result.data) {
+        setUsers(result.data);
+        setFilteredUsers(result.data);
+      } else {
+        toast.error(result.error || "Failed to fetch users");
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
       toast.error("An error occurred while fetching users");
     } finally {
       setIsLoading(false);
@@ -61,23 +62,31 @@ export default function UsersPage() {
       setFilteredUsers(users);
     } else {
       const filtered = users.filter((user) =>
-        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchQuery.toLowerCase())
+        (user.name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+        (user.email?.toLowerCase() || "").includes(searchQuery.toLowerCase())
       );
       setFilteredUsers(filtered);
     }
   }, [searchQuery, users]);
 
   const handleToggleAdmin = async (userId: string, currentAdmin: boolean) => {
+    if (!firebaseUser) return;
+    setIsUpdating(userId);
     try {
-      const userRef = doc(db, "users", userId);
-      await updateDoc(userRef, {
-        isAdmin: !currentAdmin,
-      });
-      toast.success(`User admin status updated`);
-      setUsers(prev => prev.map(u => u.uid === userId ? { ...u, isAdmin: !currentAdmin } : u));
-    } catch {
+      const token = await firebaseUser.getIdToken();
+      const result = await toggleUserAdminStatus(userId, !currentAdmin, token);
+      
+      if (result.success) {
+        toast.success(`User admin status updated`);
+        setUsers(prev => prev.map(u => u.uid === userId ? { ...u, isAdmin: !currentAdmin } : u));
+      } else {
+        toast.error(result.error || "Failed to update admin status");
+      }
+    } catch (error) {
+      console.error("Error updating admin status:", error);
       toast.error("An error occurred");
+    } finally {
+      setIsUpdating(null);
     }
   };
 
@@ -162,8 +171,15 @@ export default function UsersPage() {
                           className="h-8 w-8"
                           onClick={() => handleToggleAdmin(user.uid, user.isAdmin || false)}
                           title={user.isAdmin ? "Remove Admin" : "Make Admin"}
+                          disabled={isUpdating === user.uid}
                         >
-                          {user.isAdmin ? <ShieldOff className="h-4 w-4" /> : <Shield className="h-4 w-4" />}
+                          {isUpdating === user.uid ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : user.isAdmin ? (
+                            <ShieldOff className="h-4 w-4" />
+                          ) : (
+                            <Shield className="h-4 w-4" />
+                          )}
                         </Button>
                       </div>
                     </TableCell>

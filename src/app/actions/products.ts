@@ -1,6 +1,6 @@
 "use server";
 
-import { adminDb } from "@/lib/firebase/admin";
+import { adminDb, isAdminInitialized } from "@/lib/firebase/admin";
 import { productIdSchema } from "@/lib/validations/product.schema";
 import { Product, ProductFormData } from "@/types";
 import { verifyAdmin } from "@/lib/utils/admin";
@@ -20,6 +20,10 @@ export async function getProductById(
   productId: string
 ): Promise<{ success: boolean; data?: Product; error?: string }> {
   try {
+    if (!isAdminInitialized || !adminDb) {
+      return { success: false, error: "Admin SDK not initialized" };
+    }
+
     const validation = productIdSchema.safeParse(productId);
     if (!validation.success) {
       return { success: false, error: validation.error.errors[0].message };
@@ -56,6 +60,10 @@ export async function getPublicProducts(filters?: {
   isActive?: boolean;
 }): Promise<{ success: boolean; data?: Product[]; error?: string }> {
   try {
+    if (!isAdminInitialized || !adminDb) {
+      return { success: false, error: "Admin SDK not initialized" };
+    }
+
     const productsRef = adminDb.collection("products");
     let query = productsRef.orderBy("createdAt", "desc");
 
@@ -65,6 +73,9 @@ export async function getPublicProducts(filters?: {
     }
     if (filters?.subcategory && filters.subcategory !== "all") {
       query = query.where("subcategory", "==", filters.subcategory);
+    }
+    if (filters?.isActive !== undefined) {
+      query = query.where("isActive", "==", filters.isActive);
     }
 
     const snapshot = await query.get();
@@ -88,6 +99,10 @@ export async function getPublicProducts(filters?: {
  */
 export async function getProductsForAdmin(token: string): Promise<{ success: boolean; data?: Product[]; error?: string }> {
   try {
+    if (!isAdminInitialized || !adminDb) {
+      return { success: false, error: "Admin SDK not initialized" };
+    }
+
     await verifyAdmin(token);
 
     const productsRef = adminDb.collection("products");
@@ -110,6 +125,10 @@ export async function getProductsForAdmin(token: string): Promise<{ success: boo
  */
 export async function toggleProductStatus(productId: string, isActive: boolean, token: string): Promise<{ success: boolean; error?: string }> {
   try {
+    if (!isAdminInitialized || !adminDb) {
+      return { success: false, error: "Admin SDK not initialized" };
+    }
+
     await verifyAdmin(token);
 
     await adminDb.collection("products").doc(productId).update({
@@ -126,6 +145,10 @@ export async function toggleProductStatus(productId: string, isActive: boolean, 
  */
 export async function createProduct(formData: ProductFormData, token: string): Promise<{ success: boolean; data?: Product; error?: string }> {
   try {
+    if (!isAdminInitialized || !adminDb) {
+      return { success: false, error: "Admin SDK not initialized" };
+    }
+
     await verifyAdmin(token);
 
     let imageUrl = '';
@@ -133,7 +156,6 @@ export async function createProduct(formData: ProductFormData, token: string): P
       try {
         imageUrl = await uploadImage(formData.image);
       } catch (uploadError) {
-        console.error('Image upload failed:', uploadError);
         const errorMessage = uploadError instanceof Error ? uploadError.message : 'Unknown error occurred';
         return { success: false, error: errorMessage };
       }
@@ -143,7 +165,7 @@ export async function createProduct(formData: ProductFormData, token: string): P
       name: formData.name,
       description: formData.description,
       price: formData.price,
-      discountPrice: formData.discountPrice || undefined,
+      discountPrice: formData.discountPrice !== undefined ? formData.discountPrice : undefined,
       category: formData.category,
       subcategory: formData.subcategory,
       imageUrl,
@@ -159,7 +181,6 @@ export async function createProduct(formData: ProductFormData, token: string): P
 
     return { success: true, data: product };
   } catch (error) {
-    console.error('Product creation error:', error);
     return { success: false, error: error instanceof Error ? error.message : "Unauthorized or failed to create product" };
   }
 }
@@ -169,6 +190,10 @@ export async function createProduct(formData: ProductFormData, token: string): P
  */
 export async function deleteProduct(productId: string, token: string): Promise<{ success: boolean; error?: string }> {
   try {
+    if (!isAdminInitialized || !adminDb) {
+      return { success: false, error: "Admin SDK not initialized" };
+    }
+
     await verifyAdmin(token);
 
     const validation = productIdSchema.safeParse(productId);
@@ -188,13 +213,17 @@ export async function deleteProduct(productId: string, token: string): Promise<{
  */
 export async function updateProduct(productId: string, formData: ProductFormData, token: string): Promise<{ success: boolean; data?: Product; error?: string }> {
   try {
+    if (!isAdminInitialized || !adminDb) {
+      return { success: false, error: "Admin SDK not initialized" };
+    }
+
     await verifyAdmin(token);
 
     const updateData: Partial<Product> = {
       name: formData.name,
       description: formData.description,
       price: formData.price,
-      discountPrice: formData.discountPrice || undefined,
+      discountPrice: formData.discountPrice !== undefined ? formData.discountPrice : undefined,
       category: formData.category,
       subcategory: formData.subcategory,
     };
@@ -203,7 +232,6 @@ export async function updateProduct(productId: string, formData: ProductFormData
       try {
         updateData.imageUrl = await uploadImage(formData.image);
       } catch (uploadError) {
-        console.error('Image upload failed:', uploadError);
         const errorMessage = uploadError instanceof Error ? uploadError.message : 'Unknown error occurred';
         return { success: false, error: errorMessage };
       }
@@ -218,7 +246,6 @@ export async function updateProduct(productId: string, formData: ProductFormData
       return { success: false, error: "Failed to fetch updated product" };
     }
   } catch (error) {
-    console.error('Product update error:', error);
     return { success: false, error: error instanceof Error ? error.message : "Unauthorized or failed to update product" };
   }
 }
@@ -260,10 +287,11 @@ function validateImageContent(buffer: ArrayBuffer): boolean {
  * Helper function to upload image to Cloudinary using SDK
  */
 async function uploadImage(file: File): Promise<string> {
+  const MAX_FILE_SIZE = process.env.MAX_FILE_SIZE ? parseInt(process.env.MAX_FILE_SIZE) : 10 * 1024 * 1024;
   try {
     // Validate file
-    if (file.size > 10 * 1024 * 1024) { // 10MB limit for free tier
-      throw new Error('File size too large (max 10MB)');
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error(`File size too large (max ${MAX_FILE_SIZE / (1024 * 1024)}MB)`);
     }
     if (!file.type.startsWith('image/')) {
       throw new Error('Only image files are allowed');

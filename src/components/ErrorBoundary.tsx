@@ -1,49 +1,62 @@
 "use client";
 
-import React from "react";
-import { Button } from "@/components/ui/button";
+import React, { Component, ReactNode } from 'react';
 
-interface ErrorBoundaryState {
-  hasError: boolean;
-  error?: Error | null;
+interface Props {
+  children: ReactNode;
+  fallback?: ReactNode;
 }
 
-type ErrorBoundaryProps = {
-  children?: React.ReactNode;
-};
+interface State {
+  hasError: boolean;
+  error?: Error;
+}
 
-export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
+export class ErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: Error) {
+  static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, info: React.ErrorInfo) {
-    // You can log the error to an external service here
-    console.error("ErrorBoundary caught an error", error, info);
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('ErrorBoundary caught an error:', error, errorInfo);
   }
-
-  reset = () => {
-    this.setState({ hasError: false, error: null });
-  };
 
   render() {
     if (this.state.hasError) {
+      if (this.props.fallback) {
+        return this.props.fallback;
+      }
+
       return (
-        <div className="p-6">
-          <h2 className="text-xl font-semibold mb-2">Something went wrong</h2>
-          <p className="text-sm text-muted-foreground mb-4">An unexpected error occurred. Please try again.</p>
-          <div className="flex gap-2">
-            <Button onClick={this.reset}>Try again</Button>
-          </div>
+        <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">
+          <div className="text-6xl mb-4">😵</div>
+          <h2 className="text-2xl font-bold mb-2">Something went wrong</h2>
+          <p className="text-muted-foreground mb-4">
+            We encountered an unexpected error. Please try refreshing the page.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+          >
+            Refresh Page
+          </button>
+          {process.env.NODE_ENV === 'development' && this.state.error && (
+            <details className="mt-4 text-left">
+              <summary className="cursor-pointer text-sm">Error Details</summary>
+              <pre className="text-xs bg-muted p-2 rounded mt-2 overflow-auto">
+                {this.state.error.message}
+              </pre>
+            </details>
+          )}
         </div>
       );
     }
 
-    return this.props.children as React.ReactElement;
+    return this.props.children;
   }
 }

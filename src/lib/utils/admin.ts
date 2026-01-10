@@ -1,6 +1,10 @@
-import { adminAuth, adminDb } from "@/lib/firebase/admin";
+import { adminAuth, adminDb, isAdminInitialized } from "@/lib/firebase/admin";
 
 export async function verifyAdmin(token: string): Promise<void> {
+  if (!isAdminInitialized || !adminAuth || !adminDb) {
+    throw new Error("Server configuration error");
+  }
+
   const decodedToken = await adminAuth.verifyIdToken(token);
   const userId = decodedToken.uid;
 

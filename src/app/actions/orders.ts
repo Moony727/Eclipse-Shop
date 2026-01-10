@@ -1,6 +1,6 @@
 "use server";
 
-import { adminAuth, adminDb } from "@/lib/firebase/admin";
+import { adminAuth, adminDb, isAdminInitialized } from "@/lib/firebase/admin";
 import { Timestamp } from "firebase-admin/firestore";
 import {
   createOrderSchema,
@@ -16,6 +16,10 @@ import { verifyAdmin } from "@/lib/utils/admin";
 export async function createOrder(
   data: CreateOrderInput
 ): Promise<{ success: boolean; data?: { orderId: string }; error?: string }> {
+  if (!isAdminInitialized || !adminDb) {
+    return { success: false, error: "Server configuration error" };
+  }
+
   try {
     // Validate input
     const validation = createOrderSchema.safeParse(data);
@@ -78,6 +82,10 @@ export async function getOrderById(
   orderId: string,
   token: string
 ): Promise<{ success: boolean; data?: Order; error?: string }> {
+  if (!isAdminInitialized || !adminAuth || !adminDb) {
+    return { success: false, error: "Server configuration error" };
+  }
+
   try {
     if (!orderId) {
       return { success: false, error: "Order ID is required" };
@@ -106,32 +114,34 @@ export async function getOrderById(
 
     // Fetch product details for the order
     try {
-      if (order.items && order.items.length > 0) {
-        // New structure: fetch products for each item
-        await Promise.all(order.items.map(async (item) => {
-          const productDoc = await adminDb.collection("products").doc(item.productId).get();
+      if (adminDb) {
+        if (order.items && order.items.length > 0) {
+          // New structure: fetch products for each item
+          await Promise.all(order.items.map(async (item) => {
+            const productDoc = await adminDb!.collection("products").doc(item.productId).get();
+            if (productDoc.exists) {
+              const productData = productDoc.data();
+              if (productData) {
+                item.product = {
+                  id: productDoc.id,
+                  ...productData,
+                  createdAt: productData.createdAt?.toDate() || new Date(),
+                } as Product;
+              }
+            }
+          }));
+        } else if (order.productId) {
+          // Legacy structure: single product
+          const productDoc = await adminDb!.collection("products").doc(order.productId).get();
           if (productDoc.exists) {
             const productData = productDoc.data();
             if (productData) {
-              item.product = {
+              order.product = {
                 id: productDoc.id,
                 ...productData,
                 createdAt: productData.createdAt?.toDate() || new Date(),
               } as Product;
             }
-          }
-        }));
-      } else if (order.productId) {
-        // Legacy structure: single product
-        const productDoc = await adminDb.collection("products").doc(order.productId).get();
-        if (productDoc.exists) {
-          const productData = productDoc.data();
-          if (productData) {
-            order.product = {
-              id: productDoc.id,
-              ...productData,
-              createdAt: productData.createdAt?.toDate() || new Date(),
-            } as Product;
           }
         }
       }
@@ -154,6 +164,10 @@ export async function getOrderById(
 export async function getUserOrders(
   token: string
 ): Promise<{ success: boolean; data?: Order[]; error?: string }> {
+  if (!isAdminInitialized || !adminAuth || !adminDb) {
+    return { success: false, error: "Server configuration error" };
+  }
+
   try {
     const decodedToken = await adminAuth.verifyIdToken(token);
     const userId = decodedToken.uid;
@@ -174,32 +188,34 @@ export async function getUserOrders(
 
       // Fetch product details for the order
       try {
-        if (order.items && order.items.length > 0) {
-          // New structure: fetch products for each item
-          await Promise.all(order.items.map(async (item) => {
-            const productDoc = await adminDb.collection("products").doc(item.productId).get();
+        if (adminDb) {
+          if (order.items && order.items.length > 0) {
+            // New structure: fetch products for each item
+            await Promise.all(order.items.map(async (item) => {
+              const productDoc = await adminDb!.collection("products").doc(item.productId).get();
+              if (productDoc.exists) {
+                const productData = productDoc.data();
+                if (productData) {
+                  item.product = {
+                    id: productDoc.id,
+                    ...productData,
+                    createdAt: productData.createdAt?.toDate() || new Date(),
+                  } as Product;
+                }
+              }
+            }));
+          } else if (order.productId) {
+            // Legacy structure: single product
+            const productDoc = await adminDb!.collection("products").doc(order.productId).get();
             if (productDoc.exists) {
               const productData = productDoc.data();
               if (productData) {
-                item.product = {
+                order.product = {
                   id: productDoc.id,
                   ...productData,
                   createdAt: productData.createdAt?.toDate() || new Date(),
                 } as Product;
               }
-            }
-          }));
-        } else if (order.productId) {
-          // Legacy structure: single product
-          const productDoc = await adminDb.collection("products").doc(order.productId).get();
-          if (productDoc.exists) {
-            const productData = productDoc.data();
-            if (productData) {
-              order.product = {
-                id: productDoc.id,
-                ...productData,
-                createdAt: productData.createdAt?.toDate() || new Date(),
-              } as Product;
             }
           }
         }
@@ -226,6 +242,10 @@ export async function getUserOrders(
 export async function getOrdersForAdmin(
   token: string
 ): Promise<{ success: boolean; data?: Order[]; error?: string }> {
+  if (!isAdminInitialized || !adminAuth || !adminDb) {
+    return { success: false, error: "Server configuration error" };
+  }
+
   try {
     await verifyAdmin(token);
 
@@ -257,6 +277,10 @@ export async function updateOrderStatus(
   status: Order['status'],
   token: string
 ): Promise<{ success: boolean; error?: string }> {
+  if (!isAdminInitialized || !adminAuth || !adminDb) {
+    return { success: false, error: "Server configuration error" };
+  }
+
   try {
     await verifyAdmin(token);
 

@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import Cookies from 'js-cookie';
+import { FirebaseError } from 'firebase/app';
 import {
   User as FirebaseUser,
   signInWithEmailAndPassword,
@@ -78,7 +79,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await signInWithEmailAndPassword(auth, email, password);
       toast.success('Successfully signed in!');
     } catch (error: unknown) {
-      toast.error(error instanceof Error ? error.message : 'Failed to sign in');
+      let errorMessage = 'Failed to sign in';
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'auth/user-not-found':
+            errorMessage = 'No account found with this email';
+            break;
+          case 'auth/wrong-password':
+            errorMessage = 'Incorrect password';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Invalid email address';
+            break;
+          case 'auth/user-disabled':
+            errorMessage = 'This account has been disabled';
+            break;
+          case 'auth/too-many-requests':
+            errorMessage = 'Too many failed attempts. Try again later';
+            break;
+          default:
+            errorMessage = error.message;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      toast.error(errorMessage);
       throw error;
     } finally {
       setLoading(false);
@@ -100,7 +125,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await setDoc(doc(db, 'users', firebaseUser.uid), userData);
       toast.success('Account created successfully!');
     } catch (error: unknown) {
-      toast.error(error instanceof Error ? error.message : 'Failed to create account');
+      let errorMessage = 'Failed to create account';
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            errorMessage = 'An account with this email already exists';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Invalid email address';
+            break;
+          case 'auth/weak-password':
+            errorMessage = 'Password is too weak';
+            break;
+          case 'auth/operation-not-allowed':
+            errorMessage = 'Account creation is currently disabled';
+            break;
+          default:
+            errorMessage = error.message;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      toast.error(errorMessage);
       throw error;
     } finally {
       setLoading(false);

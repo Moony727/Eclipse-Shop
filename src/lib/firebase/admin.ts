@@ -29,8 +29,10 @@ if (!admin.apps.length) {
   }
 }
 
-export const adminAuth = admin.auth();
-export const adminDb = admin.firestore();
-export const adminStorage = admin.storage();
+export const adminAuth = admin.apps.length > 0 ? admin.auth() : null;
+export const adminDb = admin.apps.length > 0 ? admin.firestore() : null;
+export const adminStorage = admin.apps.length > 0 ? admin.storage() : null;
+
+export const isAdminInitialized = admin.apps.length > 0;
 
 export default admin;
