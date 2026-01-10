@@ -48,35 +48,33 @@ export function UserProfile({ isOpen, onClose, user, initialTab = "info" }: User
     }
   }, [isOpen, initialTab]);
 
-  const fetchOrders = async () => {
-    if (firebaseUser) {
-      setIsLoadingOrders(true);
-      setOrdersError(null);
-      try {
-        const token = await firebaseUser.getIdToken();
-        const result = await getUserOrders(token);
-        if (result.success && result.data) {
-          setOrders(result.data);
-          setOrdersError(null);
-        } else {
-          console.error("Failed to fetch orders:", result.error);
-          setOrders([]);
-          setOrdersError(result.error || t("orders.failedToFetch", "Failed to fetch user orders"));
-        }
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-        setOrders([]);
-        setOrdersError(t("orders.error", "An error occurred while loading orders"));
-      } finally {
-        setIsLoadingOrders(false);
-      }
-    }
-  };
-
   useEffect(() => {
-    if (isOpen && firebaseUser) {
-      fetchOrders();
-    }
+    const fetchOrders = async () => {
+      if (isOpen && firebaseUser) {
+        setIsLoadingOrders(true);
+        setOrdersError(null);
+        try {
+          const token = await firebaseUser.getIdToken();
+          const result = await getUserOrders(token);
+          if (result.success && result.data) {
+            setOrders(result.data);
+            setOrdersError(null);
+          } else {
+            console.error("Failed to fetch orders:", result.error);
+            setOrders([]);
+            setOrdersError(result.error || "Failed to load orders");
+          }
+        } catch (error) {
+          console.error("Error fetching orders:", error);
+          setOrders([]);
+          setOrdersError("An error occurred while loading orders");
+        } finally {
+          setIsLoadingOrders(false);
+        }
+      }
+    };
+
+    fetchOrders();
   }, [isOpen, firebaseUser]);
 
   const handleSignOut = async () => {
@@ -153,8 +151,8 @@ export function UserProfile({ isOpen, onClose, user, initialTab = "info" }: User
                     {t("profile.editProfile")}
                     <Badge variant="secondary" className="ml-auto text-xs">Coming Soon</Badge>
                   </Button>
-                  <Button
-                    variant="destructive"
+                  <Button 
+                    variant="destructive" 
                     className="w-full justify-start"
                     onClick={handleSignOut}
                   >
@@ -180,7 +178,7 @@ export function UserProfile({ isOpen, onClose, user, initialTab = "info" }: User
                       <p className="text-muted-foreground max-w-[250px] mx-auto">{ordersError}</p>
                     </div>
                     <Button variant="outline" onClick={fetchOrders}>
-                      {t("orders.retry", "Retry")}
+                      {t("common.retry", "Retry")}
                     </Button>
                   </div>
                 ) : orders.length > 0 ? (

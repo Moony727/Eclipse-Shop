@@ -100,6 +100,13 @@ export const translations = {
 
     // Orders
     orders: {
+      error: "Sifarişlər yüklənilərkən xəta baş verdi",
+      failedToFetch: "İstifadəçi sifarişləri alınmadı",
+      permissionDenied: "Giriş icazəsi rədd edildi",
+      indexError: "Verilənlər bazası sorğu xətası",
+      networkError: "Şəbəkə bağlantısı xətası",
+      serverError: "Server xətası",
+      retry: "Yenidən cəhd et",
       orderId: "Order ID",
       noOrders: "No orders yet",
       noOrdersDesc: "When you purchase something, it will appear here.",
@@ -400,6 +407,13 @@ export const translations = {
 
     // Orders
     orders: {
+      error: "Sifarişlər yüklənilərkən xəta baş verdi",
+      failedToFetch: "İstifadəçi sifarişləri alınmadı",
+      permissionDenied: "Giriş icazəsi rədd edildi",
+      indexError: "Verilənlər bazası sorğu xətası",
+      networkError: "Şəbəkə bağlantısı xətası",
+      serverError: "Server xətası",
+      retry: "Yenidən cəhd et",
       orderId: "ID заказа",
       noOrders: "Заказов пока нет",
       noOrdersDesc: "Когда вы что-то купите, это появится здесь.",
@@ -699,6 +713,13 @@ export const translations = {
 
     // Orders
     orders: {
+      error: "Sifarişlər yüklənilərkən xəta baş verdi",
+      failedToFetch: "İstifadəçi sifarişləri alınmadı",
+      permissionDenied: "Giriş icazəsi rədd edildi",
+      indexError: "Verilənlər bazası sorğu xətası",
+      networkError: "Şəbəkə bağlantısı xətası",
+      serverError: "Server xətası",
+      retry: "Yenidən cəhd et",
       orderId: "Sifariş ID",
       noOrders: "Hələ sifariş yoxdur",
       noOrdersDesc: "Bir şey aldığınız zaman burada görünəcək.",
